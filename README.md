@@ -1,2 +1,2 @@
 # Vehicle Monitor Demo Project
-Sample project of TransModeler Vehicle Monitor C++ API Application
+This project illustrates the usage of TransModeler Vehicle Monitor C++ Application Programming Interface (API)
