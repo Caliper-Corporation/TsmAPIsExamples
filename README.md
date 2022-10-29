@@ -1,2 +1,2 @@
-# TransModeler Vehicle Monitor API Demo Project
-This project illustrates the usage of TransModeler Vehicle Monitor C++ Application Programming Interface (API)
+# TransModeler API Extensions Demo
+This repo includes various demo projects  illustrating the usage of TransModeler Application Programming Interface (API).
