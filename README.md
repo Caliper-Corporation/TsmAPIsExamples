@@ -1,4 +1,4 @@
-# TransModeler API Extensions Demo
+# TransModeler APIs Demo
 This repo provides various open-source demo projects,  illustrating the usage of TransModeler Application Programming Interfaces (APIs).
 
 # Introduction
