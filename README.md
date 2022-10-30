@@ -8,11 +8,11 @@ For ITS system integrators, hardware system manufactures, or auto makers, the AP
 
 TransModeler APIs support the following programming languages:
 
-- **GISDK** is the native scripting language supported by TransModeler. Versatile and flexible, it is a domain specific language (DSL) to faciliate the everyday activities of transportation and traffic modelling. Its flexiblity and power are similar to Javascript, yet much more powerful and focused when it comes to GIS, transportation modeling and traffic simulation tasks.
-- **Any COM-compliant Languages** TransModeler APIs features both performant in-process and flexible out-process COM interface that allows using any COM-compliant language to develop TransModeler plugins. This includes .NET (C#, F#, C++/CLI), C++, Delphi among others.  C++ would provide the best performance while .NET the most convenient choice.
+- **Caliper Script** is Caliper-proprietary scripting language. Versatile and flexible, it is a domain specific language (DSL) to faciliate everyday activities of transportation and traffic modelling. Its many modern language features of a dynamic language are similar to Javascript, yet much more powerful and specialized when it comes to GIS, high-performance matrix computations, transportation modeling and traffic simulation tasks.
+- **Any COM-compliant Languages** TransModeler APIs features both performant **in-process** and flexible **out-process** COM interface that allows using any COM-compliant language to develop TransModeler plugins. This includes .NET (C#, F#, C++/CLI), C++, Delphi among others.  C++ would provide the best performance while .NET the most convenient choice.
 
 # Deployment
-Applications developed using TransModeler APIs can be deployed as in-process plugins that share the same process space as TransModeler, or as a stand-alone application in its own process space (i.e., out-of-process client with TransModeler as the COM automation server). This renders great flexiblity to meet the needs of different development context.
+Applications developed using TransModeler APIs can be deployed as **in-process plugins** that share the same process space as TransModeler, or as a **stand-alone application** in its own process space (i.e., out-of-process client with TransModeler as the COM automation server). This renders great flexiblity to meet the needs of different development context.
 
 # Supported Platform
 Windows only, or WINE on Linux.
