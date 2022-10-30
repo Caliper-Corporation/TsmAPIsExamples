@@ -2,7 +2,7 @@
 This repo provides various open-source demo projects,  illustrating the usage of TransModeler Application Programming Interfaces (APIs).
 
 # Introduction
-TransModeler features a comprehensive set of flexible and powerful Application Programming Interfaces (APIs) for advanced users to develop *plugins* and *extensions* that extend TransModeler user interface, customize the underlying models, integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate state-of-the-art ITS and Connected and Autonomous Vehicle (CAV) technologies.  
+TransModeler features a comprehensive set of flexible and powerful Application Programming Interfaces (APIs). The APIs can be used to develop *plugins* and *extensions* that extend TransModeler user interface, customize the underlying models, integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate state-of-the-art ITS and Connected and Autonomous Vehicle (CAV) technologies.  
 
 For ITS system integrators, hardware system manufactures, or auto makers, the APIs also allow TransModeler to be used as a powerful high-performance real-time simulation engine for Artificial Intelligence (AI) applications,  hardware-in-the-loop and system-in-the-loop simulations, and Decision Support Systems (DSS),  in distributed, cloud-based, or edge computing environments.
 
