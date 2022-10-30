@@ -21,6 +21,6 @@ Windows only, or WINE on Linux.
 BSD-3-Clause License
 
 # How to Build
-Projects written in C++ or .NET (C# or F#) can be opened by Visual Studio 2022 IDE and built from there.  Projects written in GISDK script need to be compiled by the GISDK compiler shipped with TransModeler. 
+Projects written in C++ or .NET (C# or F#) can be opened by Visual Studio 2022 IDE and built from there.  Projects written in Caliper Script need to be compiled by the Caliper Script compiler shipped with TransModeler. 
 
 Please consult the README of each respective project.
