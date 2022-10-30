@@ -12,7 +12,7 @@ TransModeler APIs support the following programming languages:
 - **Any COM-compliant Languages** TransModeler APIs featurs a performant in-process COM interface that allows using any COM-compliant language to develop TransModeler plugins. This includes, .NET (C#, F#, C++/CLI), C++, Delphi among others.  C++ would provide the best performance while .NET the most convenient choice to start with.
 
 # Deployment
-Extensions developed using TransModeler APIs can be deployed as in-process plugins that share the same process space as TransModeler, or as a stand-alone application in its own process space. This renders great flexiblity to meet the needs of different development context.
+Applications developed using TransModeler APIs can be deployed as in-process plugins that share the same process space as TransModeler, or as a stand-alone application in its own process space. This renders great flexiblity to meet the needs of different development context.
 
 # Supported Platform
 Windows only, or WINE on Linux.
