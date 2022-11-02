@@ -42,6 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace vm_plugin {
 
+/// <summary> 
+///     A utility class for specifying compile-time vehicle monitor 
+///     name as a non-type template parameter.
+/// </summary>
+///
+/// <typeparam name="N"> Length of the name. </typeparam>
 template<size_t N>
 struct VehicleMonitorName
 {
