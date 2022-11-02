@@ -102,11 +102,11 @@ public:
     /// <returns> True if it succeeds, false if it fails. </returns>
     static bool Unload()
     {
-        return vm_ ?
-            []() -> bool {
+        return vm_ ? []() -> bool {
             auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
             vm_ = nullptr;
-            return result; } () : false;
+            return result;
+        } () : false;
     }
 
     /// <summary> Fires when a simulation project is being opened. </summary>
