@@ -63,11 +63,6 @@ template<UserVehicleType T, VehicleMonitorOptions op, VehicleMonitorName name>
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:
-    VehicleMonitor()
-    {
-        _name = ::SysAllocString(name.value);
-    }
-
     ~VehicleMonitor()
     {
         ::SysFreeString(_name);
@@ -88,7 +83,7 @@ public:
 
     static bool Load()
     {
-        _theMonitor = std::make_unique<VehicleMonitor<T, op, name>>();
+        _theMonitor = std::unique_ptr<VehicleMonitor<T, op, name>>{ new VehicleMonitor<T, op, name>() };
         return VehicleMonitor::RegisterVehicleMonitor(_theMonitor.get());
     }
 
@@ -136,6 +131,12 @@ public:
     {
     }
 
+protected:
+    VehicleMonitor()
+    {
+        _name = ::SysAllocString(name.value);
+    }
+
 private:
     BSTR _name;
     inline static std::unique_ptr<VehicleMonitor<T, op, name>> _theMonitor{};
@@ -150,7 +151,7 @@ public:
     /// <param name="dTime"> Current time of simulation clock. </param>
     void Departure(double dTime)
     {
-        // Fill in use logic
+        // Fill in user logic
     }
 
     /// <summary>
@@ -169,7 +170,7 @@ public:
     /// <param name="dTime"> Current time of simulation clock. </param>
     void Arrival(double dTime) override
     {
-        // Fill in use logic
+        // Fill in user logic
     }
 
     /// <summary> Fires whenever vehicle state is changed. </summary>
@@ -178,7 +179,7 @@ public:
     /// <param name="vs">    The vehicle state data. </param>
     void Update(double dTime, const SVehicleBasicState& vs) override
     {
-        // Fill in use logic
+        // Fill in user logic
     }
 
     /// <summary>
