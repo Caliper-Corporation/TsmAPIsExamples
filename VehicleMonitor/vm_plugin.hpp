@@ -138,8 +138,8 @@ protected:
     }
 
 private:
-    BSTR name_;
-    inline static std::unique_ptr<VehicleMonitor<T, op, name>> vm_{};
+    BSTR name_{ nullptr };
+    inline static std::unique_ptr<VehicleMonitor<T, op, name>> vm_{ nullptr };
 };
 
 class MyVehicle : public IUserVehicle
