@@ -65,7 +65,7 @@ class VehicleMonitor : public CUserVehicleMonitor
 public:
     ~VehicleMonitor()
     {
-        ::SysFreeString(_name);
+        ::SysFreeString(name_);
     }
 
     VehicleMonitor(VehicleMonitor&) = delete;
@@ -73,7 +73,7 @@ public:
     VehicleMonitor& operator=(VehicleMonitor&) = delete;
     VehicleMonitor& operator=(VehicleMonitor&&) = delete;
 
-    auto GetName() const -> const BSTR override { return _name; };
+    auto GetName() const -> const BSTR override { return name_; };
 
     IUserVehicle* AttachVehicle(long id, const SVehicleProperty& prop, unsigned long* pFlags)
     {
@@ -83,14 +83,14 @@ public:
 
     static bool Load()
     {
-        _theMonitor = std::unique_ptr<VehicleMonitor<T, op, name>>{ new VehicleMonitor<T, op, name>() };
-        return VehicleMonitor::RegisterVehicleMonitor(_theMonitor.get());
+        vm_ = std::unique_ptr<VehicleMonitor<T, op, name>>{ new VehicleMonitor<T, op, name>() };
+        return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
     }
 
     static bool Unload()
     {
-        auto result = VehicleMonitor::UnregisterVehicleMonitor(_theMonitor.get());
-        _theMonitor = nullptr;
+        auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
+        vm_ = nullptr;
         return result;
     }
 
@@ -134,12 +134,12 @@ public:
 protected:
     VehicleMonitor()
     {
-        _name = ::SysAllocString(name.value);
+        name_ = ::SysAllocString(name.value);
     }
 
 private:
-    BSTR _name;
-    inline static std::unique_ptr<VehicleMonitor<T, op, name>> _theMonitor{};
+    BSTR name_;
+    inline static std::unique_ptr<VehicleMonitor<T, op, name>> vm_{};
 };
 
 class MyVehicle : public IUserVehicle

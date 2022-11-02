@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 // pch.cpp: source file corresponding to the pre-compiled header
+// When you are using pre-compiled headers, this source file is necessary
+// for compilation to succeed.
 
 #include "pch.h"
-
-// When you are using pre-compiled headers, this source file is necessary for compilation to succeed.
