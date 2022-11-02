@@ -4,7 +4,7 @@
 
 Vehicle Monitor API is a set of high-performance C++ API that allows developing TransModeller plugin with a direct connection to TransModeler's internal vehicle movement module.
 
-Vehicle Monitor API can be used to integrate user-defined driver-behavior models (CF or LC), Connected and Autonomous Vehicle (CAV) algorithms, Emission Models, Peer to Peer (P2P) Vehicle Communications, VANET Communications, Safety-Surrgate Analysis, and more.  Imagination and creativity are the boundary.
+Vehicle Monitor API can be used to integrate user-defined driver-behavior models (CF or LC), Connected and Autonomous Vehicle (CAV) algorithms, Emission Models, Peer to Peer (P2P) VANET Communications, Safety-Surrgate Analysis, Trajectory and LBS Analysis, and more.  Imagination and creativity are the boundary.
 
 ## Advantage
 
