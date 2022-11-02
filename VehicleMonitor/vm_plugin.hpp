@@ -87,17 +87,26 @@ public:
         return new T();
     }
 
+    /// <summary> Load the singleton monitor to TransModeler. </summary>
+    ///
+    /// <returns> True if it succeeds, false if it fails. </returns>
     static bool Load()
     {
-        vm_ = std::unique_ptr<VehicleMonitor<T, op, name>>{ new VehicleMonitor<T, op, name>() };
-        return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
+        return vm_ ? true : (
+            /**/vm_ = std::unique_ptr<VehicleMonitor<T, op, name>>{ new VehicleMonitor<T, op, name>() } /**/,
+            /**/RegisterVehicleMonitor(vm_.get()) /**/);
     }
 
+    /// <summary> Unloads the singleton monitor from TransModdler. </summary>
+    ///
+    /// <returns> True if it succeeds, false if it fails. </returns>
     static bool Unload()
     {
-        auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
-        vm_ = nullptr;
-        return result;
+        return vm_ ?
+            []() -> bool {
+            auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
+            vm_ = nullptr;
+            return result; } () : false;
     }
 
     /// <summary> Fires when a simulation project is being opened. </summary>
