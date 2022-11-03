@@ -24,3 +24,9 @@ BSD-3-Clause License
 Projects written in native C++ or managed .NET (C#, F#, C++/CLI) languages can be opened by Visual Studio 2022 IDE and built from there.  Projects written in Caliper Script need to be compiled by the Caliper Script compiler shipped with TransModeler. 
 
 Please consult the README of each respective project.
+
+# List of Examples
+
+More examples will be added. The following list summarizes exising examples.
+
+- [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold mordern C++/20 example of Vehicle Monitor application.
