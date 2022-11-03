@@ -29,4 +29,4 @@ Please consult the README of each respective project.
 
 More examples will be added. The following list summarizes exising examples.
 
-- [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold mordern C++/20 example of Vehicle Monitor plugin for TransModeler.
+- [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold example of Vehicle Monitor plugin in mordern C++/20.
