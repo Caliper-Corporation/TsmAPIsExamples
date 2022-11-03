@@ -299,7 +299,7 @@ public:
      @param     info    Transit vehicle stop information.
      @param     dwell   Dwell time calculated by TransModeler.
     
-     \returns   Dwell time calculated by user logic. Return flt_miss if this
+     @returns   Dwell time calculated by user logic. Return flt_miss if this
                 function is not of interest.
      */
     float TransitStop(double time, const STransitStopInfo& info, float dwell) override
