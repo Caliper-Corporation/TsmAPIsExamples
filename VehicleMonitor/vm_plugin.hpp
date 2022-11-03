@@ -46,7 +46,7 @@ namespace vm_plugin {
  A utility class for specifying compile-time vehicle monitor name as a non-
  type template parameter.
 
- \tparam    N   Type of the n.
+ @tparam    N   Type of the n.
  */
 template<size_t N>
 struct VehicleMonitorName
@@ -64,14 +64,7 @@ using VehicleMonitorOptions = unsigned long;
 template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T>;
 
-/**
- Template can be instantiated using code like: 
- VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">
-
- \remark   T must be a valid user vehicle type, and the correctness of Opts 
-           value is checked at compile time.
- */
-template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
+ template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
     requires (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0)
 class VehicleMonitor : public CUserVehicleMonitor
 {
@@ -89,14 +82,13 @@ public:
     auto GetName() const -> const BSTR override { return name_; };
 
     /**
-     Attach the user vehicle logic to an associated TransModeler's vehicle
-     entity.
+     Attach the user vehicle to an associated TransModeler's vehicle entity.
     
-     \param             id      Vehicle ID, assigned by TransModeler.
-     \param             prop    Property of TransModeler vehicle entity.
-     \param [in,out]    opts    Monitor options for the vehicle.
+     @param             id      Vehicle ID, assigned by TransModeler.
+     @param             prop    Property of TransModeler vehicle entity.
+     @param [in,out]    opts    Monitor options for the vehicle.
     
-     \returns   Null to advise TransModeler not to attach, else a pointer to an
+     @returns   Null to advise TransModeler not to attach, else a pointer to an
                 IUserVehicle.
      */
     IUserVehicle* AttachVehicle(long id, const SVehicleProperty& prop, VehicleMonitorOptions* opts)
@@ -108,7 +100,7 @@ public:
     /**
      Load the singleton monitor to TransModeler.
     
-     \returns   True if it succeeds, false if it fails.
+     @returns   True if it succeeds, false if it fails.
      */
     static bool Load()
     {
@@ -119,8 +111,8 @@ public:
 
     /**
      Unloads the singleton monitor from TransModdler.
-
-     \returns   True if it succeeds, false if it fails.
+    
+     @returns   True if it succeeds, false if it fails.
      */
     static bool Unload()
     {
@@ -134,7 +126,7 @@ public:
     /**
      Fires when a simulation project is being opened.
     
-     \param     name    Project file name.
+     @param     name    Project file name.
      */
     void OpenProject(const BSTR name) override
     {
@@ -143,9 +135,9 @@ public:
     /**
      Fires before starting the simulation.
     
-     \param     run         Zero-based index of the run.
-     \param     run_type    Type of the run.
-     \param     preload     Whether this is a preload run.
+     @param     run         Zero-based index of the run.
+     @param     run_type    Type of the run.
+     @param     preload     Whether this is a preload run.
      */
     void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
     {
@@ -159,7 +151,7 @@ public:
     /**
      Fires after simulation has been stopped.
     
-     \param     state   Zero-based index of the state.
+     @param     state   TransModeler state.
      */
     void SimulationStopped(TsmState state) override
     {
@@ -168,7 +160,7 @@ public:
     /**
      Fires at the end of the simulation.
     
-     \param     state   Zero-based index of the state.
+     @param     state   TransModeler state.
      */
     void EndSimulation(TsmState state) override
     {
@@ -203,7 +195,7 @@ public:
     /**
      Fires when a vehicle entering the network.
     
-     \param     time    Current time of the simulation clock.
+     @param     time    Current time of the simulation clock.
      */
     void Departure(double time) override
     {
@@ -213,7 +205,7 @@ public:
     /**
      Fires when a vehicle arrives at its destination or drop location.
     
-     \param     time    Current time of the simulation clock.
+     @param     time    Current time of the simulation clock.
      */
     void Arrival(double time) override
     {
@@ -223,8 +215,8 @@ public:
     /**
      Fires whenever vehicle state is changed.
     
-     \param     time    Current time of the simulation clock.
-     \param     state   Vehicle state data.
+     @param     time    Current time of the simulation clock.
+     @param     state   Vehicle state data.
      */
     void Update(double time, const SVehicleBasicState& state) override
     {
@@ -234,24 +226,24 @@ public:
     /**
      Fires to receive user-calculated car-following acceleration rate subject
      to TransModeler's internal constraints.
-     
-     TransModeler would still consider other constraints on vehicle's
-     acceleration/deceleration such as response to signals and signs. The
-     return value will be used by TransModeler only if it is more restrictive
-     than TransModeler's calculated value.
-     
-     CUserVehicleMonitor::AttachVehicle(...) must have set the VM_CF_SUBJECT
-     bit in order to receive this callback. Also to receive this call back,
-     ITsmVehicle::AccOverride property of the vehicle cannot be set false by
-     another plugin.
     
-     \param     time    Current time of the simulation clock.
-     \param     data    Car-following data.
-     \param     acc     Acceleration rate calculated by TransModeler's default
+     @param     time    Current time of the simulation clock.
+     @param     data    Car-following data.
+     @param     acc     Acceleration rate calculated by TransModeler's default
                         model.
     
-     \returns   Acceleration rate calculated by the user logic. Return flt_miss
+     @returns   Acceleration rate calculated by the user logic. Return flt_miss
                 if this function is not of interest.
+    
+     @remarks   TransModeler would still consider other constraints on
+                vehicle's acceleration/deceleration such as response to signals
+                and signs. The return value will be used by TransModeler only if
+                it is more restrictive than TransModeler's calculated value.
+                    
+                CUserVehicleMonitor::AttachVehicle(...) must have set the
+                VM_CF_SUBJECT bit in order to receive this callback. Also to
+                receive this call back, ITsmVehicle::AccOverride property of the
+                vehicle cannot be set false by another plugin.
      */
     float CalculateCarFollowingAccRate(double time, const SCarFollowingData& data, float acc) override
     {
@@ -260,18 +252,18 @@ public:
 
     /**
      Fires to receive user-calculated acceleration rate that will be directly
-     applied to updating the vehicle's speed.
-     
-     If an inappropriate value is returned, the vehicle may stall, violate
-     traffic signals, or run through other vehicles.
+     applied to updating the vehicle's speed.   
     
-     \param     time    Current time of the simulation clock.
-     \param     acc     Acceleration rate calculated by TransModeler that has
+     @param     time    Current time of the simulation clock.
+     @param     acc     Acceleration rate calculated by TransModeler that has
                         already considered constraints such as the traffic signal,
                         merging, etc.
     
-     \returns   The final acceleration rate to be applied to the subject vehicle.
+     @returns   The final acceleration rate to be applied to the subject vehicle.
                 Return flt_miss if this function is not of interest.
+
+     @remarks   If an inappropriate value is returned, the vehicle may stall, 
+                violate traffic signals, or run through other vehicles.
      */
     float Acceleration(double time, float acc) override
     {
@@ -280,20 +272,20 @@ public:
 
     /**
      Fires when lane change decision is required.
-     
-     CUserVehicleMonitor::AttachVehicle(...) must have set the VM_LANE_CHANGE
-     bit in order to receive this callback. Also to receive this call back,
-     ITsmVehicle::LaneChangeOverride property of the vehicle cannot be set to
-     false by another plugin.
     
-     \param             time        Current time of the simulation clock.
-     \param             dir         The lane changing decision made by
-                                    TransModeler, left(-1), stay(0), and right(1).
-     \param [in,out]    mandatory   Whether lane-change decision is mandatory.
+     @param             time        Current time of the simulation clock.
+     @param             dir         Lane changing decision made by TransModeler,
+                                    left(-1), stay(0), and right(1).
+     @param [in,out]    mandatory   Whether lane-change decision is mandatory.
     
-     \returns   A value indicating moving to the left (-1) lane, right (1) lane,
+     @returns   A value indicating moving to the left (-1) lane, right (1) lane,
                 or stay (0) current. Return short_miss if this function is not of
                 interest.
+
+     @remarks   CUserVehicleMonitor::AttachVehicle(...) must have set the
+                VM_LANE_CHANGE bit in order to receive this callback. Also to
+                receive this call back, ITsmVehicle::LaneChangeOverride property
+                of the vehicle cannot be set false by another plugin.
      */
     short LaneChange(double time, short dir, bool* mandatory) override
     {
@@ -303,9 +295,9 @@ public:
     /**
      Fires when a transit vehicle comes to a stop.
     
-     \param     time    Current time of the simulation clock.
-     \param     info    Transit vehicle stop information.
-     \param     dwell   Dwell time calculated by TransModeler.
+     @param     time    Current time of the simulation clock.
+     @param     info    Transit vehicle stop information.
+     @param     dwell   Dwell time calculated by TransModeler.
     
      \returns   Dwell time calculated by user logic. Return flt_miss if this
                 function is not of interest.
@@ -318,8 +310,8 @@ public:
     /**
      Fires when a vehicle is moved.
     
-     \param     time    Current time of the simulation clock.
-     \param     pos     Vehicle position data.
+     @param     time    Current time of the simulation clock.
+     @param     pos     Vehicle position data.
      */
     void Position(double time, const SVehiclePosition& pos) override
     {
@@ -327,10 +319,10 @@ public:
     }
 
     /**
-     Fires when the subject vehicle has parked at a parking space. Arrival(...)
-     will be fired after this event.
+     Fires when the subject vehicle has parked at a parking space.
+     Arrival(...) will be fired after this event.
     
-     \param     time    Current time of the simulation clock.
+     @param     time    Current time of the simulation clock.
      */
     void Parked(double time) override
     {
@@ -340,8 +332,8 @@ public:
      Fires when a vehicle is stalled, or a stalled vehicle starts to move
      again.
     
-     \param     time    Current time of the simulation clock.
-     \param     stalled True if stalled, false moving again.
+     @param     time    Current time of the simulation clock.
+     @param     stalled True if stalled, false moving again.
      */
     void Stalled(double time, bool stalled) override
     {
@@ -350,9 +342,9 @@ public:
     /**
      Fires when an error has occurred for this IUserVehicle instance.
     
-     \param     msg The error message.
+     @param     msg The error message.
     
-     \returns   True to ignore the message and continue, false to skip receiving
+     @returns   True to ignore the message and continue, false to skip receiving
                 further callback notification.
      */
     bool OnFail(const BSTR msg) override
