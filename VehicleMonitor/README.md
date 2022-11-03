@@ -8,7 +8,7 @@ Vehicle Monitor API can be used to integrate user-defined driver-behavior models
 
 ## Advantage
 
-Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-based API, i.e., ```IVehicleEvent``` and ```ITsmVehicle``` COM interface.  While COM interface is more flexible in accomodating different programming languages,  Vehicle Monitor API provides the best performance endowed by using native C++, and by an efficient call-back mechnism which covers more vehicle-related events than the COM interface. Importantly, Vehicle Monitor API takes full advantage of TransModeller's powerful multi-threaded parallel compuation.
+Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-based API, i.e., ```IVehicleEvent``` and ```ITsmVehicle``` COM interface.  While COM interface is more flexible in accomodating different programming languages,  Vehicle Monitor API provides the best performance powered by native C++. Vehicle Monitor native C++ API also features an efficient call-back mechnism which covers more vehicle-related events than the COM interface. Importantly, Vehicle Monitor API takes full advantage of TransModeller's powerful multi-threaded parallel compuation.
 
 ## Usage
 
