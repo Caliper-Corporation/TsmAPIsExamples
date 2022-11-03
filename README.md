@@ -1,5 +1,5 @@
-# TransModeler APIs Demo
-This repo provides various open-source demo projects,  illustrating the usage of TransModeler Application Programming Interfaces (APIs).
+# TransModeler APIs Examples
+This repo provides various example projects,  illustrating the usage of TransModeler Application Programming Interfaces (APIs).
 
 # Introduction
 TransModeler features a comprehensive set of flexible and powerful Application Programming Interfaces (APIs). The APIs can be used to develop *plugins* and *extensions* that extend TransModeler user interface, customize the underlying models, integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate state-of-the-art ITS and Connected and Autonomous Vehicle (CAV) technologies.  
