@@ -42,41 +42,41 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         T - type for user vehicle class;
         VehicleMonitorOptions - callback options;
         name - name of the vehicle monitor.
-        
+  
     Change type and non-type template parameters "T", "VehicleOptions", and "name"
-    for a different configuration.    
-    
+    for a different configuration.
+
     Note any change to the template parameters would end up a different
     instantiated class, for example, the following are all different classes, and
     each holds different singleton respectively.
 
     VehicleMonitor<
-        MyVehicle, 
-        VM_UPDATE | VM_POSITION, 
+        MyVehicle,
+        VM_UPDATE | VM_POSITION,
         L"Cool Vehicle Monitor"
     >
 
     VehicleMonitor<
-        MyVehicle, 
-        VM_UPDATE, 
+        MyVehicle,
+        VM_UPDATE,
         L"Cool Vehicle Monitor"
     >;
 
     VehicleMonitor<
-        MyVehicle, 
-        VM_POSITION, 
+        MyVehicle,
+        VM_POSITION,
         L"Cool Vehicle Monitor"
     >;
 
     VehicleMonitor<
-        MyVehicle, 
+        MyVehicle,
         VM_UPDATE | VM_POSITION,
         L"Not Cool Vehicle Monitor"
     >;
      */
     using VehicleMonitor = VehicleMonitor<
-        MyVehicle, 
-        VM_UPDATE | VM_POSITION, 
+        MyVehicle,
+        VM_UPDATE | VM_POSITION,
         L"Cool Vehicle Monitor"
     >;
 
@@ -84,12 +84,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     {
     case DLL_PROCESS_ATTACH:
         // Internally create a monitor singleton and register it with TransModeler.
-        VehicleMonitor::Load();   
+        VehicleMonitor::Load();
         break;
 
     case DLL_PROCESS_DETACH:
         // Unregister the monitor with TransModeler, and release it from memory.
-        VehicleMonitor::Unload(); 
+        VehicleMonitor::Unload();
         break;
 
     case DLL_THREAD_ATTACH:

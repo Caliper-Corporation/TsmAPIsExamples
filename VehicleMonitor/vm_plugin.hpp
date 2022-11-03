@@ -42,8 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace vm_plugin {
 
-/// <summary> 
-///     A utility class for specifying compile-time vehicle monitor 
+/// <summary>
+///     A utility class for specifying compile-time vehicle monitor
 ///     name as a non-type template parameter.
 /// </summary>
 ///
