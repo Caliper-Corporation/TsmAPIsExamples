@@ -59,7 +59,7 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
       return TRUE;
   }
   ```
-  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instnatiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Postion Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor" is the name.
+  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instnatiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Postion Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
 
   Vehicle Monitor provides the following events:
   - Arrival
