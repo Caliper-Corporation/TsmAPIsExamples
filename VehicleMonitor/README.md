@@ -10,7 +10,7 @@ Vehicle Monitor API can be applied to many different use cases that require cust
 - New computational approach for emission modelling
 - P2P communication and latency modelling in a Vehicular Ad hoc Network (VANET)
 - Trajectory big-data approaches such as using trajectories for Safety-Surrogate Measures, Location-based Data Service modelling
-- Connected Vehicle Cybersecurity and Location Privacy Protection schemes.
+- Connected Vehicle Cybersecurity and Location Privacy Protection schemes
 - Driver Simulator or 3D visualizations
 
 The application boundary is only limited by your imagination and creativity.
