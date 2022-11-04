@@ -74,7 +74,6 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   - Car-following Accelerate Rate Calculation
   
 * **User-logic** code should be implemented through the overridden virtual methods of ```MyVehicle``` class.  Take a look at [```vm_plugin.hpp```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
-
 ```
     /**
      Fires when a vehicle is moved.
@@ -87,8 +86,6 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
         // Fill in user logic
     }
 ```
-
-
 * The generated ```VehicleMonitor.dll``` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
   ```
   shared mydll
@@ -100,11 +97,14 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   ```
   mydll = null
   ```
-
 ## How to Debug
 
-* Set breaking points  
+* Set breakpoints  
 * Launch TransModeler
-* From Visual Studio IDE, select menu *```Debug->Attach to Process...```*, or *```Ctrl+Alt+P```*. From the list of running processes, choose ```tsm.exe```
-* Use *GISDK Immediate Execution Dialog* to load the DLL
+* From Visual Studio IDE, make sure it is ```Debug``` configuration, then click ```Local Windows Debugger```
+* Use *GISDK Immediate Execution Dialog*, execute the following script to load the DLL. Remember to replace ```output_path``` with actual path.
+  ```
+  shared mydll
+  mydll = LoadLibrary(output_path + "\\VehicleMonitor.dll")
+  ```
 * Have fun
