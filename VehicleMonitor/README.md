@@ -8,12 +8,12 @@ Vehicle Monitor API can be applied to many different use cases that require cust
 - User-defined driver-behavior models, such as Car-Following or Lane Change Models that take into account latest driver behavioral or human factor research outcomes
 - Advanced Connected and Autonomous Vehicle (CAV) algorithms, such as Adaptive Platooning, Connected Eco-Driving, Automatic Emergency Braking, Forward Collision Warning etc.
 - New computational approach for emission modelling
-- P2P communication and latency modelling in a VANET
-- Trajectory big-data approaches such as using trajectories for Safety-Surrgate Measures, Location-based Data Service modelling
+- P2P communication and latency modelling in a Vehicular Ad hoc Network (VANET)
+- Trajectory big-data approaches such as using trajectories for Safety-Surrogate Measures, Location-based Data Service modelling
 - Connected Vehicle Cybersecurity and Location Privacy Protection schemes.
 - Driver Simulator or 3D visualizations
 
-The appliation boundary is only limited by your imagination and creativity.
+The application boundary is only limited by your imagination and creativity.
 
 ## Framework Design Pattern
 
@@ -23,10 +23,10 @@ The framework is designed with performance-critical applications in mind, while 
 
 ## Advantage
 
-Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-based API, e.g., ```IVehicleEvent``` and ```ITsmVehicle``` COM interface.  While COM interface is more flexible in accomodating a wide range of programming languages,  Vehicle Monitor native C++ API has the following benefits:
+Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-based API, e.g., ```IVehicleEvent``` and ```ITsmVehicle``` COM interface.  While COM interface is more flexible in accommodating a wide range of programming languages,  Vehicle Monitor native C++ API has the following benefits:
 - Provide the best performance needed for performance-critical applications;
-- Feature an efficient call-back mechnism covering a comprehensive set of vehicle-related events; 
-- Multi-threaded callbacks taking full advantage of TransModeller's powerful parallel compuation.
+- Feature an efficient call-back mechanism covering a comprehensive set of vehicle-related events; 
+- Multi-threaded callbacks taking full advantage of TransModeller's powerful parallel computation.
 
 ## Usage
 
@@ -59,7 +59,7 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
       return TRUE;
   }
   ```
-  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instnatiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Postion Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
+  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instantiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Position Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
 
   Vehicle Monitor provides the following events:
   - Arrival
