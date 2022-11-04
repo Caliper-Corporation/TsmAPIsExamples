@@ -17,7 +17,7 @@ The appliation boundary is only limited by your imagination and creativity.
 
 ## Framework Design Pattern
 
-The framework is designed with performance-critical applications in mind, while paying attention to ease of use. The following figure illustrates the design.
+The framework is designed with performance-critical applications in mind, while paying attention to intuition and ease of use. The following figure illustrates the design.
 
 ![Image](./img/vm_framework_design.png)
 
@@ -37,7 +37,57 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
     </PropertyGroup>
   ```
 
-* **User-logic** code should be implemented through the overridden virtual methods of ```MyVehicle``` class.  Take a look at [```vm_plugin.hpp```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.
+* At the DLL entry point, use the following code to Load/Unload Vehicle Monitor with TransModeler host.
+  ```
+  BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+  {
+      using namespace vm_plugin;
+      
+      using VehicleMonitor = VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">;
+
+      switch (ul_reason_for_call)
+      {
+      case DLL_PROCESS_ATTACH:
+          VehicleMonitor::Load();
+          break;
+
+      case DLL_PROCESS_DETACH:
+          VehicleMonitor::Unload();
+          break;
+      }
+
+      return TRUE;
+  }
+  ```
+  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instnatiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Postion Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor" is the name.
+
+  Vehicle Monitor provides the following events:
+  - Arrival
+  - Departure
+  - Position Change
+  - State Change
+  - Stalled
+  - Parked
+  - Transit Stop
+  - Lane Change
+  - Acceleration
+  - Car-following Accelerate Rate Calculation
+  
+* **User-logic** code should be implemented through the overridden virtual methods of ```MyVehicle``` class.  Take a look at [```vm_plugin.hpp```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
+
+```
+    /**
+     Fires when a vehicle is moved.
+
+     @param     time    Current time of the simulation clock.
+     @param     pos     Vehicle position data.
+     */
+    void Position(double time, const SVehiclePosition& pos) override
+    {
+        // Fill in user logic
+    }
+```
+
 
 * The generated ```VehicleMonitor.dll``` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
   ```
