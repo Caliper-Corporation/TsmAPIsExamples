@@ -4,7 +4,22 @@
 
 Vehicle Monitor API is a set of high-performance C++ API that allows developing TransModeller plugin with a direct connection to TransModeler's internal vehicle movement module.
 
-Vehicle Monitor API can be used to integrate user-defined driver-behavior models (CF or LC), Connected and Autonomous Vehicle (CAV) algorithms,  and Emission Models. It can also be used to model VANET Communications, generate trajectories for Safety-Surrgate Measures, emulate Location-based Data Service, and even to evaluate Connected Vehicle Cybersecurity and Location Privacy Protection schemes. Only imagination and creativity are the boundary of Vehicle Monitor API and other TransModeler API applications.
+Vehicle Monitor API can be applied to many different use cases that require customized user logic:
+- User-defined driver-behavior models, such as Car-Following or Lane Change Models that take into account latest driver behavioral or human factor research outcomes
+- Advanced Connected and Autonomous Vehicle (CAV) algorithms, such as Adaptive Platooning, Connected Eco-Driving, Automatic Emergency Braking, Forward Collision Warning etc.
+- New computational approach for emission modelling
+- P2P communication and latency modelling in a VANET
+- Trajectory big-data approaches such as using trajectories for Safety-Surrgate Measures, Location-based Data Service modelling
+- Connected Vehicle Cybersecurity and Location Privacy Protection schemes.
+- Driver Simulator or 3D visualizations
+
+The appliation boundary is only limited by your imagination and creativity.
+
+## Framework Design Pattern
+
+The framework is designed with performance-critical applications in mind, while paying attention to ease of use. The following figure illustrates the design.
+
+![Image](./img/vm_framework_design.png)
 
 ## Advantage
 
@@ -31,7 +46,6 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   ```
   
   ```output_path``` is where the DLL is output to. Replace it with the actual path.
-
   Use the following line to explicitly **unload** the DLL: 
   ```
   mydll = null
