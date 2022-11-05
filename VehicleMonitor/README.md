@@ -66,14 +66,14 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   Vehicle Monitor provides the following events:
   - Arrival
   - Departure
-  - Position Change
-  - State Change
+  - PositionChange
+  - StateUpdate
   - Stalled
   - Parked
-  - Transit Stop
-  - Lane Change
+  - TransitStop
+  - LaneChange
   - Acceleration
-  - Car-following Accelerate Rate Calculation
+  - CarFollowingAccelerateRateCalculation
   
 * **User-logic** code should be implemented through the overridden virtual methods of ```MyVehicle``` class.  Take a look at [```vm_plugin.hpp```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
 ```
