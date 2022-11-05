@@ -20,7 +20,7 @@ The application boundary is only limited by your imagination and creativity.
 The framework is designed with performance-critical applications in mind, while paying attention to intuition and ease of use. The following figure illustrates the design.
 
 <p align="center">
-  <img width="460" height="300" src="https://github.com/Caliper-Corporation/TsmAPIsExamples/blob/main/VehicleMonitor/img/vm_framework_design.png">
+  <img height="500" src="https://github.com/Caliper-Corporation/TsmAPIsExamples/blob/main/VehicleMonitor/img/vm_framework_design.png">
 </p>
 
 ## Advantage
