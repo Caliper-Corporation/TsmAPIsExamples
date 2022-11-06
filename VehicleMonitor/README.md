@@ -18,6 +18,7 @@ The application boundary is only limited by your imagination and creativity.
 ## Framework Design Pattern
 
 The framework is designed with performance-critical applications in mind, while paying attention to intuition and ease of use. The following figure illustrates the design.
+
 <p align="left">
   <img width="60%" src="https://github.com/Caliper-Corporation/TsmAPIsExamples/blob/main/VehicleMonitor/img/vm_framework_design.svg">
 </p>
