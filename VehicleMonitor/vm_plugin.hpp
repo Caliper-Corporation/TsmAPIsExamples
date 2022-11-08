@@ -62,7 +62,7 @@ struct VehicleMonitorName
 using VehicleMonitorOptions = unsigned long;
 
 template<typename T>
-concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, SVehicleProperty>;
+concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
     requires (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0)
@@ -96,7 +96,7 @@ public:
     IUserVehicle* AttachVehicle(long id, const SVehicleProperty& prop, VehicleMonitorOptions* opts)
     {
         *opts = Opts;
-        return new T(prop);
+        return new T(id, prop);
     }
 
     /**
@@ -195,7 +195,7 @@ private:
 class MyVehicle : public IUserVehicle
 {
 public:
-    MyVehicle(const SVehicleProperty& prop) : prop_{ prop } {}
+    MyVehicle(const long id, const SVehicleProperty& prop) : id_{ id }, prop_{ prop } {}
 
     /**
      Fires when a vehicle entering the network.
@@ -357,7 +357,11 @@ public:
     }
 
 private:
+    /** Vehicle property */
     const SVehicleProperty prop_{};
+
+    /** ID of the vehicle */
+    const long id_{ 0 };
 };
 
 }
