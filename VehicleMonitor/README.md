@@ -101,7 +101,7 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   ```
   
 ### Thread-Safety
-The callbacks of the same vehicle instance are thread-safe. Care should be taken to prevent data-racing when accessing none vehicle instance data.
+Accessing instance-specific data from inside the callbacks are thread-safe. However, accessing global data inside the callbacks are not thread-safe. 
 
 ## How to Debug
 
