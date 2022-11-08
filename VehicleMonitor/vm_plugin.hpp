@@ -62,7 +62,7 @@ struct VehicleMonitorName
 using VehicleMonitorOptions = unsigned long;
 
 template<typename T>
-concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T>;
+concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, SVehicleProperty>;
 
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
     requires (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0)
@@ -79,7 +79,9 @@ public:
     VehicleMonitor& operator=(VehicleMonitor&) = delete;
     VehicleMonitor& operator=(VehicleMonitor&&) = delete;
 
-    auto GetName() const -> const BSTR override { return name_; };
+    auto GetName() const -> const BSTR override {
+        return name_;
+    };
 
     /**
      Attach the user vehicle to an associated TransModeler's vehicle entity.
@@ -94,7 +96,7 @@ public:
     IUserVehicle* AttachVehicle(long id, const SVehicleProperty& prop, VehicleMonitorOptions* opts)
     {
         *opts = Opts;
-        return new T();
+        return new T(prop);
     }
 
     /**
@@ -193,6 +195,7 @@ private:
 class MyVehicle : public IUserVehicle
 {
 public:
+    MyVehicle(const SVehicleProperty& prop) : prop_{ prop } {}
 
     /**
      Fires when a vehicle entering the network.
@@ -201,7 +204,6 @@ public:
      */
     void Departure(double time) override
     {
-        // Fill in user logic
     }
 
     /**
@@ -353,6 +355,9 @@ public:
     {
         return (false);
     }
+
+private:
+    const SVehicleProperty prop_{};
 };
 
 }
