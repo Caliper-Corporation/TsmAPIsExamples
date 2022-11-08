@@ -46,7 +46,7 @@ namespace vm_plugin {
  A utility class for specifying compile-time vehicle monitor name as a non-
  type template parameter.
 
- @tparam    N   Type of the n.
+ @tparam    N   Number of wide characters.
  */
 template<size_t N>
 struct VehicleMonitorName
