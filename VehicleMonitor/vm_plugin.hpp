@@ -356,6 +356,10 @@ public:
         return (false);
     }
 
+    auto id() const -> long {
+        return id_;
+    }
+
 private:
     /** Vehicle property */
     const SVehicleProperty prop_{};
