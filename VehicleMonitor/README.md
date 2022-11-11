@@ -25,14 +25,14 @@ The framework is designed with performance-critical applications in mind, while 
 
 ## Advantage
 
-Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-based API, e.g., ```IVehicleEvent``` and ```ITsmVehicle``` COM interface.  While COM interface is more flexible in accommodating a wide range of programming languages,  Vehicle Monitor native C++ API has the following benefits:
+Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e.g. `IVehicleEvent` and `ITsmVehicle` COM interface.  While COM interface is more flexible in accommodating a wide range of programming languages,  Vehicle Monitor native C++ API has the following benefits:
 - Provide the best performance needed for performance-critical applications;
 - Feature an efficient call-back mechanism covering a comprehensive set of vehicle-related events; 
 - Multi-threaded callbacks taking full advantage of TransModeller's powerful parallel computation.
 
 ## Usage
 
-* First make sure [```VehicleMonitor.props```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/VehicleMonitor.props) references to the correct TransModeller installation folder. Update the XML accordingly:
+* First make sure [`VehicleMonitor.props`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/VehicleMonitor.props) references to the correct TransModeller installation folder. Update the XML accordingly:
   ```
     <PropertyGroup Label="UserMacros">
       <TSM_FOLDER>C:\Program Files\TransModeler 6.1</TSM_FOLDER>
@@ -61,7 +61,7 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
       return TRUE;
   }
   ```
-  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instantiates a VehicleMonitor template class - ```MyVehicle``` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Position Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
+  The line ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instantiates a VehicleMonitor template class - `MyVehicle` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Position Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
 
   Vehicle Monitor provides the following events:
   - Arrival
@@ -75,7 +75,7 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
   - Acceleration
   - CarFollowingAccelerateRateCalculation
   
-* **User-logic** code should be implemented by overriding the virtual methods of ```IUserVehicle``` in a derived class, which, in this example, is ```MyVehicle``` class. Take a look at [```vm_plugin.hpp```](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
+* **User-logic** code should be implemented by overriding the virtual methods of `IUserVehicle` in a derived class, which, in this example, is `MyVehicle` class. Take a look at [`vm_plugin.hpp`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
 ```
     /**
      Fires when a vehicle is moved.
@@ -88,13 +88,13 @@ Vehicle Monitor API shares certain overlapping use cases with TransModeler COM-b
         // Fill in user logic
     }
 ```
-* The generated ```VehicleMonitor.dll``` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
+* The generated `VehicleMonitor.dll` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
   ```
   shared mydll
   mydll = LoadLibrary(output_path + "\\VehicleMonitor.dll")
   ```
   
-  ```output_path``` is where the DLL is output to. Replace it with the actual path.
+  `output_path` is where the DLL is output to. Replace it with the actual path.
   Use the following line to explicitly **unload** the DLL: 
   ```
   mydll = null
@@ -107,8 +107,8 @@ Accessing instance-specific data from inside the callbacks are thread-safe. Howe
 
 * Set breakpoints  
 * Launch TransModeler
-* From Visual Studio IDE, make sure it is ```Debug``` configuration, then click ```Local Windows Debugger```
-* Use *GISDK Immediate Execution Dialog*, execute the following script to load the DLL. Remember to replace ```output_path``` with actual path.
+* From Visual Studio IDE, make sure it is `Debug` configuration, then click `Local Windows Debugger`
+* Use *GISDK Immediate Execution Dialog*, execute the following script to load the DLL. Remember to replace `output_path` with actual path.
   ```
   shared mydll
   mydll = LoadLibrary(output_path + "\\VehicleMonitor.dll")
