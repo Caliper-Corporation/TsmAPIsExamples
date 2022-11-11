@@ -39,10 +39,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef PCH_H
 #define PCH_H
 
+#import <TsmApi.tlb>
+
 // add headers that you want to pre-compile here
 #include <algorithm>
 #include <memory>
 
+#include <atlbase.h>
 #include <Tsm/TsmApi/VehicleMonitor.h>
+#include <tsmapi.tlh>
 
 #endif //PCH_H

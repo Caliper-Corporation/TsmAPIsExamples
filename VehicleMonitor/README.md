@@ -43,18 +43,14 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   ```
   BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
   {
-      using namespace vm_plugin;
-      
-      using VehicleMonitor = VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">;
-
       switch (ul_reason_for_call)
       {
       case DLL_PROCESS_ATTACH:
-          VehicleMonitor::Load();
+          vmplugin::MyVehicleMonitor::Load();
           break;
 
       case DLL_PROCESS_DETACH:
-          VehicleMonitor::Unload();
+          vmplugin::MyVehicleMonitor::Unload();
           break;
       }
 

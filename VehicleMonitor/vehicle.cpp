@@ -33,27 +33,69 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pch.h"
 #include "vehicle.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+namespace vmplugin {
+
+/*
+ Add implementation to invidual callbacks. Use the following code to access 
+ network elements.
+
+ MyVehicleMonitor::instance()->tsmapp()->Network
+
+*/
+
+void MyVehicle::Departure(double time)
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-        // Internally create a monitor singleton and register it with TransModeler.
-        vmplugin::MyVehicleMonitor::Load();
-        break;
-
-    case DLL_PROCESS_DETACH:
-        // Unregister the monitor with TransModeler, and release it from memory.
-        vmplugin::MyVehicleMonitor::Unload();
-        break;
-
-    case DLL_THREAD_ATTACH:
-        break;
-
-    case DLL_THREAD_DETACH:
-        break;
-    }
-
-    return TRUE;
+    // Fill in user logic
 }
 
+void MyVehicle::Arrival(double time)
+{
+    // Fill in user logic
+}
+
+void MyVehicle::Update(double time, const SVehicleBasicState& state)
+{
+    // Fill in user logic
+}
+
+float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData& data, float acc)
+{
+    return (flt_miss);   // ignored
+}
+
+float MyVehicle::Acceleration(double time, float acc)
+{
+    return (flt_miss);   // ignored
+}
+
+short MyVehicle::LaneChange(double time, short dir, bool* mandatory)
+{
+    return (short_miss); // ignored
+}
+
+float MyVehicle::TransitStop(double time, const STransitStopInfo& info, float dwell)
+{
+    return (flt_miss);   // ignored
+}
+
+void MyVehicle::Position(double time, const SVehiclePosition& pos)
+{
+    // Fill in user logic
+}
+
+void MyVehicle::Parked(double time)
+{
+    // Fill in user logic
+}
+
+void MyVehicle::Stalled(double time, bool stalled)
+{
+    // Fill in user logic
+}
+
+bool MyVehicle::OnFail(const BSTR msg)
+{
+    return false;
+}
+
+}
