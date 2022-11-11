@@ -66,7 +66,7 @@ template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:
-    using type = VehicleMonitor<T, Opts, Name>;
+    using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
 
     ~VehicleMonitor()
     {
@@ -79,7 +79,8 @@ public:
     VehicleMonitor& operator=(VehicleMonitor&) = delete;
     VehicleMonitor& operator=(VehicleMonitor&&) = delete;
 
-    auto GetName() const -> const BSTR override {
+    const BSTR GetName() const override
+    {
         return name_;
     };
 
@@ -107,11 +108,10 @@ public:
     static bool Load() noexcept
     {
         return vm_ ? true : []() {
-            vm_ = std::unique_ptr<type>{ new type() };
+            vm_.reset(new VehicleMonitorType());
             return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
         }();
     }
-
 
     /**
      The singletone vehicle monitor.
@@ -144,6 +144,7 @@ public:
      */
     void OpenProject(const BSTR name) override
     {
+
     }
 
     /**
@@ -155,11 +156,13 @@ public:
      */
     void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
     {
+
     }
 
     /** Fires after simulation has been successful started. */
     void SimulationStarted() override
     {
+
     }
 
     /**
@@ -169,6 +172,7 @@ public:
      */
     void SimulationStopped(TsmState state) override
     {
+
     }
 
     /**
@@ -178,16 +182,19 @@ public:
      */
     void EndSimulation(TsmState state) override
     {
+
     }
 
     /** Fires when closing the project. */
     void CloseProject() override
     {
+    
     }
 
     /** Fires on application exit. */
     void ExitApplication() override
     {
+
     }
 
     /**
@@ -213,7 +220,7 @@ protected:
 
 private:
     BSTR name_{ nullptr };
-    inline static std::unique_ptr<VehicleMonitor<T, Opts, Name>> vm_{ nullptr };
+    inline static std::unique_ptr<VehicleMonitorType> vm_{ nullptr };
     TsmApi::ITsmApplicationPtr tsmapp_{ nullptr };
 };
 

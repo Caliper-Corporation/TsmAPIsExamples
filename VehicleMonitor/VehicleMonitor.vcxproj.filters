@@ -24,7 +24,7 @@
     <ClInclude Include="vehicle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="monitor.hpp">
+    <ClInclude Include="monitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
