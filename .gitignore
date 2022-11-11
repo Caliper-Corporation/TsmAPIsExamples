@@ -32,5 +32,6 @@
 *.app
 
 .vs
-x64
+int
+output
 *.aps
