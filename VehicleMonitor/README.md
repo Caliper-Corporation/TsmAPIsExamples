@@ -58,7 +58,7 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   }
   ```
 
-In the header file where the user vehicle is defined, type-alias the instantiated template class:
+* In the header file where the user vehicle is defined, type-alias the instantiated template class:
 ```
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
 using MyVehicleMonitor = vmplugin::VehicleMonitor<
