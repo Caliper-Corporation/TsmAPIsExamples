@@ -1,6 +1,6 @@
 # RealThinComSDK
 
-This library is a header-only lightweight C++/20 wrapper for utilizing, declaring and implementing of Windows COM interfaces.  It is adapted from the [moderncom](https://github.com/AlexBAV/moderncom) project, and inspired by Kenny Kerr's' `moderncpp` project.
+This library is a header-only lightweight C++/20 wrapper for utilizing, declaring and implementing of Windows COM interfaces.  It is adapted from the [`moderncom`](https://github.com/AlexBAV/moderncom) project, and inspired by Kenny Kerr's `moderncpp` project.
 
 
 ## Getting Started
