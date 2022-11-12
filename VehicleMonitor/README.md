@@ -71,7 +71,7 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   - Acceleration
   - CarFollowingAccelerateRateCalculation
   
-* **User-logic** code should be implemented by overriding the virtual methods of `IUserVehicle` in a derived class, which, in this example, is `MyVehicle` class. Take a look at [`vm_plugin.hpp`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vm_plugin.hpp) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can override the following virtual method of MyVehicle class:
+* **User-logic** code should be implemented by overriding the virtual methods of `IUserVehicle` in a derived class, which, in this example, is `MyVehicle` class. Take a look at [`vehicle.h`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vehicle.h) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can implement the following virtual method of MyVehicle class:
 ```
     /**
      Fires when a vehicle is moved.
