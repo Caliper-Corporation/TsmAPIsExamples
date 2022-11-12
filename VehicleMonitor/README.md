@@ -58,7 +58,7 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   }
   ```
 
-* In the header file where the user vehicle class `MyVehicle` is defined, i.e., [`vehicle.h`]((https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vehicle.h)), type-alias the instantiated template class:
+* In the header file where the user vehicle class `MyVehicle` is defined, i.e., [`vehicle.h`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vehicle.h), type-alias the instantiated template `VehicleMonitor` class:
   ```
   /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
   using MyVehicleMonitor = vmplugin::VehicleMonitor<
@@ -68,7 +68,7 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   >;
   ```
 
-  ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instantiates a VehicleMonitor template class - `MyVehicle` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Position Change* events will be fired and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
+  ```VehicleMonitor<MyVehicle, VM_UPDATE | VM_POSITION, L"Cool Vehicle Monitor">``` instantiates a VehicleMonitor template class - `MyVehicle` class is the user-defined vehicle class to be monitored. ```VM_UPDATE|VM_POSITION``` means *Vehicle State Update* and *Position Change* events will be fired, and the user logic can process relevant information in the respective event handlers. The last non-type template parameter allows specifying a name for the vehicle monitor, in this case, "Cool Vehicle Monitor".
 
     Vehicle Monitor provides the following events:
     - Arrival
@@ -82,19 +82,20 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
     - Acceleration
     - CarFollowingAccelerateRateCalculation
   
-* **User-logic** code should be implemented by overriding the virtual methods of `IUserVehicle` in a derived class, which, in this example, is `MyVehicle` class. Take a look at [`vehicle.h`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vehicle.h) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can implement the following virtual method of `MyVehicle` class:
-```
-    /**
-     Fires when a vehicle is moved.
+* **User-logic** code should be implemented by overriding the virtual methods of `MyVehicle` class. Take a look at [`vehicle.h`](https://github.com/Caliper-Corporation/TsmAPIsDemo/blob/main/VehicleMonitor/vehicle.h) and those source code comments for a better idea.  For example, if you are interested in obtaining detailed vehicle position information, you can implement the following virtual method of `MyVehicle` class:
+  ```
+  /**
+   Fires when a vehicle is moved.
 
-     @param     time    Current time of the simulation clock.
-     @param     pos     Vehicle position data.
-     */
-    void Position(double time, const SVehiclePosition& pos) override
-    {
-        // Fill in user logic
-    }
-```
+   @param     time    Current time of the simulation clock.
+   @param     pos     Vehicle position data.
+  */
+
+  void Position(double time, const SVehiclePosition& pos) override
+  {
+      // Fill in user logic
+  }
+  ```
 * The generated `VehicleMonitor.dll` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
   ```
   shared mydll
