@@ -46,7 +46,8 @@ constexpr T parse_hex(const char* ptr)
     constexpr size_t digits = sizeof(T) * 2;
     T result{};
 
-    for (size_t i = 0; i < digits; ++i) {
+    for (size_t i = 0; i < digits; ++i)
+    {
         result |= parse_hex_digit(ptr[i]) << (4 * (digits - i - 1));
     }
 
@@ -67,7 +68,8 @@ constexpr GUID make_guid_helper(const char* begin)
     result.Data4[1] = parse_hex<uint8_t>(begin);
     begin += 2 + 1;
 
-    for (size_t i = 0; i < 6; ++i) {
+    for (size_t i = 0; i < 6; ++i)
+    {
         result.Data4[i + 2] = parse_hex<uint8_t>(begin + i * 2);
     }
 
@@ -147,8 +149,10 @@ constexpr GUID make_guid(const char(&str)[N])
     static_assert(N == (braced_guid_size + 1) || N == (normal_guid_size + 1),
         "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected");
 
-    if constexpr (N == (braced_guid_size + 1)) {
-        if (str[0] != '{' || str[braced_guid_size - 1] != '}') {
+    if constexpr (N == (braced_guid_size + 1))
+    {
+        if (str[0] != '{' || str[braced_guid_size - 1] != '}')
+        {
             throw std::domain_error{ "Missing opening or closing brace"s };
         }
     }
@@ -163,13 +167,13 @@ constexpr GUID operator "" _guid(const char* str, size_t N)
     using namespace std::string_literals;
     using namespace details;
 
-    if (!(N == normal_guid_size || N == braced_guid_size)) {
-        throw std::domain_error{
-            "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected"s
-        };
+    if (!(N == normal_guid_size || N == braced_guid_size))
+    {
+        throw std::domain_error{ "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected"s };
     }
 
-    if (N == braced_guid_size && (str[0] != '{' || str[braced_guid_size - 1] != '}')) {
+    if (N == braced_guid_size && (str[0] != '{' || str[braced_guid_size - 1] != '}'))
+    {
         throw std::domain_error{ "Missing opening or closing brace"s };
     }
     // Offset str by 1 to skip the brace.

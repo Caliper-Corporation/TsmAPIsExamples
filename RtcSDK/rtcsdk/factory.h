@@ -5,17 +5,21 @@ namespace rtcsdk {
 
 inline HRESULT DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv) noexcept
 {
-    try {
+    try
+    {
         auto factory = details::Factory::create_instance(rclsid).to_ptr<IUnknown>();
         return factory->QueryInterface(riid, ppv);
     }
-    catch (const std::bad_alloc&) {
+    catch (const std::bad_alloc&)
+    {
         return E_OUTOFMEMORY;
     }
-    catch (const bad_hresult& err) {
+    catch (const bad_hresult& err)
+    {
         return err.hr();
     }
-    catch (...) {
+    catch (...)
+    {
         return E_FAIL;
     }
 }
@@ -41,10 +45,12 @@ public:
 
     HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock) noexcept override
     {
-        if (fLock) {
+        if (fLock)
+        {
             ModuleCount::lock_count.fetch_add(1, std::memory_order_relaxed);
         }
-        else {
+        else
+        {
             ModuleCount::lock_count.fetch_sub(1, std::memory_order_relaxed);
         }
 

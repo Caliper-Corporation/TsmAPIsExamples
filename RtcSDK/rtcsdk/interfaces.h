@@ -132,18 +132,22 @@ using has_smart_singleton_factory = has_smart_singleton_factory_impl<T, void>;
 template<typename Interface, typename T>
 inline void* query_single([[maybe_unused]] T* pobj, [[maybe_unused]] const GUID& iid) noexcept
 {
-    if constexpr (has_implements<Interface>) {
+    if constexpr (has_implements<Interface>)
+    {
         return Interface::query_self(pobj, iid);
     }
-    else if constexpr (std::is_same_v<Interface, IUnknown>) {
+    else if constexpr (std::is_same_v<Interface, IUnknown>)
+    {
         return nullptr;
     }
-    else if (iid == get_interface_guid(interface_wrapper<Interface>{})) {
+    else if (iid == get_interface_guid(interface_wrapper<Interface>{}))
+    {
         auto ret = static_cast<Interface*>(pobj);
         ret->AddRef();
         return ret;
     }
-    else {
+    else
+    {
         return nullptr;
     }
 }
@@ -178,12 +182,14 @@ struct __declspec(empty_bases)extends : public extends_base<Interfaces...>
     template<typename Derived>
     static void* query_self(Derived* pobject, const GUID& iid) noexcept
     {
-        if (get_interface_guid(interface_wrapper<ThisInterface>{}) == iid) {
+        if (get_interface_guid(interface_wrapper<ThisInterface>{}) == iid)
+        {
             auto ret = static_cast<ThisInterface*>(pobject);
             ret->AddRef();
             return ret;
         }
-        else {
+        else
+        {
             return extends_base<Interfaces...>::query_children(pobject, iid);
         }
     }
@@ -204,10 +210,12 @@ inline constexpr auto get_first_impl(interface_wrapper<T> v, std::false_type) no
 template<typename T>
 inline constexpr auto get_first([[maybe_unused]] interface_wrapper<T> v) noexcept
 {
-    if constexpr (has_get_first<T>) {
+    if constexpr (has_get_first<T>)
+    {
         return T::get_first();
     }
-    else {
+    else
+    {
         return v;
     }
 }
@@ -426,7 +434,8 @@ struct usage_map_base<std::true_type>
 
     void add_cookie() noexcept
     {
-        try {
+        try
+        {
             auto cookie = new leak_detection;
 
             {
@@ -436,31 +445,38 @@ struct usage_map_base<std::true_type>
 
             set_current_cookie(cookie->ordinal);
         }
-        catch (...) {
+        catch (...)
+        {
         }
     }
 
     void remove_cookie() noexcept
     {
-        try {
+        try
+        {
             auto cookie = get_current_cookie();
-            if (cookie) {
+            if (cookie)
+            {
                 std::scoped_lock l{ umb_lock };
-                auto it = std::find_if(umb_usages.begin(), umb_usages.end(), [cookie](auto* leak) {
-                    return leak->ordinal == cookie;
+                auto it = std::find_if(umb_usages.begin(), umb_usages.end(),
+                    [cookie](auto* leak) {
+                        return leak->ordinal == cookie;
                     }
                 );
 
-                if (umb_usages.end() != it) {
+                if (umb_usages.end() != it)
+                {
                     delete* it;
                     umb_usages.erase(it);
                 }
-                else {
+                else
+                {
                     assert(false && "Cookie is not found in a map");
                 }
             }
         }
-        catch (...) {
+        catch (...)
+        {
         }
     }
 };
@@ -474,16 +490,19 @@ struct __declspec(empty_bases)final_construct_support : Base, usage_map_base<has
     {
         static_assert(!has_legacy_final_construct<Derived, Args...>, "Legacy FinalConstruct no longer supported. Replace with new final_construct (syntax does not change).");
 
-        if constexpr (has_final_construct<Derived, Args...>) {
+        if constexpr (has_final_construct<Derived, Args...>)
+        {
             Base::safe_increment();
             auto hr = obj.final_construct(std::forward<Args>(args)...);
-            if (FAILED(hr)) {
+            if (FAILED(hr))
+            {
                 throw_bad_hresult(hr);
             }
             Base::safe_decrement();
         }
 
-        if constexpr (has_increments_module_count<Derived>) {
+        if constexpr (has_increments_module_count<Derived>)
+        {
             ModuleCount::lock_count.fetch_add(1, std::memory_order_relaxed);
         }
     }
@@ -493,16 +512,19 @@ struct __declspec(empty_bases)final_construct_support : Base, usage_map_base<has
     {
         static_assert(!has_legacy_final_release<Derived>, "Legacy FinalRelease no longer supported. Use new style final_release instead");
 
-        if constexpr (has_final_release<Derived, Holder>) {
+        if constexpr (has_final_release<Derived, Holder>)
+        {
             // allow for safe QueryInterface for an overloaded final_release function
             refcount.store(1, std::memory_order_relaxed);
             Derived::final_release(std::move(obj));
         }
-        else {
+        else
+        {
             obj.reset();
         }
 
-        if constexpr (has_increments_module_count<Derived>) {
+        if constexpr (has_increments_module_count<Derived>)
+        {
             ModuleCount::lock_count.fetch_sub(1, std::memory_order_relaxed);
         }
     }
@@ -561,7 +583,8 @@ public:
     virtual ULONG STDMETHODCALLTYPE Release() noexcept override
     {
         auto prev = _rc_refcount.fetch_sub(1, std::memory_order_relaxed);
-        if (prev == 1) {
+        if (prev == 1)
+        {
             this->do_final_release(std::unique_ptr<aggvalue>{this}, _rc_refcount);
         }
         return prev - 1;
@@ -569,13 +592,14 @@ public:
 
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) noexcept override
     {
-        if (riid == get_interface_guid(interface_wrapper<IUnknown>{})) {
+        if (riid == get_interface_guid(interface_wrapper<IUnknown>{}))
+        {
             *ppvObject = static_cast<IUnknown*>(this);
             AddRef();
             return S_OK;
         }
-        else {
-            // "real" query interface
+        else
+        {   // "real" query interface
             return object_.RealQueryInterface(riid, ppvObject);
         }
     }
@@ -623,7 +647,8 @@ public:
         auto prev = this->_rc_refcount.fetch_sub(1, std::memory_order_relaxed);
         this->debug_on_release(*static_cast<const DerivedNonMatchingName*>(this), prev);
 
-        if (prev == 1) {
+        if (prev == 1)
+        {
             this->do_final_release(std::unique_ptr<DerivedNonMatchingName>{ this }, this->_rc_refcount);
         }
 
@@ -826,11 +851,13 @@ public:
     {
         auto* pobject = static_cast<Derived*>(this);
         auto hr = pobject->pre_query_interface(riid, ppvObject);
-        if (SUCCEEDED(hr) || hr != E_NOINTERFACE) {
+        if (SUCCEEDED(hr) || hr != E_NOINTERFACE)
+        {
             return hr;
         }
 
-        if (riid == get_interface_guid(interface_wrapper<IUnknown>{})) {
+        if (riid == get_interface_guid(interface_wrapper<IUnknown>{}))
+        {
             auto pUnk = pobject->GetUnknown();
             *ppvObject = pUnk;
             pUnk->AddRef();
@@ -838,12 +865,14 @@ public:
         }
 
         auto result = this->query_children(pobject, riid);
-        if (result) {
+        if (result)
+        {
             // AddRef has already been called
             *ppvObject = result;
             return S_OK;
         }
-        else {
+        else
+        {
             return pobject->post_query_interface(riid, ppvObject);
         }
     }
@@ -887,59 +916,80 @@ protected:
 template<typename Derived, typename FirstInterface, typename... OtherInterfaces>
 inline HRESULT object<Derived, FirstInterface, OtherInterfaces...>::factory_create_object(const GUID& iid, void** ppv, IUnknown* pOuterUnk) noexcept
 {
-    try {
+    try
+    {
         HRESULT hr;
-        if (pOuterUnk == nullptr) {
-            if constexpr (check_trait<has_singleton_factory>()) {
+        if (pOuterUnk == nullptr)
+        {
+            if constexpr (check_trait<has_singleton_factory>())
+            {
                 static_assert(!has_final_release<Derived>, "Singleton classes are not compatible with final_release");
                 static value_on_stack<Derived> single_value;
                 hr = single_value.QueryInterface(iid, ppv);
             }
-            else if constexpr (check_trait<has_smart_singleton_factory>()) {
-                static srwlock init_lock;
-                static std::weak_ptr<Derived> current_instance;
-                std::scoped_lock l{ init_lock };
-                if (auto instance = current_instance.lock()) {
-                    return instance->QueryInterface(iid, ppv);
+            else
+            {
+                if constexpr (check_trait<has_smart_singleton_factory>())
+                {
+                    static srwlock init_lock;
+                    static std::weak_ptr<Derived> current_instance;
+                    std::scoped_lock l{ init_lock };
+
+                    if (auto instance = current_instance.lock())
+                    {
+                        return instance->QueryInterface(iid, ppv);
+                    }
+                    else
+                    {
+                        auto object = std::make_unique<smart_singleton_value<Derived>>();
+                        hr = object->QueryInterface(iid, ppv);
+                        if (SUCCEEDED(hr))
+                        {
+                            current_instance = object.release()->get_weak();
+                        }
+                    }
                 }
-                else {
-                    auto object = std::make_unique<smart_singleton_value<Derived>>();
+                else
+                {
+                    auto object = std::make_unique<value<Derived>>();
                     hr = object->QueryInterface(iid, ppv);
                     if (SUCCEEDED(hr))
-                        current_instance = object.release()->get_weak();
-                }
-            }
-            else {
-                auto object = std::make_unique<value<Derived>>();
-                hr = object->QueryInterface(iid, ppv);
-                if (SUCCEEDED(hr)) {
-                    object.release();
+                    {
+                        object.release();
+                    }
                 }
             }
         }
-        else {
-            if constexpr (check_trait<has_supports_aggregation>()) {
+        else
+        {
+            if constexpr (check_trait<has_supports_aggregation>())
+            {
                 assert(iid == get_interface_guid(interface_wrapper<IUnknown>{}) && "Only IUnknown may be queried for an object being created aggregated");
                 auto object = std::make_unique<aggvalue<Derived>>(pOuterUnk);
                 hr = object->QueryInterface(iid, ppv);
-                if (SUCCEEDED(hr)) {
+                if (SUCCEEDED(hr))
+                {
                     object.release();
                 }
             }
-            else {
+            else
+            {
                 assert(false && "Class does not define 'supports_aggregation' type trait");
                 return CLASS_E_NOAGGREGATION;
             }
         }
         return hr;
     }
-    catch (const std::bad_alloc&) {
+    catch (const std::bad_alloc&)
+    {
         return E_OUTOFMEMORY;
     }
-    catch (const bad_hresult& err) {
+    catch (const bad_hresult& err)
+    {
         return err.hr();
     }
-    catch (...) {
+    catch (...)
+    {
         return E_FAIL;
     }
 }
@@ -965,8 +1015,10 @@ extern "C"
 
 inline HRESULT create_object(const GUID& clsid, const GUID& iid, void** ppv, IUnknown* pOuterUnk = nullptr) noexcept
 {
-    for (auto p = &__pobjObjEntryFirst + 1; p < &__pobjObjEntryLast; ++p) {
-        if (*p && (*p)->clsid == clsid) {
+    for (auto p = &__pobjObjEntryFirst + 1; p < &__pobjObjEntryLast; ++p)
+    {
+        if (*p && (*p)->clsid == clsid)
+        {
             return (*p)->create(iid, ppv, pOuterUnk);
         }
     }

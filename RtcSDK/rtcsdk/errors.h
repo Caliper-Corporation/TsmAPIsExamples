@@ -61,7 +61,8 @@ inline void throw_last_error()
 [[noreturn]]
 inline void throw_on_failed(HRESULT hr)
 {
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         throw_bad_hresult(hr);
     }
 }

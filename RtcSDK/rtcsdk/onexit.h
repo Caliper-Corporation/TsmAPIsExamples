@@ -31,7 +31,8 @@ public:
 
     ~scope_guard() noexcept(execute_on_exception)
     {
-        if (execute_on_exception == counter_.has_new_exceptions()) {
+        if (execute_on_exception == counter_.has_new_exceptions())
+        {
             f_();
         }
     }
@@ -81,7 +82,8 @@ public:
 
     ~scope_exit_cancellable() noexcept
     {
-        if (!cancelled_) {
+        if (!cancelled_)
+        {
             f_();
         }
     }

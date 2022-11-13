@@ -148,7 +148,8 @@ private:
     template<typename OtherInterface>
     com_ptr(OtherInterface* punk, std::false_type) noexcept
     {
-        if (punk) {
+        if (punk)
+        {
             punk->QueryInterface(get_interface_guid(interface_wrapper<Interface>{}), reinterpret_cast<void**>(&p_));
             store_cookie();
         }
@@ -159,8 +160,10 @@ private:
     template<typename OtherInterface>
     com_ptr(com_ptr<OtherInterface>&& o, std::false_type) noexcept
     {
-        if (o) {
-            if (SUCCEEDED(o->QueryInterface(get_interface_guid(interface_wrapper<Interface>{}), reinterpret_cast<void**>(&p_)))) {
+        if (o)
+        {
+            if (SUCCEEDED(o->QueryInterface(get_interface_guid(interface_wrapper<Interface>{}), reinterpret_cast<void**>(&p_))))
+            {
                 store_cookie();
                 o.release();
             }
@@ -182,7 +185,8 @@ private:
     template<typename OtherInterface>
     com_ptr(const com_ptr<OtherInterface>& o, std::false_type) noexcept
     {
-        if (o) {
+        if (o)
+        {
             o->QueryInterface(get_interface_guid(interface_wrapper<Interface>{}), reinterpret_cast<void**>(&p_));
             store_cookie();
         }
@@ -208,7 +212,8 @@ private:
 
     void addref_pointer(IUnknown* pint) noexcept
     {
-        if (pint) {
+        if (pint)
+        {
             pint->AddRef();
             store_cookie();
         }
@@ -216,7 +221,8 @@ private:
 
     void release_pointer(IUnknown* pint) noexcept
     {
-        if (pint) {
+        if (pint)
+        {
 #if RTCSDK_HAS_LEAK_DETECTION
             set_current_cookie(std::exchange(cookie_, 0));
 #endif
@@ -235,8 +241,7 @@ public:
     {
     }
 
-    com_ptr(Interface* p) noexcept :
-        p_{ p }
+    com_ptr(Interface* p) noexcept : p_{ p }
     {
         addref_pointer(p);
     }
@@ -264,7 +269,8 @@ public:
 
     void release() noexcept
     {
-        if (p_) {
+        if (p_)
+        {
             release_pointer(p_);
             p_ = nullptr;
         }
@@ -525,21 +531,24 @@ public:
 #if RTCSDK_HAS_CHECKED_REFS
     ~ref()
     {
-        if (parent_) {
+        if (parent_)
+        {
             parent_->remove_weak(this);
         }
     }
 
     ref(const ref& o) : p_{ o.p_ }, parent_{ o.parent_ }
     {
-        if (parent_) {
+        if (parent_)
+        {
             parent_->add_weak(this);
         }
     }
 
     ref(ref&& o) noexcept : p_{ o.p_ }, parent_{ o.parent_ }
     {
-        if (parent_) {
+        if (parent_)
+        {
             parent_->remove_weak(&o);
             parent_->add_weak(this);
         }
