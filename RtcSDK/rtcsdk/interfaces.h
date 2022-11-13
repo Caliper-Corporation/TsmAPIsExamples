@@ -71,7 +71,7 @@ template<typename T>
 concept has_increments_module_count = requires
 {
     typename T::increments_module_count_t;
-        requires std::same_as<typename T::increments_module_count_t, increments_module_count_t>;
+    requires std::same_as<typename T::increments_module_count_t, increments_module_count_t>;
 };
 
 template<typename T, class>
@@ -211,13 +211,9 @@ template<typename T>
 inline constexpr auto get_first([[maybe_unused]] interface_wrapper<T> v) noexcept
 {
     if constexpr (has_get_first<T>)
-    {
         return T::get_first();
-    }
     else
-    {
         return v;
-    }
 }
 
 template<typename ThisClass, typename FirstInterface, typename... RestInterfaces>
