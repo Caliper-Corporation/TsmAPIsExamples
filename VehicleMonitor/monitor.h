@@ -62,7 +62,7 @@ template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
-    requires (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0)
+requires (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0)
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:
@@ -188,7 +188,7 @@ public:
     /** Fires when closing the project. */
     void CloseProject() override
     {
-    
+
     }
 
     /** Fires on application exit. */

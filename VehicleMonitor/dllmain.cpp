@@ -35,23 +35,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-        // Internally create a monitor singleton and register it with TransModeler.
-        vmplugin::MyVehicleMonitor::Load();
-        break;
+    switch (ul_reason_for_call) {
+        case DLL_PROCESS_ATTACH:
+            vmplugin::MyVehicleMonitor::Load();
+            break;
 
-    case DLL_PROCESS_DETACH:
-        // Unregister the monitor with TransModeler, and release it from memory.
-        vmplugin::MyVehicleMonitor::Unload();
-        break;
+        case DLL_PROCESS_DETACH:
+            vmplugin::MyVehicleMonitor::Unload();
+            break;
 
-    case DLL_THREAD_ATTACH:
-        break;
+        case DLL_THREAD_ATTACH:
+            break;
 
-    case DLL_THREAD_DETACH:
-        break;
+        case DLL_THREAD_DETACH:
+            break;
     }
 
     return TRUE;
