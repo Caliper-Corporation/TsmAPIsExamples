@@ -74,22 +74,6 @@ constexpr GUID make_guid_helper(const char* begin)
     return result;
 }
 
-template<size_t N>
-constexpr GUID make_guid(const char(&str)[N])
-{
-    using namespace std::string_literals;
-    static_assert(N == (braced_guid_size + 1) || N == (normal_guid_size + 1),
-        "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected");
-
-    if constexpr (N == (braced_guid_size + 1)) {
-        if (str[0] != '{' || str[braced_guid_size - 1] != '}') {
-            throw std::domain_error{ "Missing opening or closing brace"s };
-        }
-    }
-    // Offset str by 1 to skip the brace.
-    return make_guid_helper(str + (N == (braced_guid_size + 1) ? 1 : 0));
-}
-
 template<typename T, typename>
 struct has_get_guid_impl : std::false_type
 {
@@ -154,14 +138,30 @@ constexpr GUID get_interface_guid(interface_wrapper<T>) noexcept
 
 } // end of namespace rtcsdk::details
 
-using details::make_guid;
+template<size_t N>
+constexpr GUID make_guid(const char(&str)[N])
+{
+    using namespace std::string_literals;
+    using namespace details;
+
+    static_assert(N == (braced_guid_size + 1) || N == (normal_guid_size + 1),
+        "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected");
+
+    if constexpr (N == (braced_guid_size + 1)) {
+        if (str[0] != '{' || str[braced_guid_size - 1] != '}') {
+            throw std::domain_error{ "Missing opening or closing brace"s };
+        }
+    }
+    // Offset str by 1 to skip the brace.
+    return make_guid_helper(str + (N == (braced_guid_size + 1) ? 1 : 0));
+}
 
 namespace literals {
 
 constexpr GUID operator "" _guid(const char* str, size_t N)
 {
-    using namespace details;
     using namespace std::string_literals;
+    using namespace details;    
 
     if (!(N == normal_guid_size || N == braced_guid_size)) {
         throw std::domain_error{
@@ -173,11 +173,9 @@ constexpr GUID operator "" _guid(const char* str, size_t N)
         throw std::domain_error{ "Missing opening or closing brace"s };
     }
     // Offset str by 1 to skip the brace.
-    return details::make_guid_helper(str + (N == braced_guid_size ? 1 : 0));
+    return make_guid_helper(str + (N == braced_guid_size ? 1 : 0));
 }
 
 } // end of namespace rtcsdk::literals
 
 } // end of namespace rtcsdk
-
-using namespace rtcsdk::literals;
