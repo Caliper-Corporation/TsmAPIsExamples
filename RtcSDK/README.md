@@ -92,7 +92,7 @@ constexpr const GUID id = "{AB9A7AF1-6792-4D0A-83BE-8252A8432B45}"_guid;
 To be able to successfully work with interface types, the library must be able to fetch interface ID (as `GUID` structure) from a type at compile time. By default, it looks for specialization of the following function:
 
 ```C++
-template<class Interface>
+template<typename Interface>
 constexpr GUID get_guid(Interface *) { ... }
 ```
 
@@ -199,7 +199,7 @@ The following constructors are provided:
 1.  Other smart pointer copy constructor
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     com_ptr(const com_ptr<OtherInterface> &punk) noexcept;
     ```
 
@@ -211,7 +211,7 @@ The following constructors are provided:
 1.  Other smart pointer move constructor
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     com_ptr(com_ptr<OtherInterface> &&punk) noexcept;
     ```
 
@@ -424,7 +424,7 @@ com_ptr<ISecondInterface> construct_object_second()
 `object` is a variadic template class declared as
 
 ```C++
-template<typename Derived, typename...Interfaces>
+template<typename Derived, typename... Interfaces>
 class object;
 ```
 
@@ -461,7 +461,7 @@ class object;
     Implements `IUnknown::QueryInterface`.
 
 *   ```C++
-    template<typename...Args> 
+    template<typename... Args> 
     static object_holder<unspecified> create_instance(Args &&...args);
     ```
 
@@ -470,7 +470,7 @@ class object;
     See also [object customization points](#object-customization-points) section below.
 
 *   ```C++
-    template<typename...Args>
+    template<typename... Args>
     static com_ptr<IUnknown> create_aggregate(IUnknown *pOuterUnknown, Args &&...args);
     ```
 
@@ -596,7 +596,7 @@ It is often convenient to create classes or template classes that provide (parti
 The library provides a machinery for such "implementation proxy" classes with a help of `intermediate` class template:
 
 ```C++
-template<typename ProxyClass, typename...Interfaces>
+template<typename ProxyClass, typename... Interfaces>
 struct intermediate;
 ```
 
@@ -629,7 +629,7 @@ class MyClass : public rtcsdk::object<MyClass, MyInterfaceImpl>
 `object_holder` is a temporary object holder class template that is returned by `object<Derived, ...>::create_instance` method:
 
 ```C++
-template<class T>
+template<typename T>
 class object_holder;
 ```
 
