@@ -14,10 +14,22 @@ namespace details {
 constexpr const size_t normal_guid_size = 36;	//  XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 constexpr const size_t braced_guid_size = 38;	// {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}
 
-constexpr int parse_hex_digit(const char c)
+/**
+ Parse hexadecimal digit char to integer value.
+
+ @exception std::domain_error   Raised when the input character is not a hex
+                                digit char.
+
+ @param     c   The hex char.
+
+ @returns   Integer value of the hex char.
+ */
+constexpr uint32_t parse_hex_digit(const char c)
 {
     using namespace std::string_literals;
 
+    // If the constexpr evaluation ends up with the throw-expression, the
+    // program is ill-formed and won't compile.
     if ('0' <= c && c <= '9')
         return c - '0';
     else if ('a' <= c && c <= 'f')
@@ -74,11 +86,10 @@ constexpr GUID make_guid(const char(&str)[N])
             throw std::domain_error{ "Missing opening or closing brace"s };
         }
     }
-
+    // Offset str by 1 to skip the brace.
     return make_guid_helper(str + (N == (braced_guid_size + 1) ? 1 : 0));
 }
 
-//
 template<typename T, typename>
 struct has_get_guid_impl : std::false_type
 {
@@ -105,7 +116,6 @@ struct has_free_get_guid_impl<T, decltype(void(get_guid(std::declval<T*>())))> :
 template<typename T>
 using has_free_get_guid = has_free_get_guid_impl<T, void>;
 
-//
 template<typename T>
 struct interface_wrapper
 {
@@ -115,7 +125,6 @@ struct interface_wrapper
 template<typename T>
 constexpr const auto msvc_get_guid_workaround = T::get_guid();
 
-//
 template<typename T>
 constexpr GUID get_interface_guid_impl(std::true_type, std::false_type)
 {
@@ -134,14 +143,13 @@ constexpr GUID get_interface_guid_impl(std::false_type, std::false_type) noexcep
     return __uuidof(T);
 }
 
-//
 template<typename T>
 constexpr GUID get_interface_guid(T);
 
-template<typename Interface>
-constexpr GUID get_interface_guid(interface_wrapper<Interface>) noexcept
+template<typename T>
+constexpr GUID get_interface_guid(interface_wrapper<T>) noexcept
 {
-    return get_interface_guid_impl<Interface>(has_get_guid<Interface>{}, has_free_get_guid<Interface>{});
+    return get_interface_guid_impl<T>(has_get_guid<T>{}, has_free_get_guid<T>{});
 }
 
 } // end of namespace rtcsdk::details
@@ -157,14 +165,14 @@ constexpr GUID operator "" _guid(const char* str, size_t N)
 
     if (!(N == normal_guid_size || N == braced_guid_size)) {
         throw std::domain_error{
-            "String GUID of the form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX is expected"s
+            "String GUID of form {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX} or XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX expected"s
         };
     }
 
     if (N == braced_guid_size && (str[0] != '{' || str[braced_guid_size - 1] != '}')) {
         throw std::domain_error{ "Missing opening or closing brace"s };
     }
-    // Skip the first opening brace if this is a braced guid.
+    // Offset str by 1 to skip the brace.
     return details::make_guid_helper(str + (N == braced_guid_size ? 1 : 0));
 }
 
