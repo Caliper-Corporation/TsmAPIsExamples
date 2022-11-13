@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-namespace rtcsdk::impl {
+namespace rtcsdk::details {
 
 template<typename... Types>
 struct vector
@@ -127,4 +127,4 @@ struct as_tuple<vector<Types...>>
 template<typename T>
 using as_tuple_t = typename as_tuple<T>::type;
 
-}
+} // end of namespace rtcsdk::details

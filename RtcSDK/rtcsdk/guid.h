@@ -161,7 +161,7 @@ namespace literals {
 constexpr GUID operator "" _guid(const char* str, size_t N)
 {
     using namespace std::string_literals;
-    using namespace details;    
+    using namespace details;
 
     if (!(N == normal_guid_size || N == braced_guid_size)) {
         throw std::domain_error{

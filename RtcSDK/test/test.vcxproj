@@ -170,13 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\rtcsdk\com_ptr.h" />
+    <ClInclude Include="..\rtcsdk\errors.h" />
     <ClInclude Include="..\rtcsdk\factory.h" />
     <ClInclude Include="..\rtcsdk\guid.h" />
-    <ClInclude Include="..\rtcsdk\impl\errors.h" />
-    <ClInclude Include="..\rtcsdk\impl\onexit.h" />
-    <ClInclude Include="..\rtcsdk\impl\srwlock.h" />
-    <ClInclude Include="..\rtcsdk\impl\vector.h" />
     <ClInclude Include="..\rtcsdk\interfaces.h" />
+    <ClInclude Include="..\rtcsdk\onexit.h" />
+    <ClInclude Include="..\rtcsdk\srwlock.h" />
+    <ClInclude Include="..\rtcsdk\vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

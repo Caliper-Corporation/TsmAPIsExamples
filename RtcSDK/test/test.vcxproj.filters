@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\impl">
-      <UniqueIdentifier>{0d092e11-1608-4d11-b52a-e25fb3508db9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -38,17 +35,17 @@
     <ClInclude Include="..\rtcsdk\interfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\rtcsdk\impl\errors.h">
-      <Filter>Header Files\impl</Filter>
+    <ClInclude Include="..\rtcsdk\errors.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\rtcsdk\impl\onexit.h">
-      <Filter>Header Files\impl</Filter>
+    <ClInclude Include="..\rtcsdk\onexit.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\rtcsdk\impl\srwlock.h">
-      <Filter>Header Files\impl</Filter>
+    <ClInclude Include="..\rtcsdk\srwlock.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\rtcsdk\impl\vector.h">
-      <Filter>Header Files\impl</Filter>
+    <ClInclude Include="..\rtcsdk\vector.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
