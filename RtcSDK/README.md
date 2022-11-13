@@ -1,6 +1,6 @@
 # RtcSDK
 
-This library is a header-only lightweight C++/20 wrapper for utilizing, declaring and implementing of Windows COM interfaces.  It is adapted from Alexander Bessonov's [`moderncom`](https://github.com/AlexBAV/moderncom) project, which was inspired by Kenny Kerr's `moderncpp` work.
+This library is a header-only lightweight C++/20 wrapper for utilizing, declaring and implementing of Windows COM interfaces.  It is adapted from Alexander Bessonov's [`moderncom`](https://github.com/AlexBAV/moderncom) project, which was in turn inspired by Kenny Kerr's `moderncpp` work.
 
 
 ## Getting Started
