@@ -48,7 +48,7 @@ public:
 
      @param     time    Current time of the simulation clock.
      */
-    void Departure(double time) override; 
+    void Departure(double time) override;
 
     /**
      Fires when a vehicle arrives at its destination or drop location.
