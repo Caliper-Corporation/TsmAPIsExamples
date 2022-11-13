@@ -1,4 +1,4 @@
-# RealThinComSDK
+# RtcSDK
 
 This library is a header-only lightweight C++/20 wrapper for utilizing, declaring and implementing of Windows COM interfaces.  It is adapted from the [`moderncom`](https://github.com/AlexBAV/moderncom) project, and inspired by Kenny Kerr's `moderncpp` project.
 
@@ -10,11 +10,7 @@ This is the code required to define `MyObject` class that implements two COM int
 ```C++
 #include <rtcsdk/interfaces.h>
 
-class MyObject :
-  public rtcsdk::object<
-    MyObject, // our class
-    IFirstInterface,  // any number of interfaces
-    ISecondInterface> // we implement
+class MyObject : public rtcsdk::object<MyObject, IFirstInterface,  ISecondInterface> 
 {
   // Implement methods of IFirstInterface
   ...
@@ -117,7 +113,7 @@ A specialization of `get_guid` function is automatically added with [`RTCSDK_DEF
 The following function can be used to get GUID from the interface:
 
 ```C++
-template<class Interface>
+template<typename Interface>
 constexpr GUID get_interface_guid() noexcept;
 ```
 
@@ -132,7 +128,7 @@ This header file provides the following template classes: `rtcsdk::com_ptr` and 
 #### `com::ptr`
 
 ```C++
-template<class Interface>
+template<typename Interface>
 class com_ptr<Interface>
 {
   ...
@@ -171,7 +167,7 @@ The following constructors are provided:
 1.  Other raw pointer constructor
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     com_ptr(OtherInterface *punk) noexcept;
     ```
 
@@ -287,7 +283,7 @@ void foo()
 ```
 
 ```C++
-template<class Interface>
+template<typename Interface>
 class ref { ... };
 ```
 
@@ -327,7 +323,7 @@ The following constructors are provided:
 1.  Constructor from another smart pointer type:
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     ref(const com_ptr<OtherInterface> &o) noexcept;
     ```
 
@@ -336,7 +332,7 @@ The following constructors are provided:
 1.  Constructor from another smart pointer type temporary:
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     ref(com_ptr<OtherInterface> &&o) noexcept;
     ```
 
@@ -345,7 +341,7 @@ The following constructors are provided:
 1.  Copy-constructor
 
     ```C++
-    template<class OtherInterface>
+    template<typename OtherInterface>
     ref(const ref<OtherInterface> &o) noexcept;
     ```
 
@@ -400,11 +396,7 @@ Imagine you want to implement a class `MyObject` that implements two interfaces,
 ```C++
 #include <rtcsdk/interfaces.h>
 
-class __declspec(novtable) MyObject :
-  public rtcsdk::object<
-    MyObject,
-    IFirstInterface,
-    ISecondInterface>
+class __declspec(novtable) MyObject : public rtcsdk::object<MyObject, IFirstInterface, ISecondInterface>
 {
   // Implement methods of IFirstInterface
   ...
@@ -432,7 +424,7 @@ com_ptr<ISecondInterface> construct_object_second()
 `object` is a variadic template class declared as
 
 ```C++
-template<class Derived, class...Interfaces>
+template<typename Derived, typename...Interfaces>
 class object;
 ```
 
@@ -469,7 +461,7 @@ class object;
     Implements `IUnknown::QueryInterface`.
 
 *   ```C++
-    template<class...Args> 
+    template<typename...Args> 
     static object_holder<unspecified> create_instance(Args &&...args);
     ```
 
@@ -478,7 +470,7 @@ class object;
     See also [object customization points](#object-customization-points) section below.
 
 *   ```C++
-    template<class...Args>
+    template<typename...Args>
     static com_ptr<IUnknown> create_aggregate(IUnknown *pOuterUnknown, Args &&...args);
     ```
 
@@ -489,7 +481,7 @@ class object;
     See also [object customization points](#object-customization-points) section below.
 
 *   ```C++
-    template<class OtherInterface = FirstInterface>
+    template<typename OtherInterface = FirstInterface>
     com_ptr<OtherInterface> create_copy() const;
     ```
 
@@ -514,10 +506,7 @@ class object;
 Consider the following example. `IDispatchEx` interface is defined in Platform SDK and derives from `IDispatch` interface. It is a legacy interface. We declare `MyClass` the following way:
 
 ```C++
-class MyClass :
-  public rtcsdk::object<
-    MyObject,
-    IDispatchEx>
+class MyClass : public rtcsdk::object<MyObject, IDispatchEx>
 {
   // Implement IDispatch
   ...
@@ -529,11 +518,7 @@ class MyClass :
 The generated `QueryInterface` automatically supports querying for `IDispatchEx` interface, but does not support querying for `IDispatch` interface. This example must be fixed in the following way:
 
 ```C++
-class MyClass :
-  public RTCSDK::object<
-    MyObject,
-    IDispatchEx,
-    rtcsdk::also<IDispatch>>  // fix
+class MyClass : public RTCSDK::object<MyObject, IDispatchEx, rtcsdk::also<IDispatch>>  // fix
 {
   // Implement IDispatch
   ...
@@ -550,10 +535,7 @@ RTCSDK_DEFINE_INTERFACE_BASE(IMyDispatch, IDispatch, "{AB9A7AF1-6792-4D0A-83BE-8
   ...
 };
 
-class MyClass :
-  public RTCSDK::object<
-    MyObject,
-    IMyDispatch>
+class MyClass : public RTCSDK::object<MyObject, IMyDispatch>
 {
   // Implement IDispatch
   ...
@@ -582,7 +564,7 @@ COM objects may support aggregation. That is, an object may advertise an interfa
 The library supports this scenario with a `aggregates<Derived, Interfaces...>` entry in interface list. For each aggregate interface listed, the `Derived` class must implement the following public method:
 
 ```C++
-void *on_query(RTCSDK::interface_wrapper<ISomeInterface>) noexcept
+void *on_query(rtcsdk::interface_wrapper<ISomeInterface>) noexcept
 {
   ...
 }
@@ -591,15 +573,7 @@ void *on_query(RTCSDK::interface_wrapper<ISomeInterface>) noexcept
 `on_query` must obtain a pointer to requested interface, call an `AddRef` method through the obtained pointer and return it, casted to `void *`:
 
 ```C++
-class MyClass :
-  public rtcsdk::object<
-    MyClass,
-    IDirectlySupportedInterface,
-    rtcsdk::aggregates<
-      MyClass,
-      IAggregateInterface
-    >
-  >
+class MyClass : public rtcsdk::object<MyClass, IDirectlySupportedInterface, rtcsdk::aggregates<MyClass, IAggregateInterface>>
 {
   com::ptr<ISomeOtherInterface> member { initialize_member() };
   
@@ -622,7 +596,7 @@ It is often convenient to create classes or template classes that provide (parti
 The library provides a machinery for such "implementation proxy" classes with a help of `intermediate` class template:
 
 ```C++
-template<class ProxyClass, class...Interfaces>
+template<typename ProxyClass, typename...Interfaces>
 struct intermediate;
 ```
 
@@ -636,20 +610,14 @@ RTCSDK_DEFINE_INTERFACE(IMyInterface, "{AB9A7AF1-6792-4D0A-83BE-8252A8432B45}")
 };
 
 // Provide a partial implementation of IMyInterface
-class MyInterfaceImpl : 
-  public rtcsdk::intermediate<
-    MyInterfaceImpl,
-    IMyInterface>
+class MyInterfaceImpl :  public rtcsdk::intermediate<MyInterfaceImpl, IMyInterface>
 {
   // Partially implement Method1
   virtual void Method1() override { ... }
 };
 
 // MyClass implements IMyInterface with a help of MyInterfaceImpl:
-class MyClass : 
-  public rtcsdk::object<
-    MyClass,
-    MyInterfaceImpl>
+class MyClass : public rtcsdk::object<MyClass, MyInterfaceImpl>
 {
   // We still have to implement IMyInterface
   virtual void Method2() override { ... }
@@ -679,7 +647,7 @@ The class has the following members:
 		
 
 *   ```C++
-    template<class Interface>
+    template<typename Interface>
     com_ptr<Interface> to_ptr() && noexcept;
     ```
     
@@ -694,8 +662,7 @@ The class has the following members:
     This special-purpose method is supposed to be used when additional initialization is required on constructed object:
 
     ```C++
-    class __declspec(novtable) MyObject :
-      public rtcsdk::object<MyObject, IMyInterface>
+    class __declspec(novtable) MyObject : public rtcsdk::object<MyObject, IMyInterface>
     {
       public:
         void additional_initialization_method(...);
@@ -769,7 +736,7 @@ When constructor of the `Derived` class executes, reference-counting machinery i
 For such cases, a class may provide the following public method:
 
 ```C++
-template<class ...Args>
+template<typename... Args>
 HRESULT final_construct(Args &&...args)
 {
   ...
@@ -790,7 +757,7 @@ static void final_release(std::unique_ptr<Derived> ptr) noexcept
   ...
 }
 
-template<class D>
+template<typename D>
 static void final_release(std::unique_ptr<D> ptr) noexcept
 {
   ...
@@ -802,11 +769,7 @@ Note that `final_release` method is a static member and it takes a unique pointe
 The second variant is used with aggregated objects. An implementation may use `if constexpr (std::is_same_v<D, Derived>)` to check if it is called with an object or aggregate value of the object. In the latter case, it can obtain a pointer to an object itself with by calling the pointed object's `get()` method:
 
 ```C++
-class MyObject :
-  public rtcsdk::object<
-    MyObject,
-    ...>,
-  public rtcsdk::supports_aggregation
+class MyObject : public rtcsdk::object<MyObject, ...>, public rtcsdk::supports_aggregation
 {
   void final_release()
   {
@@ -814,14 +777,12 @@ class MyObject :
   }
 public:
   // customization point
-  template<class D>
+  template<typename D>
   static void final_release(std::unique_ptr<D> ptr) noexcept
   {
-    if constexpr (std::is_same_v<D, MyObject>)
-    {
+    if constexpr (std::is_same_v<D, MyObject>) {
       ptr->final_release();
-    } else
-    {
+    } else {
       ptr->get()->final_release();
     }
     // Object will auto-destruct here
@@ -940,7 +901,8 @@ RTCSDK_DEFINE_CLASS(classGuidName, guid)
 or inside a class
 
 ```C++
-class MyClass ... {
+class MyClass ... 
+{
 public:
   RTCSDK_CLASS_GUID(guid)
 };
@@ -949,7 +911,7 @@ public:
 After the class is registered, instances of this class may be created using one of the following functions:
 
 *   ```C++
-    template<class Interface>
+    template<typename Interface>
     HRESULT create_object(const GUID &clsid, const GUID &iid, void **ppv, IUnknown *pOuterUnknown = nullptr) noexcept;
     ```
 
@@ -958,14 +920,14 @@ After the class is registered, instances of this class may be created using one 
     This function never throws. It returns a non-zero error code. If object creation throws an instance of `corsl::hresult_error` exception, exception's error code is returned. If object creation throws any other exception, `E_FAIL` is returned.
 
 *   ```C++
-    template<class Interface>
+    template<typename Interface>
     HRESULT create_object(const GUID &clsid, com::ptr<Interface> &result, IUnknown *pOuterUnknown = nullptr) noexcept;
     ```
 
     The same as above, but automatically takes `IID` from `Interface` and fills `result` on success.
 
 *   ```C++
-    template<class Interface>
+    template<typename Interface>
     com::ptr<Interface> create_object(const GUID &clsid, IUnknown *pOuterUnknown = nullptr);
     ```
 
