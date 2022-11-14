@@ -66,7 +66,7 @@ inline void init_leak_detection() noexcept
     using namespace std::literals;
     SYSTEM_INFO si{};
     GetSystemInfo(&si);
-    HANDLE section = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, si.dwPageSize, (L"BELT_LEAK_DETECTION_SECTION."s + std::to_wstring(GetCurrentProcessId())).c_str());
+    HANDLE section = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, si.dwPageSize, (L"RTCSDK_LEAK_DETECTION_SECTION."s + std::to_wstring(GetCurrentProcessId())).c_str());
     *reinterpret_cast<DWORD*>(MapViewOfFile(section, FILE_MAP_WRITE, 0, 0, si.dwPageSize)) = TlsAlloc();
     // We intentionally leave section mapped
 }
@@ -76,7 +76,7 @@ inline DWORD get_slot() noexcept
     using namespace std::literals;
     SYSTEM_INFO si{};
     GetSystemInfo(&si);
-    HANDLE section = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, si.dwPageSize, (L"BELT_LEAK_DETECTION_SECTION."s + std::to_wstring(GetCurrentProcessId())).c_str());
+    HANDLE section = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, si.dwPageSize, (L"RTCSDK_LEAK_DETECTION_SECTION."s + std::to_wstring(GetCurrentProcessId())).c_str());
     assert(section && GetLastError() == ERROR_ALREADY_EXISTS && "init_leak_detection() must be called from EXE module as early as possible! It has not yet been called.");
     auto ptr = reinterpret_cast<DWORD*>(MapViewOfFile(section, FILE_MAP_WRITE, 0, 0, si.dwPageSize));
     assert(ptr);
@@ -284,8 +284,8 @@ public:
     ~com_ptr() noexcept
     {
         release_pointer(p_);
-#if BELT_HAS_CHECKED_REFS
-        assert(weaks.empty() && "There was ref<Interface> constructed from this com_ptr that outlived this object!");
+#if RTCSDK_HAS_CHECKED_REFS
+        assert(weaks_.empty() && "There was ref<Interface> constructed from this com_ptr that outlived this object!");
 #endif
     }
 
@@ -380,7 +380,7 @@ public:
     {
         Interface* cur{};
         std::swap(cur, p_);
-#if BELT_HAS_LEAK_DETECTION
+#if RTCSDK_HAS_LEAK_DETECTION
         cookie = 0;
 #endif
 
