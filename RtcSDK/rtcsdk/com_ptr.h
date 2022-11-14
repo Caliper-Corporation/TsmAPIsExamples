@@ -17,10 +17,12 @@
 #include <atomic>
 #include <mutex>
 
-// If you get a compilation error at the following line, do one of the following:
-//		- Add boost 1.73.0 or later to your project
-//		or
-//		- #define RTCSDK_COM_NO_LEAK_DETECTION before including any library's header to disable leak detection
+/**
+  If you get a compilation error at the following line, do one of the following
+  - Add boost 1.73.0 or later to your project or
+  - #define RTCSDK_COM_NO_LEAK_DETECTION before including any library's header
+    to disable leak detection
+*/
 #include <boost/stacktrace.hpp>
 #endif
 
