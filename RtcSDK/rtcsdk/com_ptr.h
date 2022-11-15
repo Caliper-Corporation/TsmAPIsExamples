@@ -369,10 +369,10 @@ public:
     }
 
     // Attach and detach operations
-    void attach(Interface* p_) noexcept
+    void attach(Interface* p) noexcept
     {
-        assert(!p_);
-        p_ = p_;
+        assert(!p);
+        p_ = p;
         store_cookie();	// might get incorrect cookie
     }
 
@@ -382,7 +382,7 @@ public:
         Interface* cur{};
         std::swap(cur, p_);
 #if RTCSDK_HAS_LEAK_DETECTION
-        cookie = 0;
+        cookie_ = 0;
 #endif
 
         return cur;
