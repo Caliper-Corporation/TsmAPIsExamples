@@ -46,13 +46,9 @@ public:
     HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock) noexcept override
     {
         if (fLock)
-        {
             ModuleCount::lock_count.fetch_add(1, std::memory_order_relaxed);
-        }
         else
-        {
             ModuleCount::lock_count.fetch_sub(1, std::memory_order_relaxed);
-        }
 
         return S_OK;
     }

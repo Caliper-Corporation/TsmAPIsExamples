@@ -195,8 +195,7 @@ private:
     }
 
     template<typename OtherInterface>
-    com_ptr(const com_ptr<OtherInterface>& o, std::true_type) noexcept :
-        p_{ static_cast<Interface*>(o.get()) }
+    com_ptr(const com_ptr<OtherInterface>& o, std::true_type) noexcept : p_{ static_cast<Interface*>(o.get()) }
     {
         addref_pointer(p_);
     }
