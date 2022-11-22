@@ -30,3 +30,4 @@ Please consult the README of each respective project.
 More examples will be added. The following list summarizes existing examples.
 
 - [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold example of Vehicle Monitor plugin in modern C++/20.
+- [Hardware-in-the-Loop](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/HILS) illustrates how to connect TransModeler with a NEMA-TS2 traffic signal controller via direct SDLC communication.
