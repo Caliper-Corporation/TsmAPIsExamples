@@ -149,4 +149,4 @@ This following example illustrates how to set MMU compatibility matrix for a typ
 
 ### Further Usage
 
-Examine the [test cases](hils/tests/vtc_tests.cpp) to learn how to use this library.
+Examine the [test cases](/tests/vtc_tests.cpp) to learn how to use this library.
