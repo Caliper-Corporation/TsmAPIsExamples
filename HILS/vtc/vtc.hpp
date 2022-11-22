@@ -1563,7 +1563,7 @@ private:
         {
             std::get<I>(m_frame_elements) << a_data_in;
             // @formatter:off
-            Assign < I + 1 > (a_data_in);
+            Assign <I+1> (a_data_in);
             // @formatter:on
         }
     }
@@ -1575,7 +1575,7 @@ private:
         {
             std::get<I>(m_frame_elements) >> a_data_out;
             // @formatter:off
-            Generate < I + 1 > (a_data_out);
+            Generate <I+1> (a_data_out);
             // @formatter:on
         }
     }
