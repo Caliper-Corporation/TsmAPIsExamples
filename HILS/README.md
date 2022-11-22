@@ -16,7 +16,7 @@ The generated tsmci.dll should be put together with an accompanying tsmci.config
 
 - The desired real-time factor must be set to 1.0. This is the best way to have a synchronized clock time across TransModeler simulator and the connected controller hardware.
 
-- The tsmci.config.xml file is where to specify the mappings of _TransModeler's signals_ and _turning movements to loadswitch channels and detector channels_ in the field. Check out the [sample configuration file](sample/tsmci.config.xml) here for more details.
+- The tsmci.config.xml file is where to specify the mappings of _TransModeler's signals_ and _turning movements to loadswitch channels and detector channels_ in the field. Check out the [sample configuration file](tsm/sample/tsmci.config.xml) here for more details.
 
 
 # Virtual Traffic Cabinet
@@ -149,4 +149,4 @@ This following example illustrates how to set MMU compatibility matrix for a typ
 
 ### Further Usage
 
-Examine the [test cases](https://github.com/wxinix/vtc/blob/master/tests/vtc_tests.cpp) to learn how to use this library.
+Examine the [test cases](/tests/vtc_tests.cpp) to learn how to use this library.
