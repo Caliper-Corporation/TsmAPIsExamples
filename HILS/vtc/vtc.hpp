@@ -27,7 +27,6 @@
 
 #include <matchit/matchit.hpp>
 #include <pugixml/pugixml.hpp>
-
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
@@ -62,14 +61,13 @@ void setup_logger(const fs::path& a_path, const std::string& a_name)
     if (fs::create_directory(p, ec) || fs::exists(p))
         the_logger = spdlog::rotating_logger_mt(a_name, (p / (a_name + "-log.txt")).string(), 1024 * 1024, 3);
     else
-#if _WIN32
+#ifdef _WIN32
         the_logger = spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_name);
 #else
     the_logger = spdlog::default_logger();
 #endif
     LoggerHolder::logger = the_logger;
 }
-
 
 // A dirty trick to generate template specialization tag.
 #define AUTO_TAG_ID __LINE__
@@ -145,8 +143,8 @@ template<typename T>
 constexpr auto type_name_array()
 {
 #if defined(__clang__)
-    constexpr auto prefix   = std::string_view{"[T = "};
-    constexpr auto suffix   = std::string_view{"]"};
+    constexpr auto prefix = std::string_view{"[T = "};
+    constexpr auto suffix = std::string_view{"]"};
     constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
 #elif defined(__GNUC__)
     constexpr auto prefix = std::string_view{"with T = "};
@@ -159,7 +157,8 @@ constexpr auto type_name_array()
     constexpr auto suffix = std::string_view{ ">(void)" };
     constexpr auto function = std::string_view{ __FUNCSIG__ };
 #else
-# error Unsupported compiler
+# error
+    Unsupported compiler
 #endif
 
     constexpr auto start = function.find(prefix) + prefix.size();
@@ -384,10 +383,10 @@ T variable{};
 
 namespace output {
 
-using AltFlashState [[maybe_unused]]
+using AltFlashState[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using AuxFunctionState [[maybe_unused]]
+using AuxFunctionState[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I>
@@ -402,17 +401,17 @@ template<Index I>
 /**/requires ValidIndex<I, cu::channel::max_channels>
 using ChannelYellowPedClearDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using CustomAlarm [[maybe_unused]]
+using CustomAlarm[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I>
 /**/requires ValidIndex<I, biu::max_det_bius>
 using DetectorReset = IoVariable<AUTO_TAG_ID, Byte, I>;
 
-using FlashState [[maybe_unused]]
+using FlashState[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using GlobalVariable [[maybe_unused]]
+using GlobalVariable[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive
@@ -420,27 +419,27 @@ using NotActive
 
 template<Index I>
 /**/requires ValidIndex<I, cu::overlap::max_overlaps>
-using OverlapGreen [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::overlap::max_overlaps>
-using OverlapProtectedGreen [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapProtectedGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::overlap::max_overlaps>
-using OverlapRed [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::overlap::max_overlaps>
-using OverlapYellow [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PedCall [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PedCall[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseAdvWarning [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseAdvWarning[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
@@ -448,11 +447,11 @@ using PhaseCheck = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseDoNotWalk [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseDoNotWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseGreen [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
@@ -460,7 +459,7 @@ using PhaseNext = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseOmit [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
@@ -468,27 +467,27 @@ using PhaseOn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhasePedClearance [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePedClearance[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhasePreClear [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePreClear[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhasePreClear2 [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePreClear2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseRed [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseWalk [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseYellow [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
@@ -496,7 +495,7 @@ using PreemptStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptStatusFlash [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptStatusFlash[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using StatusBitA_Ring_1
     = IoVariable<AUTO_TAG_ID, Bit>;
@@ -523,7 +522,7 @@ using SpecialFunction = IoVariable<AUTO_TAG_ID, Bit, I>;
 using UnitAutomaticFlash
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitFaultMonitor [[maybe_unused]]
+using UnitFaultMonitor[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitFreeCoordStatus
@@ -559,10 +558,10 @@ using UnitTimingPlanC
 using UnitTimingPlanD
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitVoltageMonitor [[maybe_unused]]
+using UnitVoltageMonitor[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using Watchdog [[maybe_unused]]
+using Watchdog[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 } // end of namespace vc::io::output
@@ -571,21 +570,21 @@ namespace input {
 
 template<Index I>
 /**/requires ValidIndex<I, cu::detector::max_vehicle_detectors>
-using ChannelFaultStatus [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using ChannelFaultStatus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using CoordFreeSwitch
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using CustomAlarm [[maybe_unused]]
+using CustomAlarm[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using DoorAjor [[maybe_unused]]
+using DoorAjor[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using ManualControlGroupAction [[maybe_unused]]
+using ManualControlGroupAction[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using MinGreen_2 [[maybe_unused]]
+using MinGreen_2[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive
@@ -593,11 +592,11 @@ using NotActive
 
 template<Index I>
 /**/requires ValidIndex<I, cu::overlap::max_overlaps>
-using OverlapOmit [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::coord::max_patterns>
-using PatternInput [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::detector::max_pedestrian_detectors>
@@ -605,11 +604,11 @@ using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseForceOff [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseForceOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
-using PhaseHold [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseHold[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::phase::max_phases>
@@ -621,15 +620,15 @@ using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptGateDown [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptGateDown[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptGateUp [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptGateUp[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptHighPrioritorLow [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptHighPrioritorLow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
@@ -637,27 +636,27 @@ using PreemptInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptInputCRC [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputCRC[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptInputNormalOff [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputNormalOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::preempt::max_preempts>
-using PreemptInputNormalOn [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputNormalOn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::prioritor::max_prioritors>
-using PrioritorCheckIn [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorCheckIn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::prioritor::max_prioritors>
-using PrioritorCheckOut [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorCheckOut[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires (I >= 1)
-using PrioritorPreemptDetector [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorPreemptDetector[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::ring::max_rings>
@@ -673,7 +672,7 @@ using RingMax2Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::ring::max_rings>
-using RingMax3Selection [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using RingMax3Selection[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::ring::max_rings>
@@ -693,7 +692,7 @@ using RingStopTiming = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, cu::ring::max_rings>
-using SpecialFunctionInput [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using SpecialFunctionInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using UnitAlarm_1
     = IoVariable<AUTO_TAG_ID, Bit>;
@@ -716,7 +715,7 @@ using UnitAlternateSequenceD
 using UnitAutomaticFlash
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCallPedNAPlus [[maybe_unused]]
+using UnitCallPedNAPlus[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitCallToNonActuated_1
@@ -725,7 +724,7 @@ using UnitCallToNonActuated_1
 using UnitCallToNonActuated_2
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitClockReset [[maybe_unused]]
+using UnitClockReset[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitCMUMMUFlashStatus
@@ -734,7 +733,7 @@ using UnitCMUMMUFlashStatus
 using UnitDimming
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitExternWatchDog [[maybe_unused]]
+using UnitExternWatchDog[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitExternalMinRecall
@@ -743,31 +742,31 @@ using UnitExternalMinRecall
 using UnitExternalStart
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIndicatorLampControl [[maybe_unused]]
+using UnitIndicatorLampControl[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitIntervalAdvance
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_0 [[maybe_unused]]
+using UnitIOModeBit_0[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_1 [[maybe_unused]]
+using UnitIOModeBit_1[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_2 [[maybe_unused]]
+using UnitIOModeBit_2[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_3 [[maybe_unused]]
+using UnitIOModeBit_3[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitITSLocalFlashSense [[maybe_unused]]
+using UnitITSLocalFlashSense[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitLocalFlash
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitLocalFlashSense [[maybe_unused]]
+using UnitLocalFlashSense[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitManualControlEnable
@@ -782,13 +781,13 @@ using UnitOffset_2
 using UnitOffset_3
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanA [[maybe_unused]]
+using UnitSignalPlanA[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanB [[maybe_unused]]
+using UnitSignalPlanB[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitStopTIme [[maybe_unused]]
+using UnitStopTIme[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitSystemAddressBit_0
@@ -806,7 +805,7 @@ using UnitSystemAddressBit_3
 using UnitSystemAddressBit_4
     = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCHoldOnline [[maybe_unused]]
+using UnitTBCHoldOnline[[maybe_unused]]
     = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitTBCOnline
@@ -842,7 +841,7 @@ using VehicleDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I>
 /**/requires ValidIndex<I, biu::max_det_bius>
-using VehicleDetReset [[maybe_unused]] = IoVariable<AUTO_TAG_ID, Byte, I>;
+using VehicleDetReset[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Byte, I>;
 
 } // end of namespace vc::io::input
 
@@ -1069,10 +1068,10 @@ namespace impl {
  */
 template<Index Ix, Index Iy, Index... Iys>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
-{  // @formatter:off
-    mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value
-                                                               = static_cast<Bit>(a_mmu16_comp[
-            ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]);
+{
+    // @formatter:off
+    mmu::variable <ChannelCompatibilityStatus <Ix, Iy>>.value
+        = static_cast<Bit>(a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]);
 
     if constexpr (a_seq.size() > 2)
     {
@@ -1119,7 +1118,8 @@ void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp, std::integer_
  */
 template<Index Ix = 1>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp)
-{   // @formatter:off
+{
+    // @formatter:off
     if constexpr (Ix < 16)
     {
         impl::SetMMU16ChannelCompatibility(a_mmu16_comp,
@@ -1140,11 +1140,13 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp)
  */
 template<Index Ix = 1>
 void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp)
-{   // @formatter: off
+{
+    // @formatter: off
     if constexpr (Ix < 16)
     {
         impl::GetMMU16ChannelCompatibility(a_mmu16_comp,
-            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type{});
+            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
+        ::type{});
         return GetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
     }
     else
@@ -1212,10 +1214,10 @@ void SetDefaultMMU16ChannelCompatibility()
         /*D*/            "000"
         /*E*/             "00"
         /*F*/              "0"
-        // @formatter:on
+       // @formatter:on
     };
-    // The bitset needs to be reversed, so the least significant bit
-    // represents the starting compatibility bit, i.e., compat<1,2>
+// The bitset needs to be reversed, so the least significant bit
+// represents the starting compatibility bit, i.e., compat<1,2>
     reverse(mmu16_comp_def);
     SetMMU16ChannelCompatibility(mmu16_comp_def);
 }
@@ -3054,18 +3056,18 @@ using DrBiu01_CallDataFrame
     0x94, // FrameID = 148
     39,
     SSG_ResponseFrameType,
-// ----------------------------------------------
-// Byte 0 - Address, 0x08 for DR BIU#1
-// Byte 1 - Control, always 0x83
-// Byte 2 - FrameID, 0x94 for Type 148 Response Frame
-//----------------------------------------------
+    // ----------------------------------------------
+    // Byte 0 - Address, 0x08 for DR BIU#1
+    // Byte 1 - Control, always 0x83
+    // Byte 2 - FrameID, 0x94 for Type 148 Response Frame
+    //----------------------------------------------
 
-// Byte 03 - 04 Timestamp Word for Det 01
-// ...
-// Byte 33 - 34 Timestamp Word for Det 16
-//----------------------------------------------
-// Byte 35 - 36 Det 1 - Det 16 Call Status Bit 0
-//----------------------------------------------
+    // Byte 03 - 04 Timestamp Word for Det 01
+    // ...
+    // Byte 33 - 34 Timestamp Word for Det 16
+    //----------------------------------------------
+    // Byte 35 - 36 Det 1 - Det 16 Call Status Bit 0
+    //----------------------------------------------
     FrameBit<io::input::VehicleDetCall<0x01>, 0x0118>, // Bit 280
     FrameBit<io::input::VehicleDetCall<0x02>, 0x0119>,
     FrameBit<io::input::VehicleDetCall<0x03>, 0x011A>,
@@ -3099,18 +3101,18 @@ using DrBiu02_CallDataFrame
     0x95, // FrameID = 149
     39,
     SSG_ResponseFrameType,
-// ----------------------------------------------
-// Byte 0 - Address, 0x09 for DR BIU#2
-// Byte 1 - Control, always 0x83
-// Byte 2 - FrameID, 0x95 for Type 149 Response Frame
-//----------------------------------------------
+    // ----------------------------------------------
+    // Byte 0 - Address, 0x09 for DR BIU#2
+    // Byte 1 - Control, always 0x83
+    // Byte 2 - FrameID, 0x95 for Type 149 Response Frame
+    //----------------------------------------------
 
-// Byte 03 - 04 Timestamp Word for Det 17
-// ...
-// Byte 33 - 34 Timestamp Word for Det 32
-//----------------------------------------------
-// Byte 35 - 36 Det 17 - Det 32 Call Status Bit 0
-//----------------------------------------------
+    // Byte 03 - 04 Timestamp Word for Det 17
+    // ...
+    // Byte 33 - 34 Timestamp Word for Det 32
+    //----------------------------------------------
+    // Byte 35 - 36 Det 17 - Det 32 Call Status Bit 0
+    //----------------------------------------------
     FrameBit<io::input::VehicleDetCall<0x11>, 0x0118>, // Bit 280
     FrameBit<io::input::VehicleDetCall<0x12>, 0x0119>,
     FrameBit<io::input::VehicleDetCall<0x13>, 0x011A>,
@@ -3144,18 +3146,18 @@ using DrBiu03_CallDataFrame
     0x96, // FrameID = 150
     39,
     SSG_ResponseFrameType,
-// ----------------------------------------------
-// Byte 0 - Address, 0x08 for DR BIU#3
-// Byte 1 - Control, always 0x83
-// Byte 2 - FrameID, 0x94 for Type 148 Response Frame
-//----------------------------------------------
+    // ----------------------------------------------
+    // Byte 0 - Address, 0x08 for DR BIU#3
+    // Byte 1 - Control, always 0x83
+    // Byte 2 - FrameID, 0x94 for Type 148 Response Frame
+    //----------------------------------------------
 
-// Byte 03 - 04 Timestamp Word for Det 33
-// ...
-// Byte 33 - 34 Timestamp Word for Det 48
-//----------------------------------------------
-// Byte 35 - 36 Det 33 - Det 48 Call Status Bit 0
-//----------------------------------------------
+    // Byte 03 - 04 Timestamp Word for Det 33
+    // ...
+    // Byte 33 - 34 Timestamp Word for Det 48
+    //----------------------------------------------
+    // Byte 35 - 36 Det 33 - Det 48 Call Status Bit 0
+    //----------------------------------------------
     FrameBit<io::input::VehicleDetCall<0x21>, 0x0118>, // Bit 280
     FrameBit<io::input::VehicleDetCall<0x22>, 0x0119>,
     FrameBit<io::input::VehicleDetCall<0x23>, 0x011A>,
@@ -3189,18 +3191,18 @@ using DrBiu04_CallDataFrame
     0x97, // FrameID = 151
     39,
     SSG_ResponseFrameType,
-// ----------------------------------------------
-// Byte 0 - Address, 0x0B for DR BIU#4
-// Byte 1 - Control, always 0x83
-// Byte 2 - FrameID, 0x97 for Type 151 Response Frame
-//----------------------------------------------
+    // ----------------------------------------------
+    // Byte 0 - Address, 0x0B for DR BIU#4
+    // Byte 1 - Control, always 0x83
+    // Byte 2 - FrameID, 0x97 for Type 151 Response Frame
+    //----------------------------------------------
 
-// Byte 03 - 04 Timestamp Word for Det 49
-// ...
-// Byte 33 - 34 Timestamp Word for Det 64
-//----------------------------------------------
-// Byte 35 - 36 Det 49 - Det 64 Call Status Bit 0
-//----------------------------------------------
+    // Byte 03 - 04 Timestamp Word for Det 49
+    // ...
+    // Byte 33 - 34 Timestamp Word for Det 64
+    //----------------------------------------------
+    // Byte 35 - 36 Det 49 - Det 64 Call Status Bit 0
+    //----------------------------------------------
     FrameBit<io::input::VehicleDetCall<0x31>, 0x0118>, // Bit 280
     FrameBit<io::input::VehicleDetCall<0x32>, 0x0119>,
     FrameBit<io::input::VehicleDetCall<0x33>, 0x011A>,
@@ -3414,7 +3416,7 @@ std::tuple<bool, std::span<Byte>> Dispatch(std::span<const Byte> a_data_in)
         else
         {
             // @formatter:off
-            return Dispatch < I + 1 > (a_data_in);
+            return Dispatch<I+1>(a_data_in);
             // @formatter:on
         }
     }
@@ -3578,7 +3580,7 @@ class SerialDevice
 #ifdef _WIN32
             lib_ = ::LoadLibraryA("vtcdev");
             ec_ = ::GetLastError();
-#elif __linux__
+#elif  __linux__
             lib_ = dlopen("vtcdev.so");
 #endif
             if (!lib_)
@@ -3601,7 +3603,7 @@ class SerialDevice
             {
 #ifdef _WIN32
                 ::FreeLibrary(lib_);
-#elif __linux__
+#elif  __linux__
                 dlclose(lib_);
 #endif
             }
@@ -3613,7 +3615,7 @@ class SerialDevice
             return result;
         }
 
-        // Error code as uint32_t, defined in winerror.h on Windows platform.
+// Error code as uint32_t, defined in winerror.h on Windows platform.
         using SimpleCommandFunc
             = uint32_t __stdcall(DeviceHandle);
 
@@ -3720,45 +3722,85 @@ class SerialDevice
 
         static constexpr std::array<std::array<char, 0x18>, 10> keys_ = {
             {
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
-                   0x65, 0x6C, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
-                   0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x00: 0x02
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
+                        0x65, 0x6C, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
+                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x00: 0x02
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
-                   0x65, 0x6C, 0x54, 0x72, 0x61, 0x6E, 0x73, 0x6D,
-                   0x69, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x01: 0x03
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
+                        0x65, 0x6C, 0x54, 0x72, 0x61, 0x6E, 0x73, 0x6D,
+                        0x69, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x01: 0x03
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x43, 0x6C, 0x6F, 0x73,
-                   0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x02: 0x05
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x6C, 0x6F, 0x73,
+                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x02: 0x05
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x45, 0x6E, 0x61, 0x62,
-                   0x6C, 0x65, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
-                   0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x03: 0x06
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x45, 0x6E, 0x61, 0x62,
+                        0x6C, 0x65, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
+                        0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x03: 0x06
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x50,
-                   0x61, 0x72, 0x61, 0x6D, 0x73, 0x00, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x04: 0x11
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x50,
+                        0x61, 0x72, 0x61, 0x6D, 0x73, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x04: 0x11
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x49,
-                   0x64, 0x6C, 0x65, 0x4D, 0x6F, 0x64, 0x65, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x05: 0x18
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x49,
+                        0x64, 0x6C, 0x65, 0x4D, 0x6F, 0x64, 0x65, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x05: 0x18
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x4F,
-                   0x70, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x06: 0x30
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x4F,
+                        0x70, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x06: 0x30
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x4F, 0x70, 0x65, 0x6E,
-                   0x42, 0x79, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x07: 0x38
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x4F, 0x70, 0x65, 0x6E,
+                        0x42, 0x79, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x07: 0x38
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x52, 0x65, 0x61, 0x64,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x08: 0x3B
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x52, 0x65, 0x61, 0x64,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x08: 0x3B
                 ,
-                {{ 0x4D, 0x67, 0x73, 0x6C, 0x57, 0x72, 0x69, 0x74,
-                   0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }} // 0x09: 0x3C
+                {
+                    {
+                        0x4D, 0x67, 0x73, 0x6C, 0x57, 0x72, 0x69, 0x74,
+                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                    }
+                } // 0x09: 0x3C
             }
         };
 
@@ -3766,7 +3808,8 @@ class SerialDevice
 
 #ifdef _WIN32
         HMODULE lib_{ nullptr };
-#elif __linux__
+#elif
+        __linux__
         void* lib_{ nullptr };
 #endif
 
@@ -3774,8 +3817,7 @@ class SerialDevice
     };
 
 public:
-    explicit SerialDevice(const char* a_dev_name, uint32_t a_clock_speed = 153600,
-        uint8_t a_addr_filter = 0xFF) noexcept
+    explicit SerialDevice(const char* a_dev_name, uint32_t a_clock_speed = 153600, uint8_t a_addr_filter = 0xFF) noexcept
     {
         if (!apimodule_.is_loaded())
         {
@@ -3808,15 +3850,13 @@ public:
 
         if (apimodule_.set_option(dev_, DeviceOptionTag::RxPoll, 0))
         {
-            vtc::logger()->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}", a_dev_name,
-                apimodule_.ec());
+            vtc::logger()->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}", a_dev_name, apimodule_.ec());
             return;
         }
 
         if (apimodule_.set_option(dev_, DeviceOptionTag::TxPoll, 0))
         {
-            vtc::logger()->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}", a_dev_name,
-                apimodule_.ec());
+            vtc::logger()->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}", a_dev_name, apimodule_.ec());
             return;
         }
 
@@ -3921,12 +3961,10 @@ public:
     }
 
 #ifdef TEST
-
     static SerialApiModule& apimodule()
     {
         return apimodule_;
     }
-
 #endif
 
 private:
@@ -4214,7 +4252,8 @@ protected:
         });
     }
 
-    bool load_config(const fs::path& a_path, const VerifyFuncGroup& a_verify_funcs = {}) noexcept
+    bool load_config(const fs::path& a_path, const VerifyFuncGroup& a_verify_funcs = {
+    }) noexcept
     {
         auto config = pugi::xml_document{};
         auto parse_result = config.load_file(a_path.c_str());
@@ -4227,11 +4266,12 @@ protected:
 
         load_mmu16_channel_compatibility(config);
 
-        auto dev_name = std::string{{ 0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43 }} +
-                        config.document_element().attribute("device").value();
+        auto dev_name
+            = std::string{{ 0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43 }} + config.document_element().attribute("device").value();
         device_ = std::make_unique<SerialDevice>(dev_name.c_str());
-        log_sdlc_frames_ =
-            std::string{ config.document_element().attribute("log_sdlc_frames").value() } == std::string{ "true" };
+
+        log_sdlc_frames_
+            = std::string{ config.document_element().attribute("log_sdlc_frames").value() } == std::string{ "true" };
 
         auto step = std::stod(config.document_element().attribute("simulation_step").value());
         auto [verify_simstep, verify_loadswitch_wiring, verify_detector_wiring] = a_verify_funcs;
