@@ -1119,18 +1119,18 @@ void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp, std::integer_
  */
 template<Index Ix = 1>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp)
-{
+{   // @formatter:off
     if constexpr (Ix < 16)
-    { // @formatter:off
+    {
         impl::SetMMU16ChannelCompatibility(a_mmu16_comp,
-            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
-        ::type{});
-        return SetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
+            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type{});
+        return SetMMU16ChannelCompatibility <Ix+1>(a_mmu16_comp);
     }
     else
     {
         return;
-    } // @formatter:on
+    }
+    // @formatter:on
 }
 
 /*!
