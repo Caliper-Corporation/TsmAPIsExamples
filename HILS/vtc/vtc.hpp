@@ -1195,24 +1195,24 @@ void reverse(std::bitset<N>& a_bitset)
 void SetDefaultMMU16ChannelCompatibility()
 {
     std::bitset<0x78> mmu16_comp_def{
-        //@formatter:off
+        // @formatter:off
         /*    23456789ABCDEFG */
         /*1*/"000110000100000"
-             /*2*/ "00110010100000"
-             /*3*/  "0001100010000"
-             /*4*/   "001101010000"
-             /*5*/    "00010000000"
-             /*6*/     "0010100000"
-             /*7*/      "001000000"
-             /*8*/       "01010000"
-             /*9*/        "0100000"
-             /*A*/         "010000"
-             /*B*/          "00000"
-             /*C*/           "0000"
-             /*D*/            "000"
-             /*E*/             "00"
-             /*F*/              "0"
-        //@formatter:on
+        /*2*/ "00110010100000"
+        /*3*/  "0001100010000"
+        /*4*/   "001101010000"
+        /*5*/    "00010000000"
+        /*6*/     "0010100000"
+        /*7*/      "001000000"
+        /*8*/       "01010000"
+        /*9*/        "0100000"
+        /*A*/         "010000"
+        /*B*/          "00000"
+        /*C*/           "0000"
+        /*D*/            "000"
+        /*E*/             "00"
+        /*F*/              "0"
+        // @formatter:on
     };
     // The bitset needs to be reversed, so the least significant bit
     // represents the starting compatibility bit, i.e., compat<1,2>
@@ -3921,10 +3921,12 @@ public:
     }
 
 #ifdef TEST
-    static SerialApiModule &apimodule()
+
+    static SerialApiModule& apimodule()
     {
-      return apimodule_;
+        return apimodule_;
     }
+
 #endif
 
 private:
