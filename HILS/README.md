@@ -1,12 +1,20 @@
 # TransModeller Hardware-in-the-Loop Controller Interface
 
-TransModeler is a powerful traffic simulator with very good modelling realism of signalized intersections.  The Hardware-in-the-loop Simulation Controller Interface (HilsCI) for TransModeler is implemented using the VTC framework.
+TransModeler is a powerful traffic simulator with great modelling realism of signalized intersections. This hardware-in-the-loop simulation (HILS) C++ project, illustrates how to connect TransModeler with any NEMA-TS2 controllers using direct Port 1 SDLC communications. No CID is needed, and no proprietary NTCIP objects are required.
+
+## About HILS
+
+Conventionally, HILS requires costly CID hardware or using relevant proprietary NTCIP objects. NTCIP 1202v3-2019 now provides standardized object towards that end now, though, in some cases, the NTCIP detour is not really desired.
+
+There are a lot of use cases for HILS using native SDLC communications. These use cases include controller firmware bench testing, controller database verification and seamless migration, SDLC-level cyber-security investigation, SDLC frame timing optimization, and connected vehicle applications that need a closest replica of the field conditions including the latency of serial communications.
+
+You can even utilize the direct control over SDLC frames for some interesting/creative work related to ATSPM, for example, ATSPM-in-the-loop which hooks up ATSPM with a traffic simulator in real-time.
 
 ## How to build
 
-TransModeler is Windows software and its main API, TsmApi, is in-process COM API. Latest MSVC compiler that supports C++ 20 standard is required. 
+TransModeler is a Windows-based software and its Application Programming Interface (API), TsmApi, is a high-performance in-process COM API. Latest MSVC compiler that supports C++ 20 standard is required. 
 
-The project is configured for CMake, and to build, you can directly do a CMake build.  Alternatively, you can load the CMake project in Visual Studio, and build from there.
+The project is configured using CMake. You can directly do a CMake build.  Alternatively, you can load the CMake project in Visual Studio, and build from there.
 
 The generated tsmci.dll should be put together with an accompanying tsmci.config.xml file.
 
@@ -20,7 +28,7 @@ The generated tsmci.dll should be put together with an accompanying tsmci.config
 
 
 # Virtual Traffic Cabinet
-A modern C++ library (C++20) for the virtualization of traffic cabinet in adherence with NEMA-TS2 and ATC Standards.
+Virtual Traffic Cabinet (VTC) is a modern C++ library (C++20) for the virtualization of traffic cabinet in adherence with NEMA-TS2 and ATC Standards.
 
 ## Compiler
 Requires a C++ compiler that supports C++20. Visual Studio or CLion IDE with CMake build system.
