@@ -36,6 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   MPL 1.1/GPL 2.0/LGPL 2.1 tri-license
 */
+#pragma warning(disable:4068)
+
+#pragma clang diagnostic push
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedParameter"
+#pragma ide diagnostic ignored "OCUnusedStructInspection"
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+
 
 #ifndef VTC_VTC_HPP
 #define VTC_VTC_HPP
@@ -71,7 +79,7 @@ namespace {
 
 struct LoggerHolder
 {
-    static std::atomic<std::shared_ptr<spdlog::logger>> logger;
+  static std::atomic<std::shared_ptr<spdlog::logger>> logger;
 };
 
 std::atomic<std::shared_ptr<spdlog::logger>> LoggerHolder::logger = std::atomic<std::shared_ptr<spdlog::logger>>{};
@@ -80,25 +88,25 @@ std::atomic<std::shared_ptr<spdlog::logger>> LoggerHolder::logger = std::atomic<
 
 std::shared_ptr<spdlog::logger> logger()
 {
-    return LoggerHolder::logger;
+  return LoggerHolder::logger;
 }
 
-void setup_logger(const fs::path& a_path, const std::string& a_name)
+void setup_logger(const fs::path &a_path, const std::string &a_name)
 {
-    auto p = a_path / "log";
-    std::error_code ec;
+  auto p = a_path / "log";
+  std::error_code ec;
 
-    std::shared_ptr<spdlog::logger> the_logger;
+  std::shared_ptr<spdlog::logger> the_logger;
 
-    if (fs::create_directory(p, ec) || fs::exists(p))
-        the_logger = spdlog::rotating_logger_mt(a_name, (p / (a_name + "-log.txt")).string(), 1024 * 1024, 3);
-    else
+  if (fs::create_directory(p, ec) || fs::exists(p))
+    the_logger = spdlog::rotating_logger_mt(a_name, (p / (a_name + "-log.txt")).string(), 1024 * 1024, 3);
+  else
 #ifdef _WIN32
-        the_logger = spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_name);
+    the_logger = spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_name);
 #else
-    the_logger = spdlog::default_logger();
+  the_logger = spdlog::default_logger();
 #endif
-    LoggerHolder::logger = the_logger;
+  LoggerHolder::logger = the_logger;
 }
 
 // A dirty trick to generate template specialization tag.
@@ -106,8 +114,8 @@ void setup_logger(const fs::path& a_path, const std::string& a_name)
 
 enum class Bit : bool
 {
-    Off = false,
-    On = true
+  Off = false,
+  On = true
 };
 
 using Byte = uint8_t;
@@ -122,33 +130,33 @@ concept ValidIndex = (I >= 1) && (I <= N);
 
 template<typename T>
 concept ValidValueType = std::is_same_v<T, Bit>
-                         || std::is_same_v<T, Byte>
-                         || std::is_same_v<T, Word>
-                         || std::is_same_v<T, Integer>;
+    || std::is_same_v<T, Byte>
+    || std::is_same_v<T, Word>
+    || std::is_same_v<T, Integer>;
 
 template<typename T, Index I> /* */
 requires ValidValueType<T>
 struct Variable
 {
-    using value_t = T;
+  using value_t = T;
 
-    Variable() = default;
+  Variable() = default;
 
-    Variable(Variable&) = delete;
+  Variable(Variable &) = delete;
 
-    Variable(Variable&&) = delete;
+  Variable(Variable &&) = delete;
 
-    Variable& operator=(Variable&) = delete;
+  Variable &operator=(Variable &) = delete;
 
-    Variable& operator=(Variable&&) = delete;
+  Variable &operator=(Variable &&) = delete;
 
-    auto& operator()()
-    {
-        return value;
-    }
+  auto &operator()()
+  {
+    return value;
+  }
 
-    static constexpr Index index{ I };
-    std::atomic<T> value{};
+  static constexpr Index index{I};
+  std::atomic<T> value{};
 };
 
 template<typename T>
@@ -168,51 +176,51 @@ using ValueType = typename T::Variable::value_t;
 template<std::size_t ...Is>
 constexpr auto substring_as_array(std::string_view str, std::index_sequence<Is...>)
 {
-    return std::array{ str[Is]..., '\n' };
+  return std::array{str[Is]..., '\n'};
 }
 
 template<typename T>
 constexpr auto type_name_array()
 {
 #if defined(__clang__)
-    constexpr auto prefix = std::string_view{"[T = "};
-    constexpr auto suffix = std::string_view{"]"};
-    constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
+  constexpr auto prefix = std::string_view{"[T = "};
+  constexpr auto suffix = std::string_view{"]"};
+  constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
 #elif defined(__GNUC__)
-    constexpr auto prefix = std::string_view{"with T = "};
-    // Note signature type_name_array() is constexpr auto, then the return type is removed, so suffix is "]".
-    // Check this https://godbolt.org/z/eK4j6xTbe
-    constexpr auto suffix = std::string_view{"]"};
-    constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
+  constexpr auto prefix = std::string_view{"with T = "};
+  // Note signature type_name_array() is constexpr auto, then the return type is removed, so suffix is "]".
+  // Check this https://godbolt.org/z/eK4j6xTbe
+  constexpr auto suffix = std::string_view{"]"};
+  constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
 #elif defined(_MSC_VER)
-    constexpr auto prefix = std::string_view{ "type_name_array<" };
-    constexpr auto suffix = std::string_view{ ">(void)" };
-    constexpr auto function = std::string_view{ __FUNCSIG__ };
+  constexpr auto prefix = std::string_view{"type_name_array<"};
+  constexpr auto suffix = std::string_view{">(void)"};
+  constexpr auto function = std::string_view{__FUNCSIG__};
 #else
 # error
-    Unsupported compiler
+  Unsupported compiler
 #endif
 
-    constexpr auto start = function.find(prefix) + prefix.size();
-    constexpr auto end = function.rfind(suffix);
+  constexpr auto start = function.find(prefix) + prefix.size();
+  constexpr auto end = function.rfind(suffix);
 
-    static_assert(start < end);
+  static_assert(start < end);
 
-    constexpr auto name = function.substr(start, (end - start));
-    return substring_as_array(name, std::make_index_sequence<name.size()>{});
+  constexpr auto name = function.substr(start, (end - start));
+  return substring_as_array(name, std::make_index_sequence<name.size()>{});
 }
 
 template<typename T>
 struct type_name_holder
 {
-    static inline constexpr auto value = type_name_array<T>();
+  static inline constexpr auto value = type_name_array<T>();
 };
 
 template<typename T>
 constexpr auto variable_type_name() -> std::string_view
 {
-    constexpr auto& value = type_name_holder<T>::value;
-    return std::string_view{ value.data(), value.size() };
+  constexpr auto &value = type_name_holder<T>::value;
+  return std::string_view{value.data(), value.size()};
 }
 
 template<Index Offset, typename SeqType> /* */
@@ -222,7 +230,7 @@ struct offset_sequence;
 template<Index Offset, Index... Is>
 struct offset_sequence<Offset, std::integer_sequence<Index, Is...>>
 {
-    using type = std::integer_sequence<Index, Is + (Offset + 1)...>;
+  using type = std::integer_sequence<Index, Is + (Offset + 1)...>;
 };
 
 template<Index Offset, typename SeqType>
@@ -231,8 +239,8 @@ using offset_sequence_t = typename offset_sequence<Offset, SeqType>::type;
 template<typename T, T... Is>
 [[maybe_unused]] constexpr T get(std::integer_sequence<T, Is...>, std::size_t i)
 {
-    constexpr T arr[] = { Is... };
-    return arr[i];
+  constexpr T arr[] = {Is...};
+  return arr[i];
 }
 
 template<Index I, typename SeqType>
@@ -246,7 +254,7 @@ struct add_sequence_front;
 template<Index I, Index... Is>
 struct add_sequence_front<I, std::integer_sequence<Index, Is...>>
 {
-    using type = std::integer_sequence<Index, I, Is...>;
+  using type = std::integer_sequence<Index, I, Is...>;
 };
 
 namespace cu {
@@ -261,86 +269,86 @@ concept ValidCuVariable = std::is_same_v<typename T::type, CuVariableType>;
 template<Tag, typename ValueT, Index I = 0>
 struct [[maybe_unused]] CuVariable : Variable<ValueT, I>
 {
-    using type = CuVariableType;
+  using type = CuVariableType;
 
-    CuVariable() = default;
+  CuVariable() = default;
 
-    CuVariable(CuVariable&) = delete;
+  CuVariable(CuVariable &) = delete;
 
-    CuVariable(CuVariable&&) = delete;
+  CuVariable(CuVariable &&) = delete;
 
-    CuVariable& operator=(CuVariable&) = delete;
+  CuVariable &operator=(CuVariable &) = delete;
 
-    CuVariable& operator=(CuVariable&&) = delete;
+  CuVariable &operator=(CuVariable &&) = delete;
 };
 
 namespace phase {
 
-constexpr size_t max_phases{ 40 };
-[[maybe_unused]] constexpr size_t max_phase_groups{ 5 };
+constexpr size_t max_phases{40};
+[[maybe_unused]] constexpr size_t max_phase_groups{5};
 
 }
 
 namespace detector {
 
-constexpr size_t max_vehicle_detectors{ 128 };
-[[maybe_unused]] constexpr size_t max_vehicle_detector_status_groups{ 40 };
-constexpr size_t max_pedestrian_detectors{ 72 };
+constexpr size_t max_vehicle_detectors{128};
+[[maybe_unused]] constexpr size_t max_vehicle_detector_status_groups{40};
+constexpr size_t max_pedestrian_detectors{72};
 
 }
 
 namespace ring {
 
-constexpr size_t max_rings{ 16 };
-[[maybe_unused]] constexpr size_t max_sequences{ 20 };
-[[maybe_unused]] constexpr size_t max_ring_control_groups{ 2 };
+constexpr size_t max_rings{16};
+[[maybe_unused]] constexpr size_t max_sequences{20};
+[[maybe_unused]] constexpr size_t max_ring_control_groups{2};
 
 }
 
 namespace channel {
 
-constexpr size_t max_channels{ 32 };
-[[maybe_unused]] constexpr size_t max_channel_status_groups{ 4 };
+constexpr size_t max_channels{32};
+[[maybe_unused]] constexpr size_t max_channel_status_groups{4};
 
 }
 
 namespace overlap {
 
-constexpr size_t max_overlaps{ 32 };
-[[maybe_unused]] constexpr size_t max_overlap_status_groups{ 4 };
+constexpr size_t max_overlaps{32};
+[[maybe_unused]] constexpr size_t max_overlap_status_groups{4};
 
 }
 
 namespace preempt {
 
-constexpr size_t max_preempts{ 40 };
+constexpr size_t max_preempts{40};
 
 }
 
 namespace unit {
 
-[[maybe_unused]] constexpr size_t max_alarm_groups{ 1 };
-constexpr size_t max_special_function_outputs{ 16 };
+[[maybe_unused]] constexpr size_t max_alarm_groups{1};
+constexpr size_t max_special_function_outputs{16};
 
 }
 
 namespace coord {
 
-constexpr size_t max_patterns{ 128 };
-[[maybe_unused]] constexpr size_t max_splits{ 128 };
+constexpr size_t max_patterns{128};
+[[maybe_unused]] constexpr size_t max_splits{128};
 
 }
 
 namespace timebase_asc {
 
-[[maybe_unused]] constexpr size_t max_timebase_asc_actions{ 64 };
+[[maybe_unused]] constexpr size_t max_timebase_asc_actions{64};
 
 }
 
 namespace prioritor {
 
-constexpr size_t max_prioritors{ 16 };
-[[maybe_unused]] constexpr size_t max_prioritor_groups{ 9 };
+constexpr size_t max_prioritors{16};
+[[maybe_unused]] constexpr size_t max_prioritor_groups{9};
 
 }
 
@@ -352,8 +360,8 @@ T variable{};
 
 namespace biu {
 
-constexpr size_t max_det_bius{ 8 };
-constexpr size_t max_tf_bius{ 8 };
+constexpr size_t max_det_bius{8};
+constexpr size_t max_tf_bius{8};
 
 struct BiuVariableType
 {
@@ -365,17 +373,17 @@ concept ValidBiuVariable = std::is_same_v<typename T::type, BiuVariableType>;
 template<Tag, typename ValueT, Index I = 0>
 struct [[maybe_unused]] BiuVariable : Variable<ValueT, I>
 {
-    using type = BiuVariableType;
+  using type = BiuVariableType;
 
-    BiuVariable() = default;
+  BiuVariable() = default;
 
-    BiuVariable(BiuVariable&) = delete;
+  BiuVariable(BiuVariable &) = delete;
 
-    BiuVariable(BiuVariable&&) = delete;
+  BiuVariable(BiuVariable &&) = delete;
 
-    BiuVariable& operator=(BiuVariable&) = delete;
+  BiuVariable &operator=(BiuVariable &) = delete;
 
-    BiuVariable& operator=(BiuVariable&&) = delete;
+  BiuVariable &operator=(BiuVariable &&) = delete;
 };
 
 template<typename T>/**/
@@ -396,17 +404,17 @@ concept ValidIoVariable = std::is_same_v<typename T::type, IoVariableType>;
 template<Tag, typename ValueT, Index I = 0>
 struct IoVariable : Variable<ValueT, I>
 {
-    using type = IoVariableType;
+  using type = IoVariableType;
 
-    IoVariable() = default;
+  IoVariable() = default;
 
-    IoVariable(IoVariable&) = delete;
+  IoVariable(IoVariable &) = delete;
 
-    IoVariable(IoVariable&&) = delete;
+  IoVariable(IoVariable &&) = delete;
 
-    IoVariable& operator=(IoVariable&) = delete;
+  IoVariable &operator=(IoVariable &) = delete;
 
-    IoVariable& operator=(IoVariable&&) = delete;
+  IoVariable &operator=(IoVariable &&) = delete;
 };
 
 template<typename T>/**/
@@ -891,17 +899,17 @@ concept ValidMmuVariable = std::is_same_v<typename T::type, MmuVariableType>;
 template<Tag, typename ValueT, Index I = 0>
 struct MmuVariable : Variable<ValueT, I>
 {
-    using type = MmuVariableType;
+  using type = MmuVariableType;
 
-    MmuVariable() = default;
+  MmuVariable() = default;
 
-    MmuVariable(MmuVariable&) = delete;
+  MmuVariable(MmuVariable &) = delete;
 
-    MmuVariable(MmuVariable&&) = delete;
+  MmuVariable(MmuVariable &&) = delete;
 
-    MmuVariable& operator=(MmuVariable&) = delete;
+  MmuVariable &operator=(MmuVariable &) = delete;
 
-    MmuVariable& operator=(MmuVariable&&) = delete;
+  MmuVariable &operator=(MmuVariable &&) = delete;
 };
 
 template<Index I>
@@ -1027,7 +1035,7 @@ template<size_t Channel, size_t MaxChannel>
 requires ((Channel >= 1) && (Channel <= MaxChannel))
 constexpr size_t ChannelSegmentSize()
 {
-    return (MaxChannel - Channel);
+  return (MaxChannel - Channel);
 }
 
 /*!
@@ -1043,18 +1051,13 @@ template<size_t Channel, size_t MaxChannel = 16>
 requires ((Channel >= 1) && (Channel <= MaxChannel))
 constexpr size_t ChannelSegmentStartPos()
 {
-    if constexpr (Channel == 1)
-    {
-        return 0;
-    }
-    else if constexpr (Channel == 2)
-    {
-        return ChannelSegmentSize<1, MaxChannel>();
-    }
-    else
-    {
-        return ChannelSegmentSize<Channel - 1, MaxChannel>() + ChannelSegmentStartPos<Channel - 1>();
-    }
+  if constexpr (Channel == 1) {
+    return 0;
+  } else if constexpr (Channel == 2) {
+    return ChannelSegmentSize<1, MaxChannel>();
+  } else {
+    return ChannelSegmentSize<Channel - 1, MaxChannel>() + ChannelSegmentStartPos<Channel - 1>();
+  }
 }
 
 /* 
@@ -1099,21 +1102,19 @@ namespace impl {
  * @param a_seq - Compile time integer sequence, the first one being the subject channel.
  */
 template<Index Ix, Index Iy, Index... Iys>
-void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
+void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp,
+                                  std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
 {
-    // @formatter:off
-    mmu::variable <ChannelCompatibilityStatus <Ix, Iy>>.value
-        = static_cast<Bit>(a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]);
+  mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value
+                                                             =
+                                                             static_cast<Bit>(a_mmu16_comp[ChannelSegmentStartPos<Ix>()
+                                                                 + Iy - Ix - 1]);
 
-    if constexpr (a_seq.size() > 2)
-    {
-        return SetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
-    }
-    else
-    {
-        return;
-    }
-    // @formatter:on
+  if constexpr (a_seq.size() > 2) {
+    return SetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
+  } else {
+    return;
+  }
 }
 
 /*!
@@ -1126,19 +1127,16 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp, std::in
  * @param a_seq - Compile time integer sequence, the first one being the subject channel.
  */
 template<Index Ix, Index Iy, Index... Iys>
-void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
-{  // @formatter:off
-    a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]
-        = (mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value == Bit::On) ? 1 : 0;
+void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
+{
+  a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]
+      = (mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value == Bit::On) ? 1 : 0;
 
-    if constexpr (a_seq.size() > 2)
-    {
-        return GetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
-    }
-    else
-    {
-        return;
-    } // @formatter:on
+  if constexpr (a_seq.size() > 2) {
+    return GetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
+  } else {
+    return;
+  }
 }
 
 } // end of namespace mmu::impl
@@ -1149,20 +1147,16 @@ void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp, std::integer_
  * @param [out] a_mmu16_comp - The compatibility bit set.
  */
 template<Index Ix = 1>
-void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp)
+void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp)
 {
-    // @formatter:off
-    if constexpr (Ix < 16)
-    {
-        impl::SetMMU16ChannelCompatibility(a_mmu16_comp,
-            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type{});
-        return SetMMU16ChannelCompatibility <Ix+1>(a_mmu16_comp);
-    }
-    else
-    {
-        return;
-    }
-    // @formatter:on
+  if constexpr (Ix < 16) {
+    impl::SetMMU16ChannelCompatibility(a_mmu16_comp,
+                                       typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
+    ::type{});
+    return SetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
+  } else {
+    return;
+  }
 }
 
 /*!
@@ -1171,21 +1165,16 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78>& a_mmu16_comp)
  * @param a_mmu16_comp - The compatibility bit set.
  */
 template<Index Ix = 1>
-void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp)
+void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp)
 {
-    // @formatter: off
-    if constexpr (Ix < 16)
-    {
-        impl::GetMMU16ChannelCompatibility(a_mmu16_comp,
-            typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
-        ::type{});
-        return GetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
-    }
-    else
-    {
-        return;
-    }
-    // @formatter:on
+  if constexpr (Ix < 16) {
+    impl::GetMMU16ChannelCompatibility(a_mmu16_comp,
+                                       typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
+    ::type{});
+    return GetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
+  } else {
+    return;
+  }
 }
 
 /*!
@@ -1193,8 +1182,8 @@ void GetMMU16ChannelCompatibility(std::bitset<0x78>& a_mmu16_comp)
  */
 void ZeroOutMMU16ChannelCompatibility()
 {
-    constexpr std::bitset<0x78> mmu_comp_def;
-    SetMMU16ChannelCompatibility(mmu_comp_def);
+  constexpr std::bitset<0x78> mmu_comp_def;
+  SetMMU16ChannelCompatibility(mmu_comp_def);
 }
 
 /*! 
@@ -1203,14 +1192,13 @@ void ZeroOutMMU16ChannelCompatibility()
  * @param a_bitset The bitset to be reversed.
  */
 template<std::size_t N>
-void reverse(std::bitset<N>& a_bitset)
+void reverse(std::bitset<N> &a_bitset)
 {
-    for (std::size_t i = 0; i < N / 2; ++i)
-    {
-        bool t = a_bitset[i];
-        a_bitset[i] = a_bitset[N - i - 1];
-        a_bitset[N - i - 1] = t;
-    }
+  for (std::size_t i = 0; i < N / 2; ++i) {
+    bool t = a_bitset[i];
+    a_bitset[i] = a_bitset[N - i - 1];
+    a_bitset[N - i - 1] = t;
+  }
 }
 
 /*!
@@ -1228,30 +1216,30 @@ void reverse(std::bitset<N>& a_bitset)
  */
 void SetDefaultMMU16ChannelCompatibility()
 {
-    std::bitset<0x78> mmu16_comp_def{
-        // @formatter:off
-        /*    23456789ABCDEFG */
-        /*1*/"000110000100000"
-        /*2*/ "00110010100000"
-        /*3*/  "0001100010000"
-        /*4*/   "001101010000"
-        /*5*/    "00010000000"
-        /*6*/     "0010100000"
-        /*7*/      "001000000"
-        /*8*/       "01010000"
-        /*9*/        "0100000"
-        /*A*/         "010000"
-        /*B*/          "00000"
-        /*C*/           "0000"
-        /*D*/            "000"
-        /*E*/             "00"
-        /*F*/              "0"
-       // @formatter:on
-    };
-// The bitset needs to be reversed, so the least significant bit
-// represents the starting compatibility bit, i.e., compat<1,2>
-    reverse(mmu16_comp_def);
-    SetMMU16ChannelCompatibility(mmu16_comp_def);
+  std::bitset<0x78> mmu16_comp_def{
+      // @formatter:off
+      /*    23456789ABCDEFG */
+      /*1*/"000110000100000"
+      /*2*/ "00110010100000"
+      /*3*/  "0001100010000"
+      /*4*/   "001101010000"
+      /*5*/    "00010000000"
+      /*6*/     "0010100000"
+      /*7*/      "001000000"
+      /*8*/       "01010000"
+      /*9*/        "0100000"
+      /*A*/         "010000"
+      /*B*/          "00000"
+      /*C*/           "0000"
+      /*D*/            "000"
+      /*E*/             "00"
+      /*F*/              "0"
+      // @formatter:on
+  };
+  // The bitset needs to be reversed, so the least significant bit
+  // represents the starting compatibility bit, i.e., compat<1,2>
+  reverse(mmu16_comp_def);
+  SetMMU16ChannelCompatibility(mmu16_comp_def);
 }
 
 /*!
@@ -1259,65 +1247,47 @@ void SetDefaultMMU16ChannelCompatibility()
  * of the HEX string represents the compatibility of channel 1 and 2.
  * @param a_hexstr
  */
-void SetMMU16ChannelCompatibility(const std::string& a_hexstr)
+void SetMMU16ChannelCompatibility(const std::string &a_hexstr)
 {
-    std::string bitstr{};
-    for (auto& c: a_hexstr)
-    {
-        switch (std::toupper(c))
-        {
-            case '0':
-                bitstr.append("0000");
-                break;
-            case '1':
-                bitstr.append("0001");
-                break;
-            case '2':
-                bitstr.append("0010");
-                break;
-            case '3':
-                bitstr.append("0011");
-                break;
-            case '4':
-                bitstr.append("0100");
-                break;
-            case '5':
-                bitstr.append("0101");
-                break;
-            case '6':
-                bitstr.append("0110");
-                break;
-            case '7':
-                bitstr.append("0111");
-                break;
-            case '8':
-                bitstr.append("1000");
-                break;
-            case '9':
-                bitstr.append("1001");
-                break;
-            case 'A':
-                bitstr.append("1010");
-                break;
-            case 'B':
-                bitstr.append("1011");
-                break;
-            case 'C':
-                bitstr.append("1100");
-                break;
-            case 'D':
-                bitstr.append("1101");
-                break;
-            case 'E':
-                bitstr.append("1110");
-                break;
-            case 'F':
-                bitstr.append("1111");
-                break;
-        }
+  std::string bitstr{};
+  for (auto &c : a_hexstr) {
+    switch (std::toupper(c)) {
+      case '0':bitstr.append("0000");
+        break;
+      case '1':bitstr.append("0001");
+        break;
+      case '2':bitstr.append("0010");
+        break;
+      case '3':bitstr.append("0011");
+        break;
+      case '4':bitstr.append("0100");
+        break;
+      case '5':bitstr.append("0101");
+        break;
+      case '6':bitstr.append("0110");
+        break;
+      case '7':bitstr.append("0111");
+        break;
+      case '8':bitstr.append("1000");
+        break;
+      case '9':bitstr.append("1001");
+        break;
+      case 'A':bitstr.append("1010");
+        break;
+      case 'B':bitstr.append("1011");
+        break;
+      case 'C':bitstr.append("1100");
+        break;
+      case 'D':bitstr.append("1101");
+        break;
+      case 'E':bitstr.append("1110");
+        break;
+      case 'F':bitstr.append("1111");
+        break;
     }
-    std::bitset<0x78> comp{ bitstr };
-    SetMMU16ChannelCompatibility(comp);
+  }
+  std::bitset<0x78> comp{bitstr};
+  SetMMU16ChannelCompatibility(comp);
 }
 
 } // end of namespace vtc::mmu
@@ -1334,17 +1304,17 @@ concept ValidBroadcastVariable = std::is_same_v<typename T::type, BroadcastVaria
 template<Tag, typename ValueT, Index I = 0>
 struct BroadcastVariable : Variable<ValueT, I>
 {
-    using type = BroadcastVariableType;
+  using type = BroadcastVariableType;
 
-    BroadcastVariable() = default;
+  BroadcastVariable() = default;
 
-    BroadcastVariable(BroadcastVariable&) = delete;
+  BroadcastVariable(BroadcastVariable &) = delete;
 
-    BroadcastVariable(BroadcastVariable&&) = delete;
+  BroadcastVariable(BroadcastVariable &&) = delete;
 
-    BroadcastVariable& operator=(BroadcastVariable&) = delete;
+  BroadcastVariable &operator=(BroadcastVariable &) = delete;
 
-    BroadcastVariable& operator=(BroadcastVariable&&) = delete;
+  BroadcastVariable &operator=(BroadcastVariable &&) = delete;
 };
 
 using CuReportedMonth
@@ -1384,37 +1354,37 @@ T variable{};
 
 template<typename T>
 requires broadcast::ValidBroadcastVariable<T>
-constexpr T& variable()
+constexpr T &variable()
 {
-    return broadcast::variable<T>;
+  return broadcast::variable<T>;
 }
 
 template<typename T>
 requires cu::ValidCuVariable<T>
-constexpr T& variable()
+constexpr T &variable()
 {
-    return cu::variable<T>;
+  return cu::variable<T>;
 }
 
 template<typename T>
 requires mmu::ValidMmuVariable<T>
-constexpr T& variable()
+constexpr T &variable()
 {
-    return mmu::variable<T>;
+  return mmu::variable<T>;
 }
 
 template<typename T>
 requires io::ValidIoVariable<T>
-constexpr T& variable()
+constexpr T &variable()
 {
-    return io::variable<T>;
+  return io::variable<T>;
 }
 
 template<typename T>
 requires biu::ValidBiuVariable<T>
-constexpr T& variable()
+constexpr T &variable()
 {
-    return biu::variable<T>;
+  return biu::variable<T>;
 }
 
 namespace serial {
@@ -1436,67 +1406,67 @@ template<typename T, size_t BitPos>/**/
 requires std::is_same_v<ValueType<T>, Bit>
 struct FrameBit
 {
-    using type = FrameElementType;
+  using type = FrameElementType;
 
-    void operator<<(const std::span<const Byte> a_data_in)
-    {
-        static auto bytepos = pos / 8;
-        static auto nbits_to_shift = pos % 8;
-        auto value = (a_data_in[bytepos] & (0x01 << nbits_to_shift)) != 0;
-        ref_var.value = static_cast<Bit>(value);
-    }
+  void operator<<(const std::span<const Byte> a_data_in)
+  {
+    static auto bytepos = pos / 8;
+    static auto nbits_to_shift = pos % 8;
+    auto value = (a_data_in[bytepos] & (0x01 << nbits_to_shift)) != 0;
+    ref_var.value = static_cast<Bit>(value);
+  }
 
-    void operator>>(const std::span<Byte> a_data_out)
-    {
-        static auto byte_pos = pos / 8;
-        static auto num_of_bits_to_shift = pos % 8;
-        Byte i = (ref_var.value == Bit::On) ? 1 : 0;
-        a_data_out[byte_pos] = a_data_out[byte_pos] | (i << num_of_bits_to_shift);
-    }
+  void operator>>(const std::span<Byte> a_data_out)
+  {
+    static auto byte_pos = pos / 8;
+    static auto num_of_bits_to_shift = pos % 8;
+    Byte i = (ref_var.value == Bit::On) ? 1 : 0;
+    a_data_out[byte_pos] = a_data_out[byte_pos] | (i << num_of_bits_to_shift);
+  }
 
-    size_t pos{ BitPos };
-    T& ref_var{ variable<T>() };
+  size_t pos{BitPos};
+  T &ref_var{variable<T>()};
 };
 
 template<typename T, size_t BytePos>/**/
 requires std::is_same_v<ValueType<T>, Byte>
 struct FrameByte
 {
-    using type = FrameElementType;
+  using type = FrameElementType;
 
-    void operator<<(const std::span<const Byte> a_data_in)
-    {
-        ref_var.value = a_data_in[pos];
-    }
+  void operator<<(const std::span<const Byte> a_data_in)
+  {
+    ref_var.value = a_data_in[pos];
+  }
 
-    void operator>>(const std::span<Byte> a_data_out)
-    {
-        a_data_out[pos] = ref_var.value;
-    }
+  void operator>>(const std::span<Byte> a_data_out)
+  {
+    a_data_out[pos] = ref_var.value;
+  }
 
-    size_t pos{ BytePos };
-    T& ref_var{ variable<T>() };
+  size_t pos{BytePos};
+  T &ref_var{variable<T>()};
 };
 
 template<typename T, size_t BytePos>/* BytePos: position of Word value low byte */
 requires std::is_same_v<ValueType<T>, Word>
 struct FrameWord
 {
-    using type = FrameElementType;
+  using type = FrameElementType;
 
-    void operator<<(const std::span<const Byte> a_data_in)
-    {
-        ref_var.value = (a_data_in[pos] & 0x00FF) | (a_data_in[pos + 1] << 8); // LByte | HByte
-    }
+  void operator<<(const std::span<const Byte> a_data_in)
+  {
+    ref_var.value = (a_data_in[pos] & 0x00FF) | (a_data_in[pos + 1] << 8); // LByte | HByte
+  }
 
-    void operator>>(const std::span<Byte> a_data_out)
-    {
-        a_data_out[pos] = ref_var.value & 0x00FF; // LByte
-        a_data_out[pos + 1] = ref_var.value >> 8; // HByte
-    }
+  void operator>>(const std::span<Byte> a_data_out)
+  {
+    a_data_out[pos] = ref_var.value & 0x00FF; // LByte
+    a_data_out[pos + 1] = ref_var.value >> 8; // HByte
+  }
 
-    size_t pos{ BytePos };
-    T& ref_var{ variable<T>() };
+  size_t pos{BytePos};
+  T &ref_var{variable<T>()};
 };
 
 // Primary Station Generated Command Frame
@@ -1521,11 +1491,11 @@ struct SSG_ResponseFrameType
 
 template<typename T>
 concept ValidPrimaryStationFrame = std::is_same_v<T, PSG_CommandFrameType>
-                                   || std::is_same_v<T, PSR_ResponseFrameType>;
+    || std::is_same_v<T, PSR_ResponseFrameType>;
 
 template<typename T>
 concept ValidSecondaryStationFrame = std::is_same_v<T, SSR_CommandFrameType>
-                                     || std::is_same_v<T, SSG_ResponseFrameType>;
+    || std::is_same_v<T, SSG_ResponseFrameType>;
 
 template<size_t N>
 concept ValidFrameByteSize = (N >= 1) && (N <= max_sdlc_frame_bytesize);
@@ -1535,86 +1505,84 @@ concept ValidFrameElement = std::is_same_v<typename T::type, FrameElementType>;
 
 template<size_t ByteSize, typename T, typename ...Ts>
 concept ValidFrame = (ValidPrimaryStationFrame<T> || ValidSecondaryStationFrame<T>)
-                     && (ValidFrameElement<Ts> &&...)
-                     && ValidFrameByteSize<ByteSize>;
+    && (ValidFrameElement<Ts> &&...)
+    && ValidFrameByteSize<ByteSize>;
 
 template<typename T>
 concept GenerativeFrame = std::is_same_v<T, PSG_CommandFrameType>
-                          || std::is_same_v<T, SSG_ResponseFrameType>;
+    || std::is_same_v<T, SSG_ResponseFrameType>;
 
 template<typename T>
 concept ReceivableFrame = std::is_same_v<T, PSR_ResponseFrameType>
-                          || std::is_same_v<T, SSR_CommandFrameType>;
+    || std::is_same_v<T, SSR_CommandFrameType>;
 
 template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts>/**/
 requires ValidFrame<FrameByteSize, T, Ts...>
 class Frame
 {
 public:
-    using type = T;
+  using type = T;
 
-    Frame() noexcept = default;
+  Frame() noexcept = default;
 
-    Frame(Frame&) = delete;
+  Frame(Frame &) = delete;
 
-    Frame(Frame&&) = delete;
+  Frame(Frame &&) = delete;
 
-    Frame& operator=(Frame&) = delete;
+  Frame &operator=(Frame &) = delete;
 
-    Frame& operator=(Frame&&) = delete;
+  Frame &operator=(Frame &&) = delete;
 
-    template<typename = T>
-    requires ReceivableFrame<T>
-    void operator<<(const std::span<const Byte> a_data_in)
-    {
-        // [0]: Address; [1]: SDLC control code 0x83; [2]: FrameID.
-        // Last 16 bits CCITT-CRC of the SDLC payload stripped away, not part of a_data_in.
-        // assert(a_data_in[0] == address;
-        // assert(a_data_in[1] == 0x83;
-        // assert(a_data_in[2] == id);
-        Assign(a_data_in);
-    }
+  template<typename = T>
+  requires ReceivableFrame<T>
+  void operator<<(const std::span<const Byte> a_data_in)
+  {
+    // [0]: Address; [1]: SDLC control code 0x83; [2]: FrameID.
+    // Last 16 bits CCITT-CRC of the SDLC payload stripped away, not part of a_data_in.
+    // assert(a_data_in[0] == address;
+    // assert(a_data_in[1] == 0x83;
+    // assert(a_data_in[2] == id);
+    Assign(a_data_in);
+  }
 
-    template<typename = T>
-    requires GenerativeFrame<T>
-    void operator>>(std::span<Byte> a_data_out)
-    {
-        std::fill(a_data_out.begin(), a_data_out.end(), 0);
-        a_data_out[0] = address;
-        a_data_out[1] = 0x83;
-        a_data_out[2] = id;
-        Generate(a_data_out);
-    }
+  template<typename = T>
+  requires GenerativeFrame<T>
+  void operator>>(std::span<Byte> a_data_out)
+  {
+    std::fill(a_data_out.begin(), a_data_out.end(), 0);
+    a_data_out[0] = address;
+    a_data_out[1] = 0x83;
+    a_data_out[2] = id;
+    Generate(a_data_out);
+  }
 
-    static constexpr Byte address{ Address };
-    static constexpr Byte id{ FrameID };
-    static constexpr size_t bytesize{ FrameByteSize };
+  static constexpr Byte address{Address};
+  static constexpr Byte id{FrameID};
+  static constexpr size_t bytesize{FrameByteSize};
 private:
-    template<size_t I = 0>
-    inline void Assign(const std::span<const Byte> a_data_in)
-    {
-        if constexpr (I < sizeof...(Ts))
-        {
-            std::get<I>(m_frame_elements) << a_data_in;
-            // @formatter:off
-            Assign <I+1> (a_data_in);
-            // @formatter:on
-        }
+  template<size_t I = 0>
+  inline void Assign(const std::span<const Byte> a_data_in)
+  {
+    if constexpr (I < sizeof...(Ts)) {
+      std::get<I>(m_frame_elements) << a_data_in;
+      //@formatter:off
+      Assign<I+1>(a_data_in);
+      //@formatter:on
     }
+  }
 
-    template<size_t I = 0>
-    inline void Generate(std::span<Byte> a_data_out)
-    {
-        if constexpr (I < sizeof...(Ts))
-        {
-            std::get<I>(m_frame_elements) >> a_data_out;
-            // @formatter:off
-            Generate <I+1> (a_data_out);
-            // @formatter:on
-        }
+  template<size_t I = 0>
+  inline void Generate(std::span<Byte> a_data_out)
+  {
+    if constexpr (I < sizeof...(Ts)) {
+      std::get<I>(m_frame_elements) >> a_data_out;
+      //@formatter:off
+      Generate<I+1>(a_data_out);
+      //@formatter:on
     }
+  }
 
-    std::tuple<Ts...> m_frame_elements;
+  std::tuple<Ts...> m_frame_elements;
 };
 
 } // end of namespace anonymous
@@ -1776,7 +1744,7 @@ using LoadSwitchDriversFrame
 template<>
 struct FrameType<0>
 {
-    using type = LoadSwitchDriversFrame;
+  using type = LoadSwitchDriversFrame;
 };
 
 // ----------------------------------------------
@@ -1793,7 +1761,7 @@ using MMUInputStatusRequestFrame
 template<>
 struct FrameType<1>
 {
-    using type = MMUInputStatusRequestFrame;
+  using type = MMUInputStatusRequestFrame;
 };
 
 // ----------------------------------------------
@@ -1811,7 +1779,7 @@ using MMUProgrammingRequestFrame
 template<>
 struct FrameType<3>
 {
-    using type = MMUProgrammingRequestFrame;
+  using type = MMUProgrammingRequestFrame;
 };
 
 // ----------------------------------------------
@@ -1864,7 +1832,7 @@ using DateTimeBroadcastFrame
 template<>
 struct FrameType<9>
 {
-    using type = DateTimeBroadcastFrame;
+  using type = DateTimeBroadcastFrame;
 };
 
 // ----------------------------------------------
@@ -1960,7 +1928,7 @@ using TfBiu01_OutputsInputsRequestFrame
 template<>
 struct FrameType<10>
 {
-    using type = TfBiu01_OutputsInputsRequestFrame;
+  using type = TfBiu01_OutputsInputsRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2059,7 +2027,7 @@ using TfBiu02_OutputsInputsRequestFrame
 template<>
 struct FrameType<11>
 {
-    using type = TfBiu02_OutputsInputsRequestFrame;
+  using type = TfBiu02_OutputsInputsRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2131,7 +2099,7 @@ using TfBiu03_OutputsInputsRequestFrame
 template<>
 struct FrameType<12>
 {
-    using type = TfBiu03_OutputsInputsRequestFrame;
+  using type = TfBiu03_OutputsInputsRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2203,7 +2171,7 @@ using TfBiu04_OutputsInputsRequestFrame
 template<>
 struct FrameType<13>
 {
-    using type = TfBiu04_OutputsInputsRequestFrame;
+  using type = TfBiu04_OutputsInputsRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2220,7 +2188,7 @@ using OutputTransferFrame
 template<>
 struct FrameType<18>
 {
-    using type = OutputTransferFrame;
+  using type = OutputTransferFrame;
 };
 
 // ----------------------------------------------
@@ -2237,7 +2205,7 @@ using DrBiu01_CallRequestFrame
 template<>
 struct FrameType<20>
 {
-    using type = DrBiu01_CallRequestFrame;
+  using type = DrBiu01_CallRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2254,7 +2222,7 @@ using DrBiu02_CallRequestFrame
 template<>
 struct FrameType<21>
 {
-    using type = DrBiu02_CallRequestFrame;
+  using type = DrBiu02_CallRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2271,7 +2239,7 @@ using DrBiu03_CallRequestFrame
 template<>
 struct FrameType<22>
 {
-    using type = DrBiu03_CallRequestFrame;
+  using type = DrBiu03_CallRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2288,7 +2256,7 @@ using DrBiu04_CallRequestFrame
 template<>
 struct FrameType<23>
 {
-    using type = DrBiu04_CallRequestFrame;
+  using type = DrBiu04_CallRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2306,7 +2274,7 @@ using DrBiu01_ResetDiagnosticRequestFrame
 template<>
 struct FrameType<24>
 {
-    using type = DrBiu01_ResetDiagnosticRequestFrame;
+  using type = DrBiu01_ResetDiagnosticRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2324,7 +2292,7 @@ using DrBiu02_ResetDiagnosticRequestFrame
 template<>
 struct FrameType<25>
 {
-    using type = DrBiu02_ResetDiagnosticRequestFrame;
+  using type = DrBiu02_ResetDiagnosticRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2342,7 +2310,7 @@ using DrBiu03_ResetDiagnosticRequestFrame
 template<>
 struct FrameType<26>
 {
-    using type = DrBiu03_ResetDiagnosticRequestFrame;
+  using type = DrBiu03_ResetDiagnosticRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2360,7 +2328,7 @@ using DrBiu04_ResetDiagnosticRequestFrame
 template<>
 struct FrameType<27>
 {
-    using type = DrBiu04_ResetDiagnosticRequestFrame;
+  using type = DrBiu04_ResetDiagnosticRequestFrame;
 };
 
 // ----------------------------------------------
@@ -2382,7 +2350,7 @@ using LoadSwitchDriversAckFrame
 template<>
 struct FrameType<128>
 {
-    using type = LoadSwitchDriversAckFrame;
+  using type = LoadSwitchDriversAckFrame;
 };
 
 // ----------------------------------------------
@@ -2513,7 +2481,7 @@ using MMUInputStatusRequestAckFrame
 template<>
 struct FrameType<129>
 {
-    using type = MMUInputStatusRequestAckFrame;
+  using type = MMUInputStatusRequestAckFrame;
 };
 
 // ----------------------------------------------
@@ -2738,7 +2706,7 @@ using MMUProgrammingRequestAckFrame
 template<>
 struct FrameType<131>
 {
-    using type = MMUProgrammingRequestAckFrame;
+  using type = MMUProgrammingRequestAckFrame;
 };
 
 // ----------------------------------------------
@@ -2814,7 +2782,7 @@ using TfBiu01_InputFrame
 template<>
 struct FrameType<138>
 {
-    using type = TfBiu01_InputFrame;
+  using type = TfBiu01_InputFrame;
 };
 
 // ----------------------------------------------
@@ -2890,7 +2858,7 @@ using TfBiu02_InputFrame
 template<>
 struct FrameType<139>
 {
-    using type = TfBiu02_InputFrame;
+  using type = TfBiu02_InputFrame;
 };
 
 // ----------------------------------------------
@@ -2966,7 +2934,7 @@ using TfBiu03_InputFrame
 template<>
 struct FrameType<140>
 {
-    using type = TfBiu03_InputFrame;
+  using type = TfBiu03_InputFrame;
 };
 
 // ----------------------------------------------
@@ -3041,7 +3009,7 @@ using TfBiu04_InputFrame
 template<>
 struct FrameType<141>
 {
-    using type = TfBiu04_InputFrame;
+  using type = TfBiu04_InputFrame;
 };
 
 /* DR BIU CallDataFrame should be transmitted only if Type 20 Frame
@@ -3121,7 +3089,7 @@ using DrBiu01_CallDataFrame
 template<>
 struct FrameType<148>
 {
-    using type = DrBiu01_CallDataFrame;
+  using type = DrBiu01_CallDataFrame;
 };
 
 // ----------------------------------------------
@@ -3166,7 +3134,7 @@ using DrBiu02_CallDataFrame
 template<>
 struct FrameType<149>
 {
-    using type = DrBiu02_CallDataFrame;
+  using type = DrBiu02_CallDataFrame;
 };
 
 // ----------------------------------------------
@@ -3211,7 +3179,7 @@ using DrBiu03_CallDataFrame
 template<>
 struct FrameType<150>
 {
-    using type = DrBiu03_CallDataFrame;
+  using type = DrBiu03_CallDataFrame;
 };
 
 // ----------------------------------------------
@@ -3256,7 +3224,7 @@ using DrBiu04_CallDataFrame
 template<>
 struct FrameType<151>
 {
-    using type = DrBiu04_CallDataFrame;
+  using type = DrBiu04_CallDataFrame;
 };
 
 // ----------------------------------------------
@@ -3289,7 +3257,7 @@ using DrBiu01_DiagnosticFrame
 template<>
 struct FrameType<152>
 {
-    using type = DrBiu01_DiagnosticFrame;
+  using type = DrBiu01_DiagnosticFrame;
 };
 
 // ----------------------------------------------
@@ -3322,7 +3290,7 @@ using DrBiu02_DiagnosticFrame
 template<>
 struct FrameType<153>
 {
-    using type = DrBiu02_DiagnosticFrame;
+  using type = DrBiu02_DiagnosticFrame;
 };
 
 // ----------------------------------------------
@@ -3355,7 +3323,7 @@ using DrBiu03_DiagnosticFrame
 template<>
 struct FrameType<154>
 {
-    using type = DrBiu03_DiagnosticFrame;
+  using type = DrBiu03_DiagnosticFrame;
 };
 
 // ----------------------------------------------
@@ -3388,7 +3356,7 @@ using DrBiu04_DiagnosticFrame
 template<>
 struct FrameType<155>
 {
-    using type = DrBiu04_DiagnosticFrame;
+  using type = DrBiu04_DiagnosticFrame;
 };
 
 //-------------------------------------------------
@@ -3427,51 +3395,44 @@ constexpr auto frame_maps_size = std::tuple_size_v<decltype(frame_maps)>;
 /*!
  * Global buffer for SDLC I/O.
  */
-std::array<Byte, max_sdlc_frame_bytesize> buffer = { 0 };
+std::array<Byte, max_sdlc_frame_bytesize> buffer = {0};
 
 } // end of namespace anonymous
 
 template<size_t I = 0>
 std::tuple<bool, std::span<Byte>> Dispatch(std::span<const Byte> a_data_in)
 {
-    if constexpr (I < frame_maps_size)
-    {
-        auto& cmd_frame = std::get<0>(std::get<I>(frame_maps));
-        auto& res_frame = std::get<1>(std::get<I>(frame_maps));
+  if constexpr (I < frame_maps_size) {
+    auto &cmd_frame = std::get<0>(std::get<I>(frame_maps));
+    auto &res_frame = std::get<1>(std::get<I>(frame_maps));
 
-        if (cmd_frame.id == a_data_in[2])
-        {
-            cmd_frame << a_data_in;
-            res_frame >> serial::buffer; // Buffer will be emptied at the beginning of >>().
-            return { true, { serial::buffer.data(), res_frame.bytesize }};
-        }
-        else
-        {
-            // @formatter:off
+    if (cmd_frame.id == a_data_in[2]) {
+      cmd_frame << a_data_in;
+      res_frame >> serial::buffer; // Buffer will be emptied at the beginning of >>().
+      return {true, {serial::buffer.data(), res_frame.bytesize}};
+    } else {
+      // @formatter:off
             return Dispatch<I+1>(a_data_in);
             // @formatter:on
-        }
     }
-    else
-    {
-        return { false, serial::buffer };
-    }
+  } else {
+    return {false, serial::buffer};
+  }
 }
 
 } // end of namespace vtc::serial
 
-constexpr char hexmap[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+constexpr char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-std::string BytesToHexStr(const unsigned char* a_data, size_t a_nbyte)
+std::string BytesToHexStr(const unsigned char *a_data, size_t a_nbyte)
 {
-    std::string result(a_nbyte * 2, ' ');
-    for (size_t i = 0; i < a_nbyte; ++i)
-    {
-        result[2 * i] = hexmap[(a_data[i] & 0xF0) >> 4];
-        result[2 * i + 1] = hexmap[a_data[i] & 0x0F];
-    }
+  std::string result(a_nbyte * 2, ' ');
+  for (size_t i = 0; i < a_nbyte; ++i) {
+    result[2 * i] = hexmap[(a_data[i] & 0xF0) >> 4];
+    result[2 * i + 1] = hexmap[a_data[i] & 0x0F];
+  }
 
-    return result;
+  return result;
 }
 
 } // end of namespace vtc
@@ -3480,528 +3441,516 @@ namespace vtc::serial::device {
 
 enum class HdlcRxClkSource : uint16_t
 {
-    BRG = 0x0200,       /* RxClk generated by Baud Rate Generator internally. Need specify clock in param. */
-    DPLL = 0x0100,      /* RxClk recovered by Digital Phase-locked Loop from data signal. Need specify clock in param. */
-    RxClkPin = 0x0000,  /* RxClk supplied by external device on RxClk input pin. */
-    TxClkPin = 0x8000   /* RxClk supplied by external device on TxClk input pin. */
+  BRG = 0x0200,       /* RxClk generated by Baud Rate Generator internally. Need specify clock in param. */
+  DPLL = 0x0100,      /* RxClk recovered by Digital Phase-locked Loop from data signal. Need specify clock in param. */
+  RxClkPin = 0x0000,  /* RxClk supplied by external device on RxClk input pin. */
+  TxClkPin = 0x8000   /* RxClk supplied by external device on TxClk input pin. */
 };
 
 enum class HdlcTxClkSource : uint16_t
 {
-    BRG = 0x0800,      /* TxClk generated by Baud Rate Generator internally. Need to specify clock in param. */
-    DPLL = 0x0400,     /* TxClk recovered by Digital Phase-locked Loop from data signal. Need to specify clock in param. */
-    RxClkPin = 0x0008, /* TxClk supplied by external device on RxC input pin. */
-    TxClkPin = 0x0000  /* TxClk supplied by external device on TxC input pin. */
+  BRG = 0x0800,      /* TxClk generated by Baud Rate Generator internally. Need to specify clock in param. */
+  DPLL =
+  0x0400,     /* TxClk recovered by Digital Phase-locked Loop from data signal. Need to specify clock in param. */
+  RxClkPin = 0x0008, /* TxClk supplied by external device on RxC input pin. */
+  TxClkPin = 0x0000  /* TxClk supplied by external device on TxC input pin. */
 };
 
 enum class HdlcCrcType : uint16_t
 {
-    None = 0,
-    CcittCrc16 = 1,
-    CcittCrc32 = 2
+  None = 0,
+  CcittCrc16 = 1,
+  CcittCrc32 = 2
 };
 
 enum class HdlcIdleMode : uint32_t
 {
-    AltZeroOnes = 1,
-    Zeros = 2,
-    Ones = 3,
-    AltMarkSpace = 4,
-    Space = 5,
-    Mark = 6
+  AltZeroOnes = 1,
+  Zeros = 2,
+  Ones = 3,
+  AltMarkSpace = 4,
+  Space = 5,
+  Mark = 6
 };
 
 enum class HdlcEncoding : uint32_t
 {
-    NRZ = 0,      /* Non-return to zero. High = 1, low = 0. TxD is logical value w/ no encoding. */
-    NRZ_B = 1,    /* Bipolar non-return to zero. TxD is logical value inverted. High = 0, low = 1. */
-    NRZ_M = 2,    /* For logical 0, invert TxD at start of bit. */
-    NRZ_S = 3,    /* For logical 1, invert TxD at start of bit. */
-    NRZ_I = NRZ_S /* Shorthand for NRZI-Space */
+  NRZ = 0,      /* Non-return to zero. High = 1, low = 0. TxD is logical value w/ no encoding. */
+  NRZ_B = 1,    /* Bipolar non-return to zero. TxD is logical value inverted. High = 0, low = 1. */
+  NRZ_M = 2,    /* For logical 0, invert TxD at start of bit. */
+  NRZ_S = 3,    /* For logical 1, invert TxD at start of bit. */
+  NRZ_I = NRZ_S /* Shorthand for NRZI-Space */
 };
 
 enum class DeviceOptionTag : uint32_t
 {
-    RxDiscardTooLarge = 1,
-    UnderRunRetryLimit = 2,
-    EnableLocalLoopback = 3,
-    EnableRemoteLoopback = 4,
-    Interface = 6,
-    RtsDriverControl = 7,
-    RxErrorMask = 8,
-    ClockSwitch = 9,
-    ClockBaseFreq = 10,
-    HalfDuplex = 11,
-    MsbFirst = 12,
-    RxCount = 13,
-    TxCount = 14,
-    RxPoll = 16,
-    TxPoll = 17,
-    NoTermination = 18,
-    Tdm = 19,
-    AuxClkEnable = 20,
-    UnderRunCount = 21,
-    TxIdleCount = 22,
-    ResetDPLL = 23,
-    Rs422OutputEnable = 24
+  RxDiscardTooLarge = 1,
+  UnderRunRetryLimit = 2,
+  EnableLocalLoopback = 3,
+  EnableRemoteLoopback = 4,
+  Interface = 6,
+  RtsDriverControl = 7,
+  RxErrorMask = 8,
+  ClockSwitch = 9,
+  ClockBaseFreq = 10,
+  HalfDuplex = 11,
+  MsbFirst = 12,
+  RxCount = 13,
+  TxCount = 14,
+  RxPoll = 16,
+  TxPoll = 17,
+  NoTermination = 18,
+  Tdm = 19,
+  AuxClkEnable = 20,
+  UnderRunCount = 21,
+  TxIdleCount = 22,
+  ResetDPLL = 23,
+  Rs422OutputEnable = 24
 };
 
 // Be careful of memory alignment
 // sizeof(SerialAdapterParams) == 32
 struct alignas(4) SerialDeviceParams
 {
-    /* 4 bytes: Asynchronous or HDLC */
-    uint32_t mode;
+  /* 4 bytes: Asynchronous or HDLC */
+  uint32_t mode;
 
-    /* 1 byte : Internal loopback mode */
-    uint8_t loopback;
-    /* 1 byte : Padding */
-    /* 2 bytes: Specify TxC, RxC source. */
-    uint16_t flags;
+  /* 1 byte : Internal loopback mode */
+  uint8_t loopback;
+  /* 1 byte : Padding */
+  /* 2 bytes: Specify TxC, RxC source. */
+  uint16_t flags;
 
-    /* 1 byte : NRZ, NRZ_I, etc. */
-    uint8_t encoding;
-    /* 1 byte : Padding */
-    /* 1 byte : Padding */
-    /* 1 byte : Padding */
+  /* 1 byte : NRZ, NRZ_I, etc. */
+  uint8_t encoding;
+  /* 1 byte : Padding */
+  /* 1 byte : Padding */
+  /* 1 byte : Padding */
 
-    /* 4 bytes: External clock speed in bits per second */
-    uint32_t clock;
+  /* 4 bytes: External clock speed in bits per second */
+  uint32_t clock;
 
-    /* 1 bytes: Receive HDLC address filter, 0xFF = disable */
-    uint8_t addr;
-    /* 1 bytes: Padding */
-    /* 2 bytes: none/16/32 */
-    uint16_t crc;
+  /* 1 bytes: Receive HDLC address filter, 0xFF = disable */
+  uint8_t addr;
+  /* 1 bytes: Padding */
+  /* 2 bytes: none/16/32 */
+  uint16_t crc;
 
-    /* 1 bytes  */
-    uint8_t b1;
-    /* 1 bytes  */
-    uint8_t b2;
-    /* 1 bytes: Padding */
-    /* 1 bytes: Padding */
+  /* 1 byte  */
+  uint8_t b1;
+  /* 1 byte  */
+  uint8_t b2;
+  /* 1 byte: Padding */
+  /* 1 byte: Padding */
 
-    /* 4 bytes  */
-    uint32_t dw1;
+  /* 4 bytes  */
+  uint32_t dw1;
 
-    /* 1 bytes  */
-    uint8_t b3;
-    /* 1 bytes  */
-    uint8_t b4;
-    /* 1 bytes  */
-    uint8_t b5;
-    /* 1 bytes: Padding */
+  /* 1 byte  */
+  uint8_t b3;
+  /* 1 byte  */
+  uint8_t b4;
+  /* 1 byte  */
+  uint8_t b5;
+  /* 1 byte: Padding */
 };
 
-using DeviceHandle = void*;
+using DeviceHandle = void *;
 
 class SerialDevice
 {
 
 #ifdef _WIN32
-    using FuncPtr = FARPROC;
+  using FuncPtr = FARPROC;
 #elif __linux__
-    using FuncPtr = void*;
+  using FuncPtr = void*;
 #endif
 
-    class SerialApiModule
+  class SerialApiModule
+  {
+  public:
+    SerialApiModule() noexcept: serialapi_{nullptr}
     {
-    public:
-        SerialApiModule() noexcept: serialapi_{ nullptr }
-        {
 #ifdef _WIN32
-            lib_ = ::LoadLibraryA("vtcdev");
-            ec_ = ::GetLastError();
+      lib_ = ::LoadLibraryA("vtcdev");
+      ec_ = ::GetLastError();
 #elif  __linux__
-            lib_ = dlopen("vtcdev.so");
+      lib_ = dlopen("vtcdev.so");
 #endif
-            if (!lib_)
-                return;
+      if (!lib_)
+        return;
 
-            get_proc_address();
-        }
+      get_proc_address();
+    }
 
-        SerialApiModule(SerialApiModule&) = delete;
+    SerialApiModule(SerialApiModule &) = delete;
 
-        SerialApiModule(SerialApiModule&&) = delete;
+    SerialApiModule(SerialApiModule &&) = delete;
 
-        SerialApiModule& operator=(SerialApiModule&) = delete;
+    SerialApiModule &operator=(SerialApiModule &) = delete;
 
-        SerialApiModule& operator=(SerialApiModule&&) = delete;
+    SerialApiModule &operator=(SerialApiModule &&) = delete;
 
-        ~SerialApiModule()
-        {
-            if (lib_)
-            {
+    ~SerialApiModule()
+    {
+      if (lib_) {
 #ifdef _WIN32
-                ::FreeLibrary(lib_);
+        ::FreeLibrary(lib_);
 #elif  __linux__
-                dlclose(lib_);
+        dlclose(lib_);
 #endif
-            }
-        }
+      }
+    }
 
-        [[nodiscard]] bool is_loaded() noexcept
-        {
-            auto result = lib_ && verify_proc_address();
-            return result;
-        }
+    [[nodiscard]] bool is_loaded() noexcept
+    {
+      auto result = lib_ && verify_proc_address();
+      return result;
+    }
 
 // Error code as uint32_t, defined in winerror.h on Windows platform.
-        using SimpleCommandFunc
-            = uint32_t __stdcall(DeviceHandle);
+    using SimpleCommandFunc
+        = uint32_t __stdcall(DeviceHandle);
 
-        using IoFunc
-            = uint32_t __stdcall(DeviceHandle, uint8_t*, int32_t);
+    using IoFunc
+        = uint32_t __stdcall(DeviceHandle, uint8_t *, int32_t);
 
-        using SetValueByIdFunc
-            = uint32_t __stdcall(DeviceHandle, uint32_t, int32_t);
+    using SetValueByIdFunc
+        = uint32_t __stdcall(DeviceHandle, uint32_t, int32_t);
 
-        using SetValueFunc
-            = uint32_t __stdcall(DeviceHandle, int32_t);
+    using SetValueFunc
+        = uint32_t __stdcall(DeviceHandle, int32_t);
 
-        using OpenFunc
-            = uint32_t __stdcall(char*, void**);
+    using OpenFunc
+        = uint32_t __stdcall(char *, void **);
 
-        using SetParamsFunc
-            = uint32_t __stdcall(DeviceHandle, SerialDeviceParams*);
+    using SetParamsFunc
+        = uint32_t __stdcall(DeviceHandle, SerialDeviceParams *);
 
-        uint32_t cancel_reading(DeviceHandle a_dev)
-        {
-            return ec_ = ((SimpleCommandFunc*)(serialapi_[0x00]))(a_dev);
-        }
+    uint32_t cancel_reading(DeviceHandle a_dev)
+    {
+      return ec_ = ((SimpleCommandFunc *)(serialapi_[0x00]))(a_dev);
+    }
 
-        uint32_t cancel_writing(DeviceHandle a_dev)
-        {
-            return ec_ = ((SimpleCommandFunc*)(serialapi_[0x01]))(a_dev);
-        }
+    uint32_t cancel_writing(DeviceHandle a_dev)
+    {
+      return ec_ = ((SimpleCommandFunc *)(serialapi_[0x01]))(a_dev);
+    }
 
-        uint32_t read(DeviceHandle a_dev, std::span<uint8_t> a_buf)
-        {
-            // Note - we don't assign ec here, because read returns num of bytes read.
-            return ((IoFunc*)(serialapi_[0x08]))(a_dev, a_buf.data(), static_cast<int32_t>(a_buf.size()));
-        }
+    uint32_t read(DeviceHandle a_dev, std::span<uint8_t> a_buf)
+    {
+      // Note - we don't assign ec here, because read returns num of bytes read.
+      return ((IoFunc *)(serialapi_[0x08]))(a_dev, a_buf.data(), static_cast<int32_t>(a_buf.size()));
+    }
 
-        uint32_t write(DeviceHandle a_dev, const std::span<const uint8_t> a_buf)
-        {
-            return ec_ = ((IoFunc*)(serialapi_[0x09]))(a_dev,
-                const_cast<uint8_t*>(a_buf.data()),
-                static_cast<int32_t>(a_buf.size()));
-        }
+    uint32_t write(DeviceHandle a_dev, const std::span<const uint8_t> a_buf)
+    {
+      return ec_ = ((IoFunc *)(serialapi_[0x09]))(a_dev,
+                                                  const_cast<uint8_t *>(a_buf.data()),
+                                                  static_cast<int32_t>(a_buf.size()));
+    }
 
-        uint32_t open(const char* a_dev_name, DeviceHandle& a_dev)
-        {
-            return ec_ = ((OpenFunc*)(serialapi_[0x07]))(const_cast<char*>(a_dev_name), &a_dev);
-        }
+    uint32_t open(const char *a_dev_name, DeviceHandle &a_dev)
+    {
+      return ec_ = ((OpenFunc *)(serialapi_[0x07]))(const_cast<char *>(a_dev_name), &a_dev);
+    }
 
-        uint32_t close(DeviceHandle a_dev)
-        {
-            return ec_ = ((SimpleCommandFunc*)(serialapi_[0x02]))(a_dev);
-        }
+    uint32_t close(DeviceHandle a_dev)
+    {
+      return ec_ = ((SimpleCommandFunc *)(serialapi_[0x02]))(a_dev);
+    }
 
-        uint32_t enable_read(DeviceHandle a_dev)
-        {
-            return ec_ = ((SetValueFunc*)(serialapi_[0x03]))(a_dev, 1);
-        }
+    uint32_t enable_read(DeviceHandle a_dev)
+    {
+      return ec_ = ((SetValueFunc *)(serialapi_[0x03]))(a_dev, 1);
+    }
 
-        uint32_t set_params(DeviceHandle a_dev, SerialDeviceParams& a_params)
-        {
-            return ec_ = ((SetParamsFunc*)(serialapi_[0x04]))(a_dev, &a_params);
-        }
+    uint32_t set_params(DeviceHandle a_dev, SerialDeviceParams &a_params)
+    {
+      return ec_ = ((SetParamsFunc *)(serialapi_[0x04]))(a_dev, &a_params);
+    }
 
-        uint32_t set_idle_mode(DeviceHandle a_dev, HdlcIdleMode a_mode)
-        {
-            return ec_ = ((SetValueFunc*)(serialapi_[0x05]))(a_dev, static_cast<int32_t>(a_mode));
-        }
+    uint32_t set_idle_mode(DeviceHandle a_dev, HdlcIdleMode a_mode)
+    {
+      return ec_ = ((SetValueFunc *)(serialapi_[0x05]))(a_dev, static_cast<int32_t>(a_mode));
+    }
 
-        uint32_t set_option(DeviceHandle a_dev, DeviceOptionTag a_opt_tag, int32_t a_opt_val)
-        {
-            return ec_ = ((SetValueByIdFunc*)(serialapi_[0x06]))(a_dev, static_cast<uint32_t>(a_opt_tag), a_opt_val);
-        }
+    uint32_t set_option(DeviceHandle a_dev, DeviceOptionTag a_opt_tag, int32_t a_opt_val)
+    {
+      return ec_ = ((SetValueByIdFunc *)(serialapi_[0x06]))(a_dev, static_cast<uint32_t>(a_opt_tag), a_opt_val);
+    }
 
-        [[nodiscard]] uint32_t ec() const
-        {
-            return ec_;
-        }
+    [[nodiscard]] uint32_t ec() const
+    {
+      return ec_;
+    }
 
-    private:
-        template<int I = 0>
-        void get_proc_address()
-        {
-            if constexpr (I < keys_.size())
-            {
+  private:
+    template<int I = 0>
+    void get_proc_address()
+    {
+      if constexpr (I < keys_.size()) {
 #ifdef _WIN32
-                auto proc_addr = ::GetProcAddress(lib_, keys_[I].data());
+        auto proc_addr = ::GetProcAddress(lib_, keys_[I].data());
 #elif __linux__
-                auto proc_addr = dlsm(lib_, m_ordinals[I].data());
+        auto proc_addr = dlsm(lib_, m_ordinals[I].data());
 #endif
-                return (proc_addr) ? (serialapi_[I] = proc_addr), get_proc_address<I + 1>() : void();
-            }
-        }
+        return (proc_addr) ? (serialapi_[I] = proc_addr), get_proc_address<I + 1>() : void();
+      }
+    }
 
-        template<int I = 0>
-        bool verify_proc_address()
+    template<int I = 0>
+    bool verify_proc_address()
+    {
+      if constexpr (I < keys_.size()) {
+        return (serialapi_[I]) && verify_proc_address<I + 1>();
+      } else {
+        return true;
+      }
+    }
+
+    static constexpr std::array<std::array<char, 0x18>, 10> keys_ = {
         {
-            if constexpr (I < keys_.size())
             {
-                return (serialapi_[I]) && verify_proc_address<I + 1>();
-            }
-            else
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
+                    0x65, 0x6C, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
+                    0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x00: 0x02
+            ,
             {
-                return true;
-            }
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
+                    0x65, 0x6C, 0x54, 0x72, 0x61, 0x6E, 0x73, 0x6D,
+                    0x69, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x01: 0x03
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x43, 0x6C, 0x6F, 0x73,
+                    0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x02: 0x05
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x45, 0x6E, 0x61, 0x62,
+                    0x6C, 0x65, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
+                    0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x03: 0x06
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x50,
+                    0x61, 0x72, 0x61, 0x6D, 0x73, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x04: 0x11
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x49,
+                    0x64, 0x6C, 0x65, 0x4D, 0x6F, 0x64, 0x65, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x05: 0x18
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x4F,
+                    0x70, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x06: 0x30
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x4F, 0x70, 0x65, 0x6E,
+                    0x42, 0x79, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x07: 0x38
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x52, 0x65, 0x61, 0x64,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x08: 0x3B
+            ,
+            {
+                {
+                    0x4D, 0x67, 0x73, 0x6C, 0x57, 0x72, 0x69, 0x74,
+                    0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                }
+            } // 0x09: 0x3C
         }
-
-        static constexpr std::array<std::array<char, 0x18>, 10> keys_ = {
-            {
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
-                        0x65, 0x6C, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
-                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x00: 0x02
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x61, 0x6E, 0x63,
-                        0x65, 0x6C, 0x54, 0x72, 0x61, 0x6E, 0x73, 0x6D,
-                        0x69, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x01: 0x03
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x43, 0x6C, 0x6F, 0x73,
-                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x02: 0x05
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x45, 0x6E, 0x61, 0x62,
-                        0x6C, 0x65, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
-                        0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x03: 0x06
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x50,
-                        0x61, 0x72, 0x61, 0x6D, 0x73, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x04: 0x11
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x49,
-                        0x64, 0x6C, 0x65, 0x4D, 0x6F, 0x64, 0x65, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x05: 0x18
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x53, 0x65, 0x74, 0x4F,
-                        0x70, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x06: 0x30
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x4F, 0x70, 0x65, 0x6E,
-                        0x42, 0x79, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x07: 0x38
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x52, 0x65, 0x61, 0x64,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x08: 0x3B
-                ,
-                {
-                    {
-                        0x4D, 0x67, 0x73, 0x6C, 0x57, 0x72, 0x69, 0x74,
-                        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                    }
-                } // 0x09: 0x3C
-            }
-        };
-
-        std::array<FuncPtr, keys_.size()> serialapi_{ nullptr };
-
-#ifdef _WIN32
-        HMODULE lib_{ nullptr };
-#elif
-        __linux__
-        void* lib_{ nullptr };
-#endif
-
-        uint32_t ec_{ 0 };
     };
 
+    std::array<FuncPtr, keys_.size()> serialapi_{nullptr};
+
+#ifdef _WIN32
+    HMODULE lib_{nullptr};
+#elif
+    __linux__
+    void* lib_{ nullptr };
+#endif
+
+    uint32_t ec_{0};
+  };
+
 public:
-    explicit SerialDevice(const char* a_dev_name, uint32_t a_clock_speed = 153600, uint8_t a_addr_filter = 0xFF) noexcept
-    {
-        if (!apimodule_.is_loaded())
-        {
-            vtc::logger()->error("apimodule was not loaded, code {}", apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.open(a_dev_name, dev_))
-        {
-            dev_ = nullptr;
-            vtc::logger()->error("Serial device \"{}\" failed to open, code {}", a_dev_name, apimodule_.ec());
-            return;
-        }
-
-        SerialDeviceParams params{};
-        memset(&params, 0, sizeof(params));
-        params.mode = 2;
-        params.loopback = 0;
-        params.flags = static_cast<uint16_t>(HdlcRxClkSource::RxClkPin) + static_cast<uint16_t>(HdlcTxClkSource::BRG);
-        params.encoding = static_cast<uint8_t>(HdlcEncoding::NRZ);
-        params.clock = a_clock_speed;
-        params.crc = static_cast<uint16_t>(HdlcCrcType::CcittCrc16);
-        params.addr = a_addr_filter;
-
-        if (apimodule_.set_params(dev_, params))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to set params, code {}", a_dev_name, apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.set_option(dev_, DeviceOptionTag::RxPoll, 0))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}", a_dev_name, apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.set_option(dev_, DeviceOptionTag::TxPoll, 0))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}", a_dev_name, apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.set_option(dev_, DeviceOptionTag::RxErrorMask, 1))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to set option RxErrorMask = 1, code {}", a_dev_name,
-                apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.set_idle_mode(dev_, HdlcIdleMode::Ones))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to set idle mode to ones, code {}", a_dev_name,
-                apimodule_.ec());
-            return;
-        }
-
-        if (apimodule_.enable_read(dev_))
-        {
-            vtc::logger()->error("Serial device \"{}\" failed to enable read, code {}", a_dev_name, apimodule_.ec());
-            return;
-        }
+  explicit SerialDevice(const char *a_dev_name, uint32_t a_clock_speed = 153600, uint8_t a_addr_filter = 0xFF) noexcept
+  {
+    if (!apimodule_.is_loaded()) {
+      vtc::logger()->error("apimodule was not loaded, code {}", apimodule_.ec());
+      return;
     }
 
-    ~SerialDevice()
-    {
-        if (dev_)
-        {
-            apimodule_.cancel_reading(dev_);
-            apimodule_.cancel_writing(dev_);
-            apimodule_.close(dev_);
-        }
+    if (apimodule_.open(a_dev_name, dev_)) {
+      dev_ = nullptr;
+      vtc::logger()->error("Serial device \"{}\" failed to open, code {}", a_dev_name, apimodule_.ec());
+      return;
     }
 
-    SerialDevice(const SerialDevice&) = delete;
+    SerialDeviceParams params{};
+    memset(&params, 0, sizeof(params));
+    params.mode = 2;
+    params.loopback = 0;
+    params.flags = static_cast<uint16_t>(HdlcRxClkSource::RxClkPin) + static_cast<uint16_t>(HdlcTxClkSource::BRG);
+    params.encoding = static_cast<uint8_t>(HdlcEncoding::NRZ);
+    params.clock = a_clock_speed;
+    params.crc = static_cast<uint16_t>(HdlcCrcType::CcittCrc16);
+    params.addr = a_addr_filter;
 
-    SerialDevice(SerialDevice&&) = delete;
-
-    SerialDevice& operator=(SerialDevice&) = delete;
-
-    SerialDevice& operator=(SerialDevice&&) = delete;
-
-    /*!
-     * Only when the device is ready, the read and write method can be called.
-     * @return
-     */
-    static bool ready()
-    {
-        return !apimodule_.ec();
+    if (apimodule_.set_params(dev_, params)) {
+      vtc::logger()->error("Serial device \"{}\" failed to set params, code {}", a_dev_name, apimodule_.ec());
+      return;
     }
+
+    if (apimodule_.set_option(dev_, DeviceOptionTag::RxPoll, 0)) {
+      vtc::logger()
+          ->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}", a_dev_name, apimodule_.ec());
+      return;
+    }
+
+    if (apimodule_.set_option(dev_, DeviceOptionTag::TxPoll, 0)) {
+      vtc::logger()
+          ->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}", a_dev_name, apimodule_.ec());
+      return;
+    }
+
+    if (apimodule_.set_option(dev_, DeviceOptionTag::RxErrorMask, 1)) {
+      vtc::logger()->error("Serial device \"{}\" failed to set option RxErrorMask = 1, code {}", a_dev_name,
+                           apimodule_.ec());
+      return;
+    }
+
+    if (apimodule_.set_idle_mode(dev_, HdlcIdleMode::Ones)) {
+      vtc::logger()->error("Serial device \"{}\" failed to set idle mode to ones, code {}", a_dev_name,
+                           apimodule_.ec());
+      return;
+    }
+
+    if (apimodule_.enable_read(dev_)) {
+      vtc::logger()->error("Serial device \"{}\" failed to enable read, code {}", a_dev_name, apimodule_.ec());
+      return;
+    }
+  }
+
+  ~SerialDevice()
+  {
+    if (dev_) {
+      apimodule_.cancel_reading(dev_);
+      apimodule_.cancel_writing(dev_);
+      apimodule_.close(dev_);
+    }
+  }
+
+  SerialDevice(const SerialDevice &) = delete;
+
+  SerialDevice(SerialDevice &&) = delete;
+
+  SerialDevice &operator=(SerialDevice &) = delete;
+
+  SerialDevice &operator=(SerialDevice &&) = delete;
+
+  /*!
+   * Only when the device is ready, the read and write method can be called.
+   * @return
+   */
+  static bool ready()
+  {
+    return !apimodule_.ec();
+  }
 
 #ifdef _WIN32
 
-    static std::string err_what()
-    {
-        if (apimodule_.ec() == 0)
-        {
-            return std::string{}; // No error message has been recorded
-        }
-
-        LPSTR buf = nullptr;
-
-        // Ask Win32 to give us the string version of that message ID.
-        // The parameters we pass in, tell Win32 to create the buffer that holds the message for us
-        // (because we don't yet know how long the message string will be).
-        size_t bufsz = ::FormatMessageA(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-            nullptr,
-            apimodule_.ec(),
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPSTR)&buf,
-            0,
-            nullptr);
-
-        //Copy the error message into a std::string.
-        std::string result(buf, bufsz);
-        //Free the Win32's string's buffer.
-        ::LocalFree(buf);
-        return result;
+  static std::string err_what()
+  {
+    if (apimodule_.ec() == 0) {
+      return std::string{}; // No error message has been recorded
     }
+
+    LPSTR buf = nullptr;
+
+    // Ask Win32 to give us the string version of that message ID.
+    // The parameters we pass in, tell Win32 to create the buffer that holds the message for us
+    // (because we don't yet know how long the message string will be).
+    size_t bufsz = ::FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr,
+        apimodule_.ec(),
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPSTR)&buf,
+        0,
+        nullptr);
+
+    //Copy the error message into a std::string.
+    std::string result(buf, bufsz);
+    //Free the Win32's string's buffer.
+    ::LocalFree(buf);
+    return result;
+  }
 
 #endif
 
-    uint32_t read(std::span<uint8_t> a_buf)
-    {
-        return apimodule_.read(dev_, a_buf);
-    }
+  uint32_t read(std::span<uint8_t> a_buf)
+  {
+    return apimodule_.read(dev_, a_buf);
+  }
 
-    uint32_t write(const std::span<const uint8_t> a_buf)
-    {
-        return apimodule_.write(dev_, a_buf);
-    }
+  uint32_t write(const std::span<const uint8_t> a_buf)
+  {
+    return apimodule_.write(dev_, a_buf);
+  }
 
-    [[nodiscard]] static bool is_apimodule_loaded()
-    {
-        return apimodule_.is_loaded();
-    }
+  [[nodiscard]] static bool is_apimodule_loaded()
+  {
+    return apimodule_.is_loaded();
+  }
 
-    [[nodiscard]] static uint32_t ec()
-    {
-        return apimodule_.ec();
-    }
+  [[nodiscard]] static uint32_t ec()
+  {
+    return apimodule_.ec();
+  }
 
 #ifdef TEST
-    static SerialApiModule& apimodule()
-    {
-        return apimodule_;
-    }
+  static SerialApiModule& apimodule()
+  {
+      return apimodule_;
+  }
 #endif
 
 private:
-    static SerialApiModule apimodule_;
-    DeviceHandle dev_{ nullptr };
+  static SerialApiModule apimodule_;
+  DeviceHandle dev_{nullptr};
 };
 
 SerialDevice::SerialApiModule SerialDevice::apimodule_{};
@@ -4016,15 +3965,15 @@ using namespace io::output;
 using namespace serial::device;
 using namespace matchit;
 
-auto constexpr num_loadswitches{ 16 };
-auto constexpr num_detector_channels{ 64 };
+auto constexpr num_loadswitches{16};
+auto constexpr num_detector_channels{64};
 
 enum class Turn : short
 {
-    Right = 0,
-    Through = 1,
-    Left = 2,
-    UTurn = 3
+  Right = 0,
+  Through = 1,
+  Left = 2,
+  UTurn = 3
 };
 
 using Approach = uint32_t;
@@ -4037,10 +3986,10 @@ using DetectorChannelID = vtc::Index;
 
 enum class LoadswitchChannelState : short
 {
-    Blank = 0,
-    Red = 1,
-    Yellow = 2,
-    Green = 3
+  Blank = 0,
+  Red = 1,
+  Yellow = 2,
+  Green = 3
 };
 
 /*!
@@ -4050,9 +3999,9 @@ enum class LoadswitchChannelState : short
 template<LoadswitchChannelID I>
 using LoadswitchDriver =
     std::tuple<
-        ChannelGreenWalkDriver<I>&,
-        ChannelYellowPedClearDriver<I>&,
-        ChannelRedDoNotWalkDriver<I>&
+        ChannelGreenWalkDriver<I> &,
+        ChannelYellowPedClearDriver<I> &,
+        ChannelRedDoNotWalkDriver<I> &
     >;
 
 // @formatter:off
@@ -4071,10 +4020,10 @@ requires (I <= num_loadswitches) && (I >= 1)
 class LoadswitchChannel
 {
 public:
-    [[nodiscard]] auto constexpr state() const noexcept
-    {
-        auto& [g, y, r] = driver_;
-        //@formatter:off
+  [[nodiscard]] auto constexpr state() const noexcept
+  {
+    auto &[g, y, r] = driver_;
+    //@formatter:off
         return match(std::make_tuple(std::ref(g.value), std::ref(y.value), std::ref(r.value)))(
             pattern | ds(Bit::On, Bit::Off, Bit::Off) = expr(LoadswitchChannelState::Green),
             pattern | ds(Bit::Off, Bit::On, Bit::Off) = expr(LoadswitchChannelState::Yellow),
@@ -4082,15 +4031,15 @@ public:
             pattern | ds(_, _, _) /* Blank, or error? */ = expr(LoadswitchChannelState::Blank)
         );
         //@formatter:on
-    }
+  }
 
-    auto constexpr operator()() const noexcept
-    {
-        return I;
-    }
+  auto constexpr operator()() const noexcept
+  {
+    return I;
+  }
 
 private:
-    LoadswitchDriver<I> driver_{ make_loadswitch_driver<I>() };
+  LoadswitchDriver<I> driver_{make_loadswitch_driver<I>()};
 };
 
 template<LoadswitchChannelID I>
@@ -4099,9 +4048,9 @@ using LoadswitchWiring = std::tuple<LoadswitchChannel<I>, SignalHead>;
 
 struct LoadswitchWiringFactory
 {
-    template<LoadswitchChannelID I>
-    static auto make()
-    { //@formatter:off
+  template<LoadswitchChannelID I>
+  static auto make()
+  { //@formatter:off
         return LoadswitchWiring<I>{};
     } //@formatter:on
 };
@@ -4120,18 +4069,18 @@ requires (I <= num_detector_channels) && (I >= 1)
 class DetectorChannel
 {
 public:
-    [[nodiscard]] auto& activated() const noexcept
-    {
-        return state_.value;
-    }
+  [[nodiscard]] auto &activated() const noexcept
+  {
+    return state_.value;
+  }
 
-    auto constexpr operator()() noexcept
-    {
-        return I;
-    }
+  auto constexpr operator()() noexcept
+  {
+    return I;
+  }
 
 private:
-    VehicleDetCall<I>& state_{ io::variable<io::input::VehicleDetCall<I>> };
+  VehicleDetCall<I> &state_{io::variable<io::input::VehicleDetCall<I>>};
 };
 
 template<DetectorChannelID I>
@@ -4161,7 +4110,7 @@ using DetectorChannelIndexes =
 template<typename WiringFactoryT, typename ChannelIDT, ChannelIDT ...Is>
 auto make_wirings(WiringFactoryT, ChannelIDT, std::integer_sequence<ChannelIDT, Is...>)
 {
-    return std::make_tuple(decltype(WiringFactoryT::template make<Is>()){}...);
+  return std::make_tuple(decltype(WiringFactoryT::template make<Is>()){}...);
 }
 
 /*!
@@ -4169,14 +4118,14 @@ auto make_wirings(WiringFactoryT, ChannelIDT, std::integer_sequence<ChannelIDT, 
  * are just supplied for the purpose of obtaining their respective types.
  */
 using DetectorWirings
-    = decltype(make_wirings(DetectorWiringFactory{}, DetectorChannelID{ 1 }, DetectorChannelIndexes{}));
+    = decltype(make_wirings(DetectorWiringFactory{}, DetectorChannelID{1}, DetectorChannelIndexes{}));
 
 /*!
  * A trick of aliasing the type of loadswitch wirings. The args instances to make_wirings()
  * are just supplied for the purpose of obtaining their respective types.
  */
 using LoadswitchWirings
-    = decltype(make_wirings(LoadswitchWiringFactory{}, LoadswitchChannelID{ 1 }, LoadswitchChannelIndexes{}));
+    = decltype(make_wirings(LoadswitchWiringFactory{}, LoadswitchChannelID{1}, LoadswitchChannelIndexes{}));
 
 /*!
  * Wirings concept is limited to detector wirings and load switch wirings.
@@ -4184,7 +4133,7 @@ using LoadswitchWirings
  */
 template<typename T>
 concept Wirings = std::is_same_v<std::remove_cvref_t<T>, LoadswitchWirings>
-                  || std::is_same_v<std::remove_cvref_t<T>, DetectorWirings>;
+    || std::is_same_v<std::remove_cvref_t<T>, DetectorWirings>;
 
 /*!
  * Provide a convenience function for enumerating the individual wiring of a list of wirings.
@@ -4194,21 +4143,27 @@ concept Wirings = std::is_same_v<std::remove_cvref_t<T>, LoadswitchWirings>
  * @param a_func
  */
 template<Wirings WiringsT, typename F>
-void for_each(WiringsT&& a_wirings, F&& a_func)
+void for_each(WiringsT &&a_wirings, F &&a_func)
 {
-    std::apply(
-        [&a_func]<typename ...T>(T&& ...args) {
-            (a_func(std::forward<T>(args)), ...);
-        },
-        std::forward<WiringsT>(a_wirings)
-    );
+  std::apply(
+      [&a_func]<typename ...T>(T &&...args) {
+        (a_func(std::forward<T>(args)), ...);
+      },
+      std::forward<WiringsT>(a_wirings)
+  );
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedTypeAliasInspection"
 using ProcessLoadswitchWiringFunc
     = std::function<void(const LoadswitchChannelID, const LoadswitchChannelState, const Approach, const Turn)>;
+#pragma clang diagnostic pop
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedTypeAliasInspection"
 using ProcessDetectorWiringFunc
     = std::function<bool(const DetectorChannelID, const SensorID)>;
+#pragma clang diagnostic pop
 
 using VerifyLoadswitchWiringFunc
     = std::function<bool(const LoadswitchChannelID, const Approach, const Turn)>;
@@ -4228,217 +4183,202 @@ using VerifyFuncGroup
 class HilsCI
 {
 public:
-    HilsCI(const HilsCI&) = delete;
+  HilsCI(const HilsCI &) = delete;
 
-    HilsCI(HilsCI&&) = delete;
+  HilsCI(HilsCI &&) = delete;
 
-    HilsCI& operator=(HilsCI&) = delete;
+  HilsCI &operator=(HilsCI &) = delete;
 
-    HilsCI& operator=(HilsCI&&) = delete;
+  HilsCI &operator=(HilsCI &&) = delete;
 
-    auto& loadswitch_wirings() const
-    {
-        return loadswitch_wirings_;
-    }
+  auto &loadswitch_wirings() const
+  {
+    return loadswitch_wirings_;
+  }
 
-    auto& detector_wirings() const
-    {
-        return detector_wirings_;
-    }
+  auto &detector_wirings() const
+  {
+    return detector_wirings_;
+  }
 
 protected:
-    HilsCI() = default;
+  HilsCI() = default;
 
-    /*!
-     * Derived class implemented for a specific simulator, e.g., TransModeler, should
-     * call this method when the simulation clock "ticks".
-     */
-    void process_wirings(auto a_process_loadswitch_wiring, auto a_process_detector_wiring)
-    {
-        for_each(detector_wirings_, [&](auto&& el) {
-            auto& [channel, sensor_ids] = el;
-            bool activated = false;
+  /*!
+   * Derived class implemented for a specific simulator, e.g., TransModeler, should
+   * call this method when the simulation clock "ticks".
+   */
+  void process_wirings(auto a_process_loadswitch_wiring, auto a_process_detector_wiring)
+  {
+    for_each(detector_wirings_, [&](auto &&el) {
+      auto &[channel, sensor_ids] = el;
+      bool activated = false;
 
-            if (!sensor_ids.empty())
-            {
-                for (const auto sensor_id: sensor_ids)
-                {
-                    activated = activated || a_process_detector_wiring(channel(), sensor_id);
-                }
-            }
-
-            channel.activated() = static_cast<Bit>(activated);
-        });
-
-        for_each(loadswitch_wirings_, [&](auto&& el) {
-            auto& [channel, signal_head] = el;
-
-            if (!signal_head.empty())
-            {
-                for (const auto& turning_movement: signal_head)
-                {
-                    const auto& [approach, turn] = turning_movement;
-                    a_process_loadswitch_wiring(channel(), channel.state(), approach, turn);
-                }
-            }
-        });
-    }
-
-    bool load_config(const fs::path& a_path, const VerifyFuncGroup& a_verify_funcs = {
-    }) noexcept
-    {
-        auto config = pugi::xml_document{};
-        auto parse_result = config.load_file(a_path.c_str());
-
-        if (!parse_result)
-        {
-            vtc::logger()->error("Failed to load config {}: {}", a_path.string(), parse_result.description());
-            return false;
+      if (!sensor_ids.empty()) {
+        for (const auto sensor_id : sensor_ids) {
+          activated = activated || a_process_detector_wiring(channel(), sensor_id);
         }
+      }
 
-        load_mmu16_channel_compatibility(config);
+      channel.activated() = static_cast<Bit>(activated);
+    });
 
-        auto dev_name
-            = std::string{{ 0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43 }} + config.document_element().attribute("device").value();
-        device_ = std::make_unique<SerialDevice>(dev_name.c_str());
+    for_each(loadswitch_wirings_, [&](auto &&el) {
+      auto &[channel, signal_head] = el;
 
-        log_sdlc_frames_
-            = std::string{ config.document_element().attribute("log_sdlc_frames").value() } == std::string{ "true" };
-
-        auto step = std::stod(config.document_element().attribute("simulation_step").value());
-        auto [verify_simstep, verify_loadswitch_wiring, verify_detector_wiring] = a_verify_funcs;
-
-        return (device_->ready())
-               && (!verify_simstep || verify_simstep(step))
-               && load_config(config, verify_loadswitch_wiring)
-               && load_config(config, verify_detector_wiring);
-    }
-
-    bool enable_sdlc() noexcept
-    {
-        if (device_->ready() && (!sdlc_enabled_))
-        {
-            sdlc_enabled_ = true;
-            std::thread(
-                [&]() {
-                    while (sdlc_enabled_)
-                    {
-                        auto count = device_->read(serial::buffer);
-
-                        if (log_sdlc_frames_)
-                        {
-                            auto frame_str = vtc::BytesToHexStr(serial::buffer.data(), count);
-                            vtc::logger()->info("Command Frame {} Addr {}: {}", serial::buffer[2], serial::buffer[0],
-                                frame_str);
-                        }
-
-                        auto [success, response_data] = vtc::serial::Dispatch({ serial::buffer.data(), count });
-                        device_->write(response_data);
-
-                        if (log_sdlc_frames_)
-                        {
-                            auto frame_str = vtc::BytesToHexStr(response_data.data(), response_data.size());
-                            vtc::logger()->info("Response Frame {} Addr {}: {}", response_data[2], response_data[0], frame_str);
-                        }
-                    }
-                }
-            ).detach();
+      if (!signal_head.empty()) {
+        for (const auto &turning_movement : signal_head) {
+          const auto &[approach, turn] = turning_movement;
+          a_process_loadswitch_wiring(channel(), channel.state(), approach, turn);
         }
+      }
+    });
+  }
 
-        return sdlc_enabled_;
+  bool load_config(const fs::path &a_path, const VerifyFuncGroup &a_verify_funcs = {}) noexcept
+  {
+    auto config = pugi::xml_document{};
+    auto parse_result = config.load_file(a_path.c_str());
+
+    if (!parse_result) {
+      vtc::logger()->error("Failed to load config {}: {}", a_path.string(), parse_result.description());
+      return false;
     }
 
-    void disable_sdlc() noexcept
-    {
-        sdlc_enabled_ = false;
+    load_mmu16_channel_compatibility(config);
+
+    auto dev_name
+        = std::string{{0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43}} + config.document_element().attribute("device").value();
+    device_ = std::make_unique<SerialDevice>(dev_name.c_str());
+
+    log_sdlc_frames_
+        = std::string{config.document_element().attribute("log_sdlc_frames").value()} == std::string{"true"};
+
+    auto step = std::stod(config.document_element().attribute("simulation_step").value());
+    auto [verify_simstep, verify_loadswitch_wiring, verify_detector_wiring] = a_verify_funcs;
+
+    return (device_->ready())
+        && (!verify_simstep || verify_simstep(step))
+        && load_config(config, verify_loadswitch_wiring)
+        && load_config(config, verify_detector_wiring);
+  }
+
+  bool enable_sdlc() noexcept
+  {
+    if (device_->ready() && (!sdlc_enabled_)) {
+      sdlc_enabled_ = true;
+      std::thread(
+          [&]() {
+            while (sdlc_enabled_) {
+              auto count = device_->read(serial::buffer);
+
+              if (log_sdlc_frames_) {
+                auto frame_str = vtc::BytesToHexStr(serial::buffer.data(), count);
+                vtc::logger()->info("Command Frame {} Addr {}: {}", serial::buffer[2], serial::buffer[0],
+                                    frame_str);
+              }
+
+              auto [success, response_data] = vtc::serial::Dispatch({serial::buffer.data(), count});
+              device_->write(response_data);
+
+              if (log_sdlc_frames_) {
+                auto frame_str = vtc::BytesToHexStr(response_data.data(), response_data.size());
+                vtc::logger()->info("Response Frame {} Addr {}: {}", response_data[2], response_data[0], frame_str);
+              }
+            }
+          }
+      ).detach();
     }
+
+    return sdlc_enabled_;
+  }
+
+  void disable_sdlc() noexcept
+  {
+    sdlc_enabled_ = false;
+  }
 
 private:
 
-    bool load_config(pugi::xml_document& a_config, VerifyLoadswitchWiringFunc a_func)
-    {
-        bool result = true;
+  bool load_config(pugi::xml_document &a_config, VerifyLoadswitchWiringFunc a_func)
+  {
+    bool result = true;
 
-        for_each(loadswitch_wirings_, [&](auto&& el) {
-            if (!result)
-                return;
+    for_each(loadswitch_wirings_, [&](auto &&el) {
+      if (!result)
+        return;
 
-            auto& [channel, signal_head] = el;
-            auto xpath = a_config.select_node(std::format("//loadswitch_wiring[@channel={}]", channel()).c_str());
+      auto &[channel, signal_head] = el;
+      auto xpath = a_config.select_node(std::format("//loadswitch_wiring[@channel={}]", channel()).c_str());
 
-            if (xpath)
-            {
-                for (auto tm: xpath.node().child("signal_head").children("turning_movement"))
-                {
-                    auto a = std::stol(tm.attribute("approach").value());
-                    auto t = static_cast<Turn>(std::stol(tm.attribute("turn").value()));
+      if (xpath) {
+        for (auto tm : xpath.node().child("signal_head").children("turning_movement")) {
+          auto a = std::stol(tm.attribute("approach").value());
+          auto t = static_cast<Turn>(std::stol(tm.attribute("turn").value()));
 
-                    if (a_func && a_func(channel(), a, t))
-                        signal_head.emplace_back(a, t);
-                    else
-                        result = !a_func;
-                }
-            }
-        });
-
-        return result;
-    }
-
-    bool load_config(pugi::xml_document& a_config, VerifyDetectorWiringFunc a_func)
-    {
-        bool result = true;
-
-        for_each(detector_wirings_, [&](auto&& el) {
-            if (!result)
-                return;
-
-            auto& [channel, sensor_ids] = el;
-            auto xpath = a_config.select_node(std::format("//detector_wiring[@channel={}]", channel()).c_str());
-
-            if (xpath)
-            {
-                for (auto s: xpath.node().child("sensors").children("sensor"))
-                {
-                    auto id = std::stol(s.attribute("id").value());
-
-                    if (a_func && a_func(channel(), id))
-                        sensor_ids.emplace_back(id);
-                    else
-                        result = !a_func;
-                }
-            }
-        });
-        return result;
-    }
-
-    static void load_mmu16_channel_compatibility(pugi::xml_document& a_config)
-    {
-        auto xpath = a_config.select_node("/HilsCI/mmu/@channel_compatibility");
-
-        if (xpath)
-        {
-            auto compat_str = std::string{ xpath.attribute().value() };
-
-            if (compat_str.length() != 30)
-                vtc::logger()->error("Invalid MMU16 compatibility string {}. Default used.", compat_str);
-            else
-                vtc::mmu::SetMMU16ChannelCompatibility(compat_str);
+          if (a_func && a_func(channel(), a, t))
+            signal_head.emplace_back(a, t);
+          else
+            result = !a_func;
         }
-        else
-        {
-            vtc::mmu::SetDefaultMMU16ChannelCompatibility();
-            vtc::logger()->info("Default MMU16 compatibility is set.");
+      }
+    });
+
+    return result;
+  }
+
+  bool load_config(pugi::xml_document &a_config, VerifyDetectorWiringFunc a_func)
+  {
+    bool result = true;
+
+    for_each(detector_wirings_, [&](auto &&el) {
+      if (!result)
+        return;
+
+      auto &[channel, sensor_ids] = el;
+      auto xpath = a_config.select_node(std::format("//detector_wiring[@channel={}]", channel()).c_str());
+
+      if (xpath) {
+        for (auto s : xpath.node().child("sensors").children("sensor")) {
+          auto id = std::stol(s.attribute("id").value());
+
+          if (a_func && a_func(channel(), id))
+            sensor_ids.emplace_back(id);
+          else
+            result = !a_func;
         }
+      }
+    });
+    return result;
+  }
+
+  static void load_mmu16_channel_compatibility(pugi::xml_document &a_config)
+  {
+    auto xpath = a_config.select_node("/HilsCI/mmu/@channel_compatibility");
+
+    if (xpath) {
+      auto compat_str = std::string{xpath.attribute().value()};
+
+      if (compat_str.length() != 30)
+        vtc::logger()->error("Invalid MMU16 compatibility string {}. Default used.", compat_str);
+      else
+        vtc::mmu::SetMMU16ChannelCompatibility(compat_str);
+    } else {
+      vtc::mmu::SetDefaultMMU16ChannelCompatibility();
+      vtc::logger()->info("Default MMU16 compatibility is set.");
     }
+  }
 
 private:
-    LoadswitchWirings loadswitch_wirings_{};
-    DetectorWirings detector_wirings_{};
-    std::atomic<bool> sdlc_enabled_{ false };
-    std::unique_ptr<SerialDevice> device_{ nullptr };
-    bool log_sdlc_frames_{ false };
+  LoadswitchWirings loadswitch_wirings_{};
+  DetectorWirings detector_wirings_{};
+  std::atomic<bool> sdlc_enabled_{false};
+  std::unique_ptr<SerialDevice> device_{nullptr};
+  bool log_sdlc_frames_{false};
 };
 
 }
-
 #endif
+
+#pragma clang diagnostic pop
+#pragma warning(default:4068)

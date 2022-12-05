@@ -42,18 +42,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BOOL APIENTRY DllMain(HANDLE handle, DWORD ulReason, LPVOID lpReserved)
 {
-    switch (ulReason)
-    {
-        case DLL_PROCESS_ATTACH: //
-            return vtc::hils::transmodeler::TsmCI::instance().init(static_cast<HMODULE>(handle));
+  switch (ulReason) {
+    case DLL_PROCESS_ATTACH: //
+      return vtc::hils::transmodeler::TsmCI::instance().init(static_cast<HMODULE>(handle));
 
-        case DLL_PROCESS_DETACH: //
-            return vtc::hils::transmodeler::TsmCI::instance().finalize(), true;
+    case DLL_PROCESS_DETACH: //
+      return vtc::hils::transmodeler::TsmCI::instance().finalize(), true;
 
-        case DLL_THREAD_ATTACH: //
-            return true;
+    case DLL_THREAD_ATTACH: //
+      return true;
 
-        case DLL_THREAD_DETACH: //
-            return true;
-    }
+    case DLL_THREAD_DETACH: //
+      return true;
+  }
 }
