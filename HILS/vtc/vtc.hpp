@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma ide diagnostic ignored "OCUnusedStructInspection"
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 
-
 #ifndef VTC_VTC_HPP
 #define VTC_VTC_HPP
 
@@ -1080,7 +1079,6 @@ constexpr size_t ChannelSegmentStartPos()
            F -                                           G
 */
 
-// @formatter:off
 /*!
  * For a given MMU channel, the IDs of other channels that is paired to the subject
  * chanel for compatibility definition.
@@ -1089,7 +1087,6 @@ template<Index ChannelID, Index MaxChannel = 16>
 /**/requires (ChannelID >= 1) && (ChannelID < MaxChannel)
 using ChannelCompatibilityPairedIndexes
     = offset_sequence_t<ChannelID, std::make_integer_sequence<Index, MaxChannel - ChannelID>>;
-// @formatter:on
 
 namespace impl {
 /*!
@@ -2335,7 +2332,6 @@ struct FrameType<27>
 // Frame 30, 40, 42, 43 - nobody cares; we neither.
 // ----------------------------------------------
 
-
 // ----------------------------------------------
 // Frame Type 128
 // ----------------------------------------------
@@ -3412,8 +3408,8 @@ std::tuple<bool, std::span<Byte>> Dispatch(std::span<const Byte> a_data_in)
       return {true, {serial::buffer.data(), res_frame.bytesize}};
     } else {
       // @formatter:off
-            return Dispatch<I+1>(a_data_in);
-            // @formatter:on
+      return Dispatch<I+1>(a_data_in);
+      // @formatter:on
     }
   } else {
     return {false, serial::buffer};
@@ -4004,16 +4000,14 @@ using LoadswitchDriver =
         ChannelRedDoNotWalkDriver<I> &
     >;
 
-// @formatter:off
 template<LoadswitchChannelID I>
 auto make_loadswitch_driver()
 {
-    return std::make_tuple(
-        std::ref(io::variable<ChannelGreenWalkDriver<I>>),      /**/
-        std::ref(io::variable<ChannelYellowPedClearDriver<I>>), /**/
-        std::ref(io::variable<ChannelRedDoNotWalkDriver<I>>));  /**/
+  return std::make_tuple(
+      std::ref(io::variable<ChannelGreenWalkDriver<I>>),      /**/
+      std::ref(io::variable<ChannelYellowPedClearDriver<I>>), /**/
+      std::ref(io::variable<ChannelRedDoNotWalkDriver<I>>));  /**/
 }
-//@formatter:on
 
 template<LoadswitchChannelID I>/**/
 requires (I <= num_loadswitches) && (I >= 1)
@@ -4023,14 +4017,12 @@ public:
   [[nodiscard]] auto constexpr state() const noexcept
   {
     auto &[g, y, r] = driver_;
-    //@formatter:off
-        return match(std::make_tuple(std::ref(g.value), std::ref(y.value), std::ref(r.value)))(
-            pattern | ds(Bit::On, Bit::Off, Bit::Off) = expr(LoadswitchChannelState::Green),
-            pattern | ds(Bit::Off, Bit::On, Bit::Off) = expr(LoadswitchChannelState::Yellow),
-            pattern | ds(Bit::Off, Bit::Off, Bit::On) = expr(LoadswitchChannelState::Red),
-            pattern | ds(_, _, _) /* Blank, or error? */ = expr(LoadswitchChannelState::Blank)
-        );
-        //@formatter:on
+    return match(std::make_tuple(std::ref(g.value), std::ref(y.value), std::ref(r.value)))(
+        pattern | ds(Bit::On, Bit::Off, Bit::Off) = expr(LoadswitchChannelState::Green),
+        pattern | ds(Bit::Off, Bit::On, Bit::Off) = expr(LoadswitchChannelState::Yellow),
+        pattern | ds(Bit::Off, Bit::Off, Bit::On) = expr(LoadswitchChannelState::Red),
+        pattern | ds(_, _, _) /* Blank, or error? */ = expr(LoadswitchChannelState::Blank)
+    );
   }
 
   auto constexpr operator()() const noexcept
@@ -4042,17 +4034,16 @@ private:
   LoadswitchDriver<I> driver_{make_loadswitch_driver<I>()};
 };
 
-template<LoadswitchChannelID I>
-/**/requires (I <= num_loadswitches) && (I >= 1)
+template<LoadswitchChannelID I> requires (I <= num_loadswitches) && (I >= 1)
 using LoadswitchWiring = std::tuple<LoadswitchChannel<I>, SignalHead>;
 
 struct LoadswitchWiringFactory
 {
   template<LoadswitchChannelID I>
   static auto make()
-  { //@formatter:off
-        return LoadswitchWiring<I>{};
-    } //@formatter:on
+  {
+    return LoadswitchWiring<I>{};
+  }
 };
 
 using LoadswitchChannelIndexes =
@@ -4087,16 +4078,14 @@ template<DetectorChannelID I>
 /**/requires (I <= num_detector_channels) && (I >= 1)
 using DetectorWiring = std::tuple<DetectorChannel<I>, SensorIDs>;
 
-//@formatter:off
 struct DetectorWiringFactory
 {
-    template<DetectorChannelID I>
-    static auto make()
-    {
-        return DetectorWiring<I>{};
-    }
+  template<DetectorChannelID I>
+  static auto make()
+  {
+    return DetectorWiring<I>{};
+  }
 };
-//@formatter:on
 
 using DetectorChannelIndexes =
     offset_sequence_t<
