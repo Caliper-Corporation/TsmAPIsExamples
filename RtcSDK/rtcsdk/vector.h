@@ -7,7 +7,7 @@ namespace rtcsdk::details {
 template<typename... Types>
 struct vector
 {
-    using type = vector;
+  using type = vector;
 };
 
 template<typename T>
@@ -16,7 +16,7 @@ struct size;
 template<typename... Types>
 struct size<vector<Types...>>
 {
-    static const size_t value = sizeof...(Types);
+  static const size_t value = sizeof...(Types);
 };
 
 template<typename Vector, typename T>
@@ -25,7 +25,7 @@ struct push_back;
 template<typename... Types, typename T>
 struct push_back<vector<Types...>, T>
 {
-    using type = vector<Types..., T>;
+  using type = vector<Types..., T>;
 };
 
 template<typename Vector, typename T>
@@ -37,7 +37,7 @@ struct push_front;
 template<typename... Types, typename T>
 struct push_front<vector<Types...>, T>
 {
-    using type = vector<T, Types...>;
+  using type = vector<T, Types...>;
 };
 
 template<typename Vector, typename T>
@@ -49,19 +49,19 @@ struct append;
 template<typename... Types, typename B>
 struct append<vector<Types...>, B>
 {
-    using type = vector<Types..., B>;
+  using type = vector<Types..., B>;
 };
 
 template<typename A, typename... Types>
 struct append<A, vector<Types...>>
 {
-    using type = vector<A, Types...>;
+  using type = vector<A, Types...>;
 };
 
 template<typename... TypesA, typename... TypesB>
 struct append<vector<TypesA...>, vector<TypesB...>>
 {
-    using type = vector<TypesA..., TypesB...>;
+  using type = vector<TypesA..., TypesB...>;
 };
 
 template<typename A, typename B>
@@ -73,7 +73,7 @@ struct front;
 template<typename First, typename... Rest>
 struct front<vector<First, Rest...>>
 {
-    using type = First;
+  using type = First;
 };
 
 template<typename T>
@@ -85,7 +85,7 @@ struct back;
 template<typename... First, typename Last>
 struct back<vector<First..., Last>>
 {
-    using type = Last;
+  using type = Last;
 };
 
 template<typename T>
@@ -97,7 +97,7 @@ struct remove_front;
 template<typename First, typename... Rest>
 struct remove_front<vector<First, Rest...>>
 {
-    using type = vector<Rest...>;
+  using type = vector<Rest...>;
 };
 
 template<typename T>
@@ -109,7 +109,7 @@ struct remove_back;
 template<typename... First, typename Last>
 struct remove_back<vector<First..., Last>>
 {
-    using type = vector<First...>;
+  using type = vector<First...>;
 };
 
 template<typename T>
@@ -121,10 +121,10 @@ struct as_tuple;
 template<typename... Types>
 struct as_tuple<vector<Types...>>
 {
-    using type = std::tuple<Types...>;
+  using type = std::tuple<Types...>;
 };
 
 template<typename T>
 using as_tuple_t = typename as_tuple<T>::type;
 
-} // end of namespace rtcsdk::details
+}// end of namespace rtcsdk::details

@@ -1,5 +1,5 @@
 #pragma once
-#include<winerror.h>
+#include <winerror.h>
 
 namespace rtcsdk {
 
@@ -10,29 +10,28 @@ namespace rtcsdk {
 class bad_hresult
 {
 public:
-    constexpr bad_hresult() = default;
-    explicit constexpr bad_hresult(const HRESULT hr) noexcept : hr_{ hr }
-    {
-    }
+  constexpr bad_hresult() = default;
+  explicit constexpr bad_hresult(const HRESULT hr) noexcept : hr_{hr}
+  {
+  }
 
-    constexpr HRESULT hr() const noexcept
-    {
-        return hr_;
-    }
+  constexpr HRESULT hr() const noexcept
+  {
+    return hr_;
+  }
 
-    constexpr bool is_aborted() const noexcept
-    {
-        return hr_ == HRESULT_FROM_WIN32(ERROR_OPERATION_ABORTED);
-    }
+  constexpr bool is_aborted() const noexcept
+  {
+    return hr_ == HRESULT_FROM_WIN32(ERROR_OPERATION_ABORTED);
+  }
 
 private:
-    HRESULT hr_{ E_FAIL };
+  HRESULT hr_{E_FAIL};
 };
 
-[[noreturn]]
-inline void throw_bad_hresult(HRESULT hr)
+[[noreturn]] inline void throw_bad_hresult(HRESULT hr)
 {
-    throw bad_hresult{ hr };
+  throw bad_hresult{hr};
 }
 
 /**
@@ -40,17 +39,15 @@ inline void throw_bad_hresult(HRESULT hr)
 
  @param     err The win32 error.
  */
-[[noreturn]]
-inline void throw_win32_error(DWORD err)
+[[noreturn]] inline void throw_win32_error(DWORD err)
 {
-    throw_bad_hresult(HRESULT_FROM_WIN32(err));
+  throw_bad_hresult(HRESULT_FROM_WIN32(err));
 }
 
 /** Throw last win32 error as bad_hresult. */
-[[noreturn]]
-inline void throw_last_error()
+[[noreturn]] inline void throw_last_error()
 {
-    throw_win32_error(GetLastError());
+  throw_win32_error(GetLastError());
 }
 
 /**
@@ -58,14 +55,11 @@ inline void throw_last_error()
 
  @param     hr  The HRESULT value.
  */
-[[noreturn]]
-inline void throw_on_failed(HRESULT hr)
+[[noreturn]] inline void throw_on_failed(HRESULT hr)
 {
-    if (FAILED(hr))
-    {
-        throw_bad_hresult(hr);
-    }
+  if (FAILED(hr)) {
+    throw_bad_hresult(hr);
+  }
 }
 
-} // end of namespace rtcsdk
-
+}// end of namespace rtcsdk
