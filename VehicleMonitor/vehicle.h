@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VMPLUGIN_VEHICLE
 #define VMPLUGIN_VEHICLE
 
-#include "pch.h"
+#include "pch.h" // Pre-compiled header
 #include "monitor.h"
 
 namespace vmplugin {
@@ -41,31 +41,31 @@ namespace vmplugin {
 class MyVehicle : public IUserVehicle
 {
 public:
-    MyVehicle(const long id, const SVehicleProperty& prop) noexcept : id_{ id }, prop_{ prop } {}
+  MyVehicle(const long id, const SVehicleProperty &prop) noexcept : id_{id}, prop_{prop} {}
 
-    /**
+  /**
      Fires when a vehicle entering the network.
 
      @param     time    Current time of the simulation clock.
      */
-    void Departure(double time) override;
+  void Departure(double time) override;
 
-    /**
+  /**
      Fires when a vehicle arrives at its destination or drop location.
 
      @param     time    Current time of the simulation clock.
      */
-    void Arrival(double time) override;
+  void Arrival(double time) override;
 
-    /**
+  /**
      Fires whenever vehicle state is changed.
 
      @param     time    Current time of the simulation clock.
      @param     state   Vehicle state data.
      */
-    void Update(double time, const SVehicleBasicState& state) override;
+  void Update(double time, const SVehicleBasicState &state) override;
 
-    /**
+  /**
      Fires to receive user-calculated car-following acceleration rate subject
      to TransModeler's internal constraints.
 
@@ -87,9 +87,9 @@ public:
                 receive this call back, ITsmVehicle::AccOverride property of the
                 vehicle cannot be set false by another plugin.
      */
-    float CalculateCarFollowingAccRate(double time, const SCarFollowingData& data, float acc) override;
+  float CalculateCarFollowingAccRate(double time, const SCarFollowingData &data, float acc) override;
 
-    /**
+  /**
      Fires to receive user-calculated acceleration rate that will be directly
      applied to updating the vehicle's speed.
 
@@ -104,9 +104,9 @@ public:
      @remarks   If an inappropriate value is returned, the vehicle may stall,
                 violate traffic signals, or run through other vehicles.
      */
-    float Acceleration(double time, float acc) override;
+  float Acceleration(double time, float acc) override;
 
-    /**
+  /**
      Fires when lane change decision is required.
 
      @param             time        Current time of the simulation clock.
@@ -123,9 +123,9 @@ public:
                 receive this call back, ITsmVehicle::LaneChangeOverride property
                 of the vehicle cannot be set false by another plugin.
      */
-    short LaneChange(double time, short dir, bool* mandatory) override;
+  short LaneChange(double time, short dir, bool *mandatory) override;
 
-    /**
+  /**
      Fires when a transit vehicle comes to a stop.
 
      @param     time    Current time of the simulation clock.
@@ -135,34 +135,34 @@ public:
      @returns   Dwell time calculated by user logic. Return flt_miss if this
                 function is not of interest.
      */
-    float TransitStop(double time, const STransitStopInfo& info, float dwell) override;
+  float TransitStop(double time, const STransitStopInfo &info, float dwell) override;
 
-    /**
+  /**
      Fires when a vehicle is moved.
 
      @param     time    Current time of the simulation clock.
      @param     pos     Vehicle position data.
      */
-    void Position(double time, const SVehiclePosition& pos) override;
+  void Position(double time, const SVehiclePosition &pos) override;
 
-    /**
+  /**
      Fires when the subject vehicle has parked at a parking space.
      Arrival(...) will be fired after this event.
 
      @param     time    Current time of the simulation clock.
      */
-    void Parked(double time) override;
+  void Parked(double time) override;
 
-    /**
+  /**
      Fires when a vehicle is stalled, or a stalled vehicle starts to move
      again.
 
      @param     time    Current time of the simulation clock.
      @param     stalled True if stalled, false moving again.
      */
-    void Stalled(double time, bool stalled) override;
+  void Stalled(double time, bool stalled) override;
 
-    /**
+  /**
      Fires when an error has occurred for this IUserVehicle instance.
 
      @param     msg The error message.
@@ -170,30 +170,28 @@ public:
      @returns   True to ignore the message and continue, false to skip receiving
                 further callback notification.
      */
-    bool OnFail(const BSTR msg) override;
+  bool OnFail(const BSTR msg) override;
 
-    auto id() const -> long {
-        return id_;
-    }
+  auto id() const -> long
+  {
+    return id_;
+  }
 
 private:
-    /** Vehicle property */
-    const SVehicleProperty prop_{};
+  /** Vehicle property */
+  const SVehicleProperty prop_{};
 
-    /** ID of the vehicle */
-    const long id_{ 0 };
+  /** ID of the vehicle */
+  const long id_{0};
 };
 
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
 using MyVehicleMonitor = vmplugin::VehicleMonitor<
-    MyVehicle,                  // User vehicle type
-    VM_UPDATE | VM_POSITION,    // Callback options
-    L"Cool Vehicle Monitor"     // Vehicle monitor name
->;
+    MyVehicle,              // User vehicle type
+    VM_UPDATE | VM_POSITION,// Callback options
+    L"Cool Vehicle Monitor" // Vehicle monitor name
+    >;
 
-
-}
+}// namespace vmplugin
 
 #endif
-
-

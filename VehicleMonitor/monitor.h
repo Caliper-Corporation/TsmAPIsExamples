@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VMPLUGIN_MONITOR
 #define VMPLUGIN_MONITOR
 
-#include "pch.h"
+#include "pch.h"// Pre-compiled header
 
 namespace vmplugin {
 
@@ -46,14 +46,14 @@ namespace vmplugin {
  @tparam    N   Number of wide characters.
  */
 template<size_t N>
-struct VehicleMonitorName
+struct VehicleMonitorName//
 {
-    constexpr VehicleMonitorName(const wchar_t(&str)[N])
-    {
-        std::copy_n(str, N, value);
-    }
+  constexpr VehicleMonitorName(const wchar_t (&str)[N])
+  {
+    std::copy_n(str, N, value);
+  }
 
-    wchar_t value[N];
+  wchar_t value[N];
 };
 
 using VehicleMonitorOptions = unsigned long;
@@ -65,29 +65,29 @@ template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
-requires ValidVehicleMonitorOptions<Opts>
+    requires ValidVehicleMonitorOptions<Opts>
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:
-    using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
+  using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
 
-    ~VehicleMonitor()
-    {
-        ::SysFreeString(name_);
-        tsmapp_ = nullptr;
-    }
+  ~VehicleMonitor()
+  {
+    ::SysFreeString(name_);
+    tsmapp_ = nullptr;
+  }
 
-    VehicleMonitor(VehicleMonitor&) = delete;
-    VehicleMonitor(VehicleMonitor&&) = delete;
-    VehicleMonitor& operator=(VehicleMonitor&) = delete;
-    VehicleMonitor& operator=(VehicleMonitor&&) = delete;
+  VehicleMonitor(VehicleMonitor &) = delete;
+  VehicleMonitor(VehicleMonitor &&) = delete;
+  VehicleMonitor &operator=(VehicleMonitor &) = delete;
+  VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-    const BSTR GetName() const override
-    {
-        return name_;
-    };
+  const BSTR GetName() const override
+  {
+    return name_;
+  };
 
-    /**
+  /**
      Attach the user vehicle to an associated TransModeler's vehicle entity.
 
      @param             id      Vehicle ID, assigned by TransModeler.
@@ -97,138 +97,129 @@ public:
      @returns   Null to advise TransModeler not to attach, else a pointer to an
                 IUserVehicle.
      */
-    IUserVehicle* AttachVehicle(long id, const SVehicleProperty& prop, VehicleMonitorOptions* opts)
-    {
-        *opts = Opts;
-        return new T(id, prop);
-    }
+  IUserVehicle *AttachVehicle(long id, const SVehicleProperty &prop, VehicleMonitorOptions *opts)
+  {
+    *opts = Opts;
+    return new T(id, prop);
+  }
 
-    /**
+  /**
      Load the singleton monitor to TransModeler.
 
      @returns   True if it succeeds, false if it fails.
      */
-    static bool Load() noexcept
-    {
-        return vm_ ? true : []() {
-            vm_.reset(new VehicleMonitorType());
-            return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
-        }();
-    }
+  static bool Load() noexcept
+  {
+    return vm_ ? true : []() {
+      vm_.reset(new VehicleMonitorType());
+      return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
+    }();
+  }
 
-    /**
+  /**
      The singletone vehicle monitor.
 
      @returns   A pointer to VehicleMonitor associated with a user-defined vehicle class.
      */
-    static const auto& instance() noexcept
-    {
-        return vm_;
-    }
+  static const auto &instance() noexcept
+  {
+    return vm_;
+  }
 
-    /**
+  /**
      Unloads the singleton monitor from TransModdler.
 
      @returns   True if it succeeds, false if it fails.
      */
-    static bool Unload() noexcept
-    {
-        return vm_ ? []() -> bool {
-            auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
-            vm_ = nullptr;
-            return result;
-        } () : false;
-    }
+  static bool Unload() noexcept
+  {
+    return !vm_ ? false : []() -> bool {
+      auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
+      vm_ = nullptr;
+      return result;
+    }();
+  }
 
-    /**
+  /**
      Fires when a simulation project is being opened.
 
      @param     name    Project file name.
      */
-    void OpenProject(const BSTR name) override
-    {
+  void OpenProject(const BSTR name) override
+  {
+  }
 
-    }
-
-    /**
+  /**
      Fires before starting the simulation.
 
      @param     run         Zero-based index of the run.
      @param     run_type    Type of the run.
      @param     preload     Whether this is a preload run.
      */
-    void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
-    {
+  void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
+  {
+  }
 
-    }
+  /** Fires after simulation has been successful started. */
+  void SimulationStarted() override
+  {
+  }
 
-    /** Fires after simulation has been successful started. */
-    void SimulationStarted() override
-    {
-
-    }
-
-    /**
+  /**
      Fires after simulation has been stopped.
 
      @param     state   TransModeler state.
      */
-    void SimulationStopped(TsmState state) override
-    {
+  void SimulationStopped(TsmState state) override
+  {
+  }
 
-    }
-
-    /**
+  /**
      Fires at the end of the simulation.
 
      @param     state   TransModeler state.
      */
-    void EndSimulation(TsmState state) override
-    {
+  void EndSimulation(TsmState state) override
+  {
+  }
 
-    }
+  /** Fires when closing the project. */
+  void CloseProject() override
+  {
+  }
 
-    /** Fires when closing the project. */
-    void CloseProject() override
-    {
+  /** Fires on application exit. */
+  void ExitApplication() override
+  {
+  }
 
-    }
-
-    /** Fires on application exit. */
-    void ExitApplication() override
-    {
-
-    }
-
-    /**
+  /**
      Gets TransModeller application instance.
 
      @returns   TsmApi::ITsmApplicationPtr.
      */
-    TsmApi::ITsmApplicationPtr tsmapp() const noexcept
-    {
-        return tsmapp_;
-    };
+  TsmApi::ITsmApplicationPtr tsmapp() const noexcept
+  {
+    return tsmapp_;
+  };
 
 protected:
-    /** Default constructor with "protected" access level. */
-    VehicleMonitor() noexcept : name_{ ::SysAllocString(Name.value) }
-    {
-        tsmapp_ = []()-> TsmApi::ITsmApplication* {
-            CComPtr<TsmApi::ITsmApplication> app;
-            HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
-            return SUCCEEDED(hr) ? app.Detach() : nullptr;
-        }();
-    }
+  /** Default constructor with "protected" access level. */
+  VehicleMonitor() noexcept : name_{::SysAllocString(Name.value)}
+  {
+    tsmapp_ = []() -> TsmApi::ITsmApplication * {
+      CComPtr<TsmApi::ITsmApplication> app;
+      HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
+      return SUCCEEDED(hr) ? app.Detach() : nullptr;
+    }();
+  }
 
 private:
-    BSTR name_{ nullptr };
-    inline static std::unique_ptr<VehicleMonitorType> vm_{ nullptr };
-    TsmApi::ITsmApplicationPtr tsmapp_{ nullptr };
+  BSTR name_{nullptr};
+  inline static std::unique_ptr<VehicleMonitorType> vm_{nullptr};
+  TsmApi::ITsmApplicationPtr tsmapp_{nullptr};
 };
 
-}
+}// namespace vmplugin
 
 #endif
-
-

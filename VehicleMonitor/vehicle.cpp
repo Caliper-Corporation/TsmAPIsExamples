@@ -30,7 +30,7 @@ OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "pch.h"
+#include "pch.h" // Pre-compiled header
 #include "vehicle.h"
 
 namespace vmplugin {
@@ -45,57 +45,57 @@ namespace vmplugin {
 
 void MyVehicle::Departure(double time)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
 void MyVehicle::Arrival(double time)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
-void MyVehicle::Update(double time, const SVehicleBasicState& state)
+void MyVehicle::Update(double time, const SVehicleBasicState &state)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
-float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData& data, float acc)
+float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData &data, float acc)
 {
-    return (flt_miss);   // ignored
+  return (flt_miss);// ignored
 }
 
 float MyVehicle::Acceleration(double time, float acc)
 {
-    return (flt_miss);   // ignored
+  return (flt_miss);// ignored
 }
 
-short MyVehicle::LaneChange(double time, short dir, bool* mandatory)
+short MyVehicle::LaneChange(double time, short dir, bool *mandatory)
 {
-    return (short_miss); // ignored
+  return (short_miss);// ignored
 }
 
-float MyVehicle::TransitStop(double time, const STransitStopInfo& info, float dwell)
+float MyVehicle::TransitStop(double time, const STransitStopInfo &info, float dwell)
 {
-    return (flt_miss);   // ignored
+  return (flt_miss);// ignored
 }
 
-void MyVehicle::Position(double time, const SVehiclePosition& pos)
+void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
 void MyVehicle::Parked(double time)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
 void MyVehicle::Stalled(double time, bool stalled)
 {
-    // Fill in user logic
+  // Fill in user logic
 }
 
 bool MyVehicle::OnFail(const BSTR msg)
 {
-    return false;
+  return false;
 }
 
-}
+}// namespace vmplugin
