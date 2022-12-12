@@ -65,7 +65,7 @@ template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
-    requires ValidVehicleMonitorOptions<Opts>
+  requires ValidVehicleMonitorOptions<Opts>
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:

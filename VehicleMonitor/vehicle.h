@@ -33,7 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VMPLUGIN_VEHICLE
 #define VMPLUGIN_VEHICLE
 
-#include "pch.h" // Pre-compiled header
+// Pre-compiled header
+#include "pch.h"
+//
 #include "monitor.h"
 
 namespace vmplugin {
