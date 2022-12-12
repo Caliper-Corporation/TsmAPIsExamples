@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 23)
 project(VehicleMonitor)
 
-set(TSM_FOLDER "C:\\Program Files\\TransModeler 6.1\\")
+set(TSM_FOLDER "C://Program Files//TransModeler 6.1//")
 
 include_directories(
         "${CMAKE_SOURCE_DIR}"
         "${TSM_FOLDER}"
-        "${PROJECT_BINARY_DIR}//CMakeFiles/${PROJECT_NAME}.dir")
+        "${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir")
 
 link_directories("${TSM_FOLDER}")
 
