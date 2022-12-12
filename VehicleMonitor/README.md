@@ -4,13 +4,13 @@
 
 Vehicle Monitor API is a set of high-performance C++ API that allows developing TransModeller plugin with a direct connection to TransModeler's internal vehicle movement module.
 
-Vehicle Monitor API can be applied to many different use cases that require customized user logic:
-- User-defined driver-behavior models, such as Car-Following or Lane Change Models that take into account latest driver behavioral or human factor research outcomes
+Vehicle Monitor API can be applied to many use cases that require customized user logic:
+- User-defined driver-behavior models, such as Car-Following or Lane Change Models that take into account the latest driver behavioral or human factor research outcomes
 - Advanced Connected and Autonomous Vehicle (CAV) algorithms, such as Adaptive Platooning, Connected Eco-Driving, Automatic Emergency Braking, Forward Collision Warning etc.
 - New computational approach for emission modelling
 - P2P communication and latency modelling in a Vehicular Ad hoc Network (VANET)
 - Trajectory big-data approaches such as using trajectories for Safety-Surrogate Measures, Location-based Data Service modelling
-- Connected Vehicle Cybersecurity and Location Privacy Protection schemes
+- Connected Vehicle Cyber-security and Location Privacy Protection schemes
 - Driver Simulator or 3D visualizations
 
 The application boundary is only limited by your imagination and creativity.
@@ -20,7 +20,7 @@ The application boundary is only limited by your imagination and creativity.
 The framework is designed with performance-critical applications in mind, while paying attention to intuition and ease of use. The following figure illustrates the design.
 
 <p align="left">
-  <img width="60%" src="https://github.com/Caliper-Corporation/TsmAPIsExamples/blob/main/VehicleMonitor/img/vm_framework_design.svg">
+  <img width="60%" src="https://github.com/Caliper-Corporation/TsmAPIsExamples/blob/main/VehicleMonitor/img/vm_framework_design.svg" alt="">
 </p>
 
 ## Advantage
