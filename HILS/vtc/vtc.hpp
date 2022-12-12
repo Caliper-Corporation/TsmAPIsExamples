@@ -350,7 +350,7 @@ constexpr size_t max_prioritors{16};
 
 }
 
-template<typename T>/**/
+template<typename T>
 requires ValidCuVariable<T>
 T variable{};
 
@@ -384,7 +384,7 @@ struct [[maybe_unused]] BiuVariable : Variable<ValueT, I>
   BiuVariable &operator=(BiuVariable &&) = delete;
 };
 
-template<typename T>/**/
+template<typename T>
 requires ValidBiuVariable<T>
 T variable{};
 
@@ -917,7 +917,7 @@ constexpr size_t ChannelSegmentStartPos()
  * chanel for compatibility definition.
 */
 template<Index ChannelID, Index MaxChannel = 16>
-/**/requires (ChannelID >= 1) && (ChannelID < MaxChannel)
+requires (ChannelID >= 1) && (ChannelID < MaxChannel)
 using ChannelCompatibilityPairedIndexes
     = offset_sequence_t<ChannelID, std::make_integer_sequence<Index, MaxChannel - ChannelID>>;
 
@@ -1222,7 +1222,7 @@ struct FrameElementType
 {
 };
 
-template<typename T, size_t BitPos>/**/
+template<typename T, size_t BitPos>
 requires std::is_same_v<ValueType<T>, Bit>
 struct FrameBit
 {
@@ -1248,7 +1248,7 @@ struct FrameBit
   T &ref_var{variable<T>()};
 };
 
-template<typename T, size_t BytePos>/**/
+template<typename T, size_t BytePos>
 requires std::is_same_v<ValueType<T>, Byte>
 struct FrameByte
 {
@@ -1336,7 +1336,7 @@ template<typename T>
 concept ReceivableFrame = std::is_same_v<T, PSR_ResponseFrameType>
     || std::is_same_v<T, SSR_CommandFrameType>;
 
-template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts>/**/
+template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts>
 requires ValidFrame<FrameByteSize, T, Ts...>
 class Frame
 {
@@ -3833,7 +3833,7 @@ auto make_loadswitch_driver()
       std::ref(io::variable<ChannelRedDoNotWalkDriver<I>>));  /**/
 }
 
-template<LoadswitchChannelID I>/**/
+template<LoadswitchChannelID I>
 requires (I <= num_loadswitches) && (I >= 1)
 class LoadswitchChannel
 {
@@ -3879,7 +3879,7 @@ using LoadswitchChannelIndexes =
         >
     >;
 
-template<DetectorChannelID I>/**/
+template<DetectorChannelID I>
 requires (I <= num_detector_channels) && (I >= 1)
 class DetectorChannel
 {
@@ -3899,7 +3899,7 @@ private:
 };
 
 template<DetectorChannelID I>
-/**/requires (I <= num_detector_channels) && (I >= 1)
+requires (I <= num_detector_channels) && (I >= 1)
 using DetectorWiring = std::tuple<DetectorChannel<I>, SensorIDs>;
 
 struct DetectorWiringFactory
