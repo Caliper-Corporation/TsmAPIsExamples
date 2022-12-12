@@ -133,8 +133,7 @@ concept ValidValueType = std::is_same_v<T, Bit>
     || std::is_same_v<T, Word>
     || std::is_same_v<T, Integer>;
 
-template<typename T, Index I> /* */
-requires ValidValueType<T>
+template<typename T, Index I> requires ValidValueType<T>
 struct Variable
 {
   using value_t = T;
@@ -416,470 +415,335 @@ struct IoVariable : Variable<ValueT, I>
   IoVariable &operator=(IoVariable &&) = delete;
 };
 
-template<typename T>/**/
-requires ValidIoVariable<T>
+template<typename T> requires ValidIoVariable<T>
 T variable{};
 
 namespace output {
 
-using AltFlashState[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using AltFlashState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using AuxFunctionState[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using AuxFunctionState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelGreenWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelRedDoNotWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelYellowPedClearDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using CustomAlarm[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using CustomAlarm[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, biu::max_det_bius>
+template<Index I> requires ValidIndex<I, biu::max_det_bius>
 using DetectorReset = IoVariable<AUTO_TAG_ID, Byte, I>;
 
-using FlashState[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using FlashState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using GlobalVariable[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using GlobalVariable[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using NotActive
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapProtectedGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PedCall[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseAdvWarning[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseCheck = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseDoNotWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseNext = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseOn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhasePedClearance[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhasePreClear[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhasePreClear2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptStatusFlash[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using StatusBitA_Ring_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitA_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using StatusBitB_Ring_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitB_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using StatusBitC_Ring_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitC_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using StatusBitA_Ring_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitA_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using StatusBitB_Ring_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitB_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using StatusBitC_Ring_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using StatusBitC_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::unit::max_special_function_outputs>
+template<Index I> requires ValidIndex<I, cu::unit::max_special_function_outputs>
 using SpecialFunction = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using UnitAutomaticFlash
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitFaultMonitor[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitFaultMonitor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitFreeCoordStatus
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitFreeCoordStatus = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_3
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCAux_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCAux_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCAux_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCAux_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCAux_3
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCAux_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanA
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanA = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanB
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanB = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanC
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanC = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanD
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitVoltageMonitor[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitVoltageMonitor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using Watchdog[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using Watchdog[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
 } // end of namespace vc::io::output
 
 namespace input {
 
-template<Index I>
-/**/requires ValidIndex<I, cu::detector::max_vehicle_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::max_vehicle_detectors>
 using ChannelFaultStatus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using CoordFreeSwitch
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using CoordFreeSwitch = IoVariable<AUTO_TAG_ID, Bit>;
 
-using CustomAlarm[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using CustomAlarm[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using DoorAjor[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using DoorAjor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using ManualControlGroupAction[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using ManualControlGroupAction[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using MinGreen_2[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using MinGreen_2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using NotActive
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::coord::max_patterns>
+template<Index I> requires ValidIndex<I, cu::coord::max_patterns>
 using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::detector::max_pedestrian_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::max_pedestrian_detectors>
 using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseForceOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhaseHold[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhasePedOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::max_phases>
 using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptGateDown[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptGateUp[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptHighPrioritorLow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptInputCRC[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptInputNormalOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
 using PreemptInputNormalOn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::prioritor::max_prioritors>
+template<Index I> requires ValidIndex<I, cu::prioritor::max_prioritors>
 using PrioritorCheckIn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::prioritor::max_prioritors>
+template<Index I> requires ValidIndex<I, cu::prioritor::max_prioritors>
 using PrioritorCheckOut[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires (I >= 1)
+template<Index I> requires (I >= 1)
 using PrioritorPreemptDetector[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingInhibitMaxTermination = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingMax2Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingMax3Selection[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingOmitRedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingPedestrianRecycle = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingRedRest = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using RingStopTiming = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::max_rings>
 using SpecialFunctionInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using UnitAlarm_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlarm_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAlarm_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlarm_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAlternateSequenceA
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlternateSequenceA = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAlternateSequenceB
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlternateSequenceB = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAlternateSequenceC
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlternateSequenceC = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAlternateSequenceD
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAlternateSequenceD = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitAutomaticFlash
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCallPedNAPlus[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitCallPedNAPlus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCallToNonActuated_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitCallToNonActuated_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCallToNonActuated_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitCallToNonActuated_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitClockReset[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitClockReset[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCMUMMUFlashStatus
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitCMUMMUFlashStatus = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitDimming
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitDimming = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitExternWatchDog[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitExternWatchDog[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitExternalMinRecall
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitExternalMinRecall = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitExternalStart
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitExternalStart = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIndicatorLampControl[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIndicatorLampControl[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIntervalAdvance
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIntervalAdvance = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_0[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_0[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_1[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_1[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_2[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_3[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_3[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitITSLocalFlashSense[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitITSLocalFlashSense[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitLocalFlash
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitLocalFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitLocalFlashSense[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitLocalFlashSense[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitManualControlEnable
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitManualControlEnable = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitOffset_3
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitOffset_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanA[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSignalPlanA[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanB[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSignalPlanB[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitStopTIme[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitStopTIme[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSystemAddressBit_0
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSystemAddressBit_0 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSystemAddressBit_1
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSystemAddressBit_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSystemAddressBit_2
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSystemAddressBit_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSystemAddressBit_3
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSystemAddressBit_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSystemAddressBit_4
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSystemAddressBit_4 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCHoldOnline[[maybe_unused]]
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCHoldOnline[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCOnline
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCOnline = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTestInputA
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTestInputA = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTestInputB
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTestInputB = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTestInputC
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTestInputC = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanA
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanA = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanB
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanB = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanC
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanC = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTimingPlanD
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitWalkRestModifier
-    = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitWalkRestModifier = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::detector::max_vehicle_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::max_vehicle_detectors>
 using VehicleDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, biu::max_det_bius>
+template<Index I> requires ValidIndex<I, biu::max_det_bius>
 using VehicleDetReset[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Byte, I>;
 
 } // end of namespace vc::io::input
@@ -911,87 +775,61 @@ struct MmuVariable : Variable<ValueT, I>
   MmuVariable &operator=(MmuVariable &&) = delete;
 };
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelGreenWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelRedDoNotWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelYellowPedClearStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-using ControllerVoltMonitor
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using ControllerVoltMonitor = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using _24VoltMonitor_I
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using _24VoltMonitor_I = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using _24VoltMonitor_II
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using _24VoltMonitor_II = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using _24VoltMonitorInhibit
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using _24VoltMonitorInhibit = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using Reset
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using Reset = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using RedEnable
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using RedEnable = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using Conflict
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using Conflict = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using RedFailure
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using RedFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using DiagnosticFailure
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using DiagnosticFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using MinimumClearanceFailure
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using MinimumClearanceFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using Port1TimeoutFailure
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using Port1TimeoutFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using FailedAndOutputRelayTransferred
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using FailedAndOutputRelayTransferred = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using FailedAndImmediateResponse
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using FailedAndImmediateResponse = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using LocalFlashStatus
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using LocalFlashStatus = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using StartupFlashCall
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using StartupFlashCall = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using FYAFlashRateFailure
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using FYAFlashRateFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using MinimumYellowChangeDisable = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-using MinimumFlashTimeBit_0
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using MinimumFlashTimeBit_0 = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using MinimumFlashTimeBit_1
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using MinimumFlashTimeBit_1 = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using MinimumFlashTimeBit_2
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using MinimumFlashTimeBit_2 = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using MinimumFlashTimeBit_3
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using MinimumFlashTimeBit_3 = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using _24VoltLatch
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using _24VoltLatch = MmuVariable<AUTO_TAG_ID, Bit>;
 
-using CVMFaultMonitorLatch
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using CVMFaultMonitorLatch = MmuVariable<AUTO_TAG_ID, Bit>;
 
 /*!
  * The compatibility status of two MMU channels.
@@ -1000,27 +838,22 @@ using CVMFaultMonitorLatch
  * @remarks The two channel IDs are encoded as the index. index = left-hand-side channel as high-byte,
  * right-hand-size channel as low-byte
  */
-template<Index Ix, Index Iy>
-/**/requires ValidIndex<Ix, cu::channel::max_channels> && ValidIndex<Iy, cu::channel::max_channels> && (Ix < Iy)
+template<Index Ix, Index Iy> requires ValidIndex<Ix, cu::channel::max_channels>
+    && ValidIndex<Iy, cu::channel::max_channels> && (Ix < Iy)
 using ChannelCompatibilityStatus = MmuVariable<AUTO_TAG_ID, Bit, (Ix << 8) | Iy>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelGreenWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelRedDoNotWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::max_channels>
 using ChannelYellowPedClearDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-using LoadSwitchFlash
-    = MmuVariable<AUTO_TAG_ID, Bit>;
+using LoadSwitchFlash = MmuVariable<AUTO_TAG_ID, Bit>;
 
-template<typename T>/**/
-requires ValidMmuVariable<T>
+template<typename T> requires ValidMmuVariable<T>
 T variable{};
 
 /*!
@@ -1314,37 +1147,27 @@ struct BroadcastVariable : Variable<ValueT, I>
   BroadcastVariable &operator=(BroadcastVariable &&) = delete;
 };
 
-using CuReportedMonth
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedMonth = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedDay
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedDay = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedYear
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedYear = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedHour
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedHour = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedMinutes
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedMinutes = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedSeconds
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedSeconds = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-using CuReportedTenthsOfSeconds
-    = BroadcastVariable<AUTO_TAG_ID, Byte>;
+using CuReportedTenthsOfSeconds = BroadcastVariable<AUTO_TAG_ID, Byte>;
 
-template<Index I>
-/**/requires ValidIndex<I, biu::max_tf_bius>
+template<Index I> requires ValidIndex<I, biu::max_tf_bius>
 using CuReportedTfBiuPresence = BroadcastVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I>
-/**/requires ValidIndex<I, biu::max_det_bius>
+template<Index I> requires ValidIndex<I, biu::max_det_bius>
 using CuReportedDrBiuPresence = BroadcastVariable<AUTO_TAG_ID, Bit, I>;
 
-template<typename T>/**/
-requires ValidBroadcastVariable<T>
+template<typename T> requires ValidBroadcastVariable<T>
 T variable{};
 
 } // end of namespace vtc::broadcast
@@ -3445,11 +3268,10 @@ enum class HdlcRxClkSource : uint16_t
 
 enum class HdlcTxClkSource : uint16_t
 {
-  BRG = 0x0800,      /* TxClk generated by Baud Rate Generator internally. Need to specify clock in param. */
-  DPLL =
-  0x0400,     /* TxClk recovered by Digital Phase-locked Loop from data signal. Need to specify clock in param. */
-  RxClkPin = 0x0008, /* TxClk supplied by external device on RxC input pin. */
-  TxClkPin = 0x0000  /* TxClk supplied by external device on TxC input pin. */
+  BRG = 0x0800,     /* TxClk generated by Baud Rate Generator internally. Need to specify clock in param. */
+  DPLL = 0x0400,    /* TxClk recovered by Digital Phase-locked Loop from data signal. Need to specify clock in param. */
+  RxClkPin = 0x0008,/* TxClk supplied by external device on RxC input pin. */
+  TxClkPin = 0x0000 /* TxClk supplied by external device on TxC input pin. */
 };
 
 enum class HdlcCrcType : uint16_t
@@ -3604,24 +3426,18 @@ class SerialDevice
       return result;
     }
 
-// Error code as uint32_t, defined in winerror.h on Windows platform.
-    using SimpleCommandFunc
-        = uint32_t __stdcall(DeviceHandle);
+    // Error code as uint32_t, defined in winerror.h on Windows platform.
+    using SimpleCommandFunc = uint32_t __stdcall(DeviceHandle);
 
-    using IoFunc
-        = uint32_t __stdcall(DeviceHandle, uint8_t *, int32_t);
+    using IoFunc = uint32_t __stdcall(DeviceHandle, uint8_t *, int32_t);
 
-    using SetValueByIdFunc
-        = uint32_t __stdcall(DeviceHandle, uint32_t, int32_t);
+    using SetValueByIdFunc = uint32_t __stdcall(DeviceHandle, uint32_t, int32_t);
 
-    using SetValueFunc
-        = uint32_t __stdcall(DeviceHandle, int32_t);
+    using SetValueFunc = uint32_t __stdcall(DeviceHandle, int32_t);
 
-    using OpenFunc
-        = uint32_t __stdcall(char *, void **);
+    using OpenFunc = uint32_t __stdcall(char *, void **);
 
-    using SetParamsFunc
-        = uint32_t __stdcall(DeviceHandle, SerialDeviceParams *);
+    using SetParamsFunc = uint32_t __stdcall(DeviceHandle, SerialDeviceParams *);
 
     uint32_t cancel_reading(DeviceHandle a_dev)
     {
@@ -3826,36 +3642,44 @@ public:
     params.addr = a_addr_filter;
 
     if (apimodule_.set_params(dev_, params)) {
-      vtc::logger()->error("Serial device \"{}\" failed to set params, code {}", a_dev_name, apimodule_.ec());
+      vtc::logger()->error("Serial device \"{}\" failed to set params, code {}",
+                           a_dev_name,
+                           apimodule_.ec());
       return;
     }
 
     if (apimodule_.set_option(dev_, DeviceOptionTag::RxPoll, 0)) {
-      vtc::logger()
-          ->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}", a_dev_name, apimodule_.ec());
+      vtc::logger()->error("Serial device \"{}\" failed to set option RxPoll = 0, code {}",
+                           a_dev_name,
+                           apimodule_.ec());
       return;
     }
 
     if (apimodule_.set_option(dev_, DeviceOptionTag::TxPoll, 0)) {
-      vtc::logger()
-          ->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}", a_dev_name, apimodule_.ec());
+      vtc::logger()->error("Serial device \"{}\" failed to set option TxPoll = 0, code {}",
+                           a_dev_name,
+                           apimodule_.ec());
       return;
     }
 
     if (apimodule_.set_option(dev_, DeviceOptionTag::RxErrorMask, 1)) {
-      vtc::logger()->error("Serial device \"{}\" failed to set option RxErrorMask = 1, code {}", a_dev_name,
+      vtc::logger()->error("Serial device \"{}\" failed to set option RxErrorMask = 1, code {}",
+                           a_dev_name,
                            apimodule_.ec());
       return;
     }
 
     if (apimodule_.set_idle_mode(dev_, HdlcIdleMode::Ones)) {
-      vtc::logger()->error("Serial device \"{}\" failed to set idle mode to ones, code {}", a_dev_name,
+      vtc::logger()->error("Serial device \"{}\" failed to set idle mode to ones, code {}",
+                           a_dev_name,
                            apimodule_.ec());
       return;
     }
 
     if (apimodule_.enable_read(dev_)) {
-      vtc::logger()->error("Serial device \"{}\" failed to enable read, code {}", a_dev_name, apimodule_.ec());
+      vtc::logger()->error("Serial device \"{}\" failed to enable read, code {}",
+                           a_dev_name,
+                           apimodule_.ec());
       return;
     }
   }
@@ -3879,7 +3703,7 @@ public:
 
   /*!
    * Only when the device is ready, the read and write method can be called.
-   * @return
+   * @return True for ready, False otherwise.
    */
   static bool ready()
   {
@@ -3938,9 +3762,9 @@ public:
   }
 
 #ifdef TEST
-  static SerialApiModule& apimodule()
+  static SerialApiModule &apimodule()
   {
-      return apimodule_;
+    return apimodule_;
   }
 #endif
 
@@ -4106,15 +3930,17 @@ auto make_wirings(WiringFactoryT, ChannelIDT, std::integer_sequence<ChannelIDT, 
  * A trick of aliasing the type of detector wirings. The args instances to make_wirings()
  * are just supplied for the purpose of obtaining their respective types.
  */
-using DetectorWirings
-    = decltype(make_wirings(DetectorWiringFactory{}, DetectorChannelID{1}, DetectorChannelIndexes{}));
+using DetectorWirings = decltype(make_wirings(DetectorWiringFactory{},
+                                              DetectorChannelID{1},
+                                              DetectorChannelIndexes{}));
 
 /*!
  * A trick of aliasing the type of loadswitch wirings. The args instances to make_wirings()
  * are just supplied for the purpose of obtaining their respective types.
  */
-using LoadswitchWirings
-    = decltype(make_wirings(LoadswitchWiringFactory{}, LoadswitchChannelID{1}, LoadswitchChannelIndexes{}));
+using LoadswitchWirings = decltype(make_wirings(LoadswitchWiringFactory{},
+                                                LoadswitchChannelID{1},
+                                                LoadswitchChannelIndexes{}));
 
 /*!
  * Wirings concept is limited to detector wirings and load switch wirings.
@@ -4144,27 +3970,32 @@ void for_each(WiringsT &&a_wirings, F &&a_func)
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedTypeAliasInspection"
-using ProcessLoadswitchWiringFunc
-    = std::function<void(const LoadswitchChannelID, const LoadswitchChannelState, const Approach, const Turn)>;
+
+using ProcessLoadswitchWiringFunc = std::function<void(const LoadswitchChannelID,
+                                                       const LoadswitchChannelState,
+                                                       const Approach,
+                                                       const Turn)>;
+
 #pragma clang diagnostic pop
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedTypeAliasInspection"
-using ProcessDetectorWiringFunc
-    = std::function<bool(const DetectorChannelID, const SensorID)>;
+
+using ProcessDetectorWiringFunc = std::function<bool(const DetectorChannelID,
+                                                     const SensorID)>;
+
 #pragma clang diagnostic pop
 
-using VerifyLoadswitchWiringFunc
-    = std::function<bool(const LoadswitchChannelID, const Approach, const Turn)>;
+using VerifyLoadswitchWiringFunc = std::function<bool(const LoadswitchChannelID,
+                                                      const Approach,
+                                                      const Turn)>;
 
-using VerifyDetectorWiringFunc
-    = std::function<bool(const DetectorChannelID, const SensorID)>;
+using VerifyDetectorWiringFunc = std::function<bool(const DetectorChannelID,
+                                                    const SensorID)>;
 
-using VerifySimulationStepFunc
-    = std::function<bool(const double)>;
+using VerifySimulationStepFunc = std::function<bool(const double)>;
 
-using VerifyFuncGroup
-    = std::tuple<VerifySimulationStepFunc, VerifyLoadswitchWiringFunc, VerifyDetectorWiringFunc>;
+using VerifyFuncGroup = std::tuple<VerifySimulationStepFunc, VerifyLoadswitchWiringFunc, VerifyDetectorWiringFunc>;
 
 /*!
  * Generic Hardware-in-Loop Simulation Controller Interface
@@ -4236,12 +4067,11 @@ protected:
 
     load_mmu16_channel_compatibility(config);
 
-    auto dev_name
-        = std::string{{0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43}} + config.document_element().attribute("device").value();
+    auto doc_elem = config.document_element();
+    auto dev_name = std::string{{0x4D, 0x47, 0x48, 0x44, 0x4C, 0x43}} + doc_elem.attribute("device").value();
     device_ = std::make_unique<SerialDevice>(dev_name.c_str());
 
-    log_sdlc_frames_
-        = std::string{config.document_element().attribute("log_sdlc_frames").value()} == std::string{"true"};
+    log_sdlc_frames_ = std::string{doc_elem.attribute("log_sdlc_frames").value()} == std::string{"true"};
 
     auto step = std::stod(config.document_element().attribute("simulation_step").value());
     auto [verify_simstep, verify_loadswitch_wiring, verify_detector_wiring] = a_verify_funcs;
@@ -4263,8 +4093,7 @@ protected:
 
               if (log_sdlc_frames_) {
                 auto frame_str = vtc::BytesToHexStr(serial::buffer.data(), count);
-                vtc::logger()->info("Command Frame {} Addr {}: {}", serial::buffer[2], serial::buffer[0],
-                                    frame_str);
+                vtc::logger()->info("Command Frame {} Addr {}: {}", serial::buffer[2], serial::buffer[0], frame_str);
               }
 
               auto [success, response_data] = vtc::serial::Dispatch({serial::buffer.data(), count});
