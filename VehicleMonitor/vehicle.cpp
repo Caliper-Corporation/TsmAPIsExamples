@@ -83,7 +83,8 @@ float MyVehicle::TransitStop(double time, const STransitStopInfo &info, float dw
 void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
   // Fill in user logic 
-  logger->info("At time {} Position() called for vehicle {}", time, id_);
+  // log simulation step time, vehicle id, x, and y
+  // logger->info(",{},{},{},{}", time, id_, pos.x, pos.y);
 }
 
 void MyVehicle::Parked(double time)
