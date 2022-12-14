@@ -98,8 +98,9 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   ```
 * The generated `VehicleMonitor.dll` can be **loaded** using Caliper Script (GISDK) *Immediate Execution Dialog*, using code like below:
   ```
-  shared mydll
-  mydll = LoadLibrary(output_path + "\\VehicleMonitor.dll")
+   shared mydll
+   output_path = "D:\\Caliper Repos\\VehicleMonitor\\.out\\Debug"
+   mydll = LoadLibrary(output_path + "\\VehicleMonitor.dll")
   ```
   
   `output_path` is where the DLL is output to. Replace it with the actual path.
