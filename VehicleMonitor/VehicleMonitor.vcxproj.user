@@ -6,4 +6,10 @@
     <LocalDebuggerAttach>true</LocalDebuggerAttach>
     <LocalDebuggerCommand>$(TSM_FOLDER)\tsm.exe</LocalDebuggerCommand>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerCommand />
+    <LocalDebuggerAttach>true</LocalDebuggerAttach>
+    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

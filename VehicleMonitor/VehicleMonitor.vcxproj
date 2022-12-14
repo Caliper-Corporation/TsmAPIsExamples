@@ -47,11 +47,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>.\.int\$(Configuration)\</IntDir>
-    <OutDir>.\out\$(Configuration)\</OutDir>
+    <OutDir>.\.out\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>.\.int\$(Configuration)\</IntDir>
-    <OutDir>.\out\$(Configuration)\</OutDir>
+    <OutDir>.\.out\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -63,7 +63,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
-      <AdditionalIncludeDirectories>$(TSM_FOLDER);.\.int\$(Configuration)\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(TSM_FOLDER);.\.int\$(Configuration)\;.\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -84,7 +84,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CallingConvention>FastCall</CallingConvention>
-      <AdditionalIncludeDirectories>$(TSM_FOLDER);.\.int\$(Configuration)\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(TSM_FOLDER);.\.int\$(Configuration)\;.\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
