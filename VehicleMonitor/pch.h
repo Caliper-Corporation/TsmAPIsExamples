@@ -49,4 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Tsm/TsmApi/VehicleMonitor.h>
 #include <tsmapi.tlh>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
 #endif //PCH_H

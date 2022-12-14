@@ -6,6 +6,7 @@ set(TSM_FOLDER "C://Program Files//TransModeler 6.1//")
 
 include_directories(
         "${CMAKE_SOURCE_DIR}"
+        "${CMAKE_SOURCE_DIR}/spdlog"
         "${TSM_FOLDER}"
         "${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir")
 

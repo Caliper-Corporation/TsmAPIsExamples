@@ -36,12 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace vmplugin {
 
 /*
- Add implementation to invidual callbacks. Use the following code to access
+ Add implementation to individual callbacks. Use the following code to access
  network elements.
 
  MyVehicleMonitor::instance()->tsmapp()->Network
 
 */
+
+auto logger = spdlog::basic_logger_mt("vm_logger", "D:/logs/vm-log.txt");
 
 void MyVehicle::Departure(double time)
 {
@@ -80,7 +82,8 @@ float MyVehicle::TransitStop(double time, const STransitStopInfo &info, float dw
 
 void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
-  // Fill in user logic
+  // Fill in user logic 
+  logger->info("At time {} Position() called for vehicle {}", time, id_);
 }
 
 void MyVehicle::Parked(double time)
