@@ -35,3 +35,6 @@
 .int
 out
 *.aps
+/VehicleMonitor/JSON/Schemas/Catalog
+/VehicleMonitor/.build
+/VehicleMonitor/.idea
