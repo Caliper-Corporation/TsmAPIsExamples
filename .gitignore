@@ -33,7 +33,7 @@
 
 .vs
 .int
-out
+.out
 *.aps
 /VehicleMonitor/JSON/Schemas/Catalog
 /VehicleMonitor/.build
