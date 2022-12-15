@@ -174,14 +174,14 @@ public:
      */
   bool OnFail(const BSTR msg) override;
 
-  auto id() const -> long
+  [[maybe_unused]] [[nodiscard]] auto id() const -> long
   {
     return id_;
   }
 
 private:
   /** Vehicle property */
-  const SVehicleProperty prop_{};
+  [[maybe_unused]] const SVehicleProperty prop_{};
 
   /** ID of the vehicle */
   const long id_{0};
