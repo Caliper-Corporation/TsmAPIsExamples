@@ -932,16 +932,16 @@ template<Index Ix, Index Iy, Index... Iys>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp,
                                   std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
 {
-  mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value
-                                                             =
-                                                             static_cast<Bit>(a_mmu16_comp[ChannelSegmentStartPos<Ix>()
-                                                                 + Iy - Ix - 1]);
+  // @formatter:off
+  mmu::variable<ChannelCompatibilityStatus<Ix, Iy>>.value
+      = static_cast<Bit>(a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]);
 
   if constexpr (a_seq.size() > 2) {
     return SetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
   } else {
     return;
   }
+  // @formatter:on
 }
 
 /*!
@@ -956,14 +956,16 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp,
 template<Index Ix, Index Iy, Index... Iys>
 void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
 {
+  // @formatter:off
   a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]
-      = (mmu::variable < ChannelCompatibilityStatus < Ix, Iy >>.value == Bit::On) ? 1 : 0;
+      = (mmu::variable<ChannelCompatibilityStatus<Ix, Iy>>.value == Bit::On) ? 1 : 0;
 
   if constexpr (a_seq.size() > 2) {
     return GetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
   } else {
     return;
   }
+  // @formatter:on
 }
 
 } // end of namespace mmu::impl
@@ -976,15 +978,15 @@ void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp, std::integer_
 template<Index Ix = 1>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp)
 {
+  // @formatter:off
   if constexpr (Ix < 16) {
     using T = typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type;
     impl::SetMMU16ChannelCompatibility(a_mmu16_comp, T{});
-    // @formatter:off
     return SetMMU16ChannelCompatibility<Ix+1>(a_mmu16_comp);
-    // @formatter:on
   } else {
     return;
   }
+  // @formatter:on
 }
 
 /*!
@@ -995,15 +997,15 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp)
 template<Index Ix = 1>
 void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp)
 {
+  // @formatter:off
   if constexpr (Ix < 16) {
     using T = typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type;
     impl::GetMMU16ChannelCompatibility(a_mmu16_comp, T{});
-    // @formatter:off
     return GetMMU16ChannelCompatibility<Ix+1>(a_mmu16_comp);
-    // @formatter:on
   } else {
     return;
   }
+  // @formatter:on
 }
 
 /*!
