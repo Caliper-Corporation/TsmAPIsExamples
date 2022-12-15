@@ -1,4 +1,0 @@
-// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
-// such as names of functions and macros.
-// For more information see https://go.microsoft.com/fwlink/?linkid=865984
-#define RTCSDK_DEFINE_INTERFACE(name, id) _RTCSDK_GUID_HELPER(name, id) struct __declspec(novtable) __declspec(empty_bases) __declspec(uuid(id)) name : rtcsdk::extends<name, IUnknown>
