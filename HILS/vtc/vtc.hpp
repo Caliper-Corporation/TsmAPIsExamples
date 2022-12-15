@@ -350,8 +350,7 @@ constexpr size_t max_prioritors{16};
 
 }
 
-template<typename T>
-requires ValidCuVariable<T>
+template<typename T> requires ValidCuVariable<T>
 T variable{};
 
 } // end of namespace vc::cu
@@ -384,8 +383,7 @@ struct [[maybe_unused]] BiuVariable : Variable<ValueT, I>
   BiuVariable &operator=(BiuVariable &&) = delete;
 };
 
-template<typename T>
-requires ValidBiuVariable<T>
+template<typename T> requires ValidBiuVariable<T>
 T variable{};
 
 } // end of namespace vc::biu
@@ -916,8 +914,7 @@ constexpr size_t ChannelSegmentStartPos()
  * For a given MMU channel, the IDs of other channels that is paired to the subject
  * chanel for compatibility definition.
 */
-template<Index ChannelID, Index MaxChannel = 16>
-requires (ChannelID >= 1) && (ChannelID < MaxChannel)
+template<Index ChannelID, Index MaxChannel = 16> requires (ChannelID >= 1) && (ChannelID < MaxChannel)
 using ChannelCompatibilityPairedIndexes
     = offset_sequence_t<ChannelID, std::make_integer_sequence<Index, MaxChannel - ChannelID>>;
 
@@ -980,10 +977,11 @@ template<Index Ix = 1>
 void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp)
 {
   if constexpr (Ix < 16) {
-    impl::SetMMU16ChannelCompatibility(a_mmu16_comp,
-                                       typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
-    ::type{});
-    return SetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
+    using T = typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type;
+    impl::SetMMU16ChannelCompatibility(a_mmu16_comp, T{});
+    // @formatter:off
+    return SetMMU16ChannelCompatibility<Ix+1>(a_mmu16_comp);
+    // @formatter:on
   } else {
     return;
   }
@@ -998,10 +996,11 @@ template<Index Ix = 1>
 void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp)
 {
   if constexpr (Ix < 16) {
-    impl::GetMMU16ChannelCompatibility(a_mmu16_comp,
-                                       typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes < Ix>>
-    ::type{});
-    return GetMMU16ChannelCompatibility < Ix + 1 > (a_mmu16_comp);
+    using T = typename add_sequence_front<Ix, ChannelCompatibilityPairedIndexes<Ix>>::type;
+    impl::GetMMU16ChannelCompatibility(a_mmu16_comp, T{});
+    // @formatter:off
+    return GetMMU16ChannelCompatibility<Ix+1>(a_mmu16_comp);
+    // @formatter:on
   } else {
     return;
   }
@@ -1222,8 +1221,7 @@ struct FrameElementType
 {
 };
 
-template<typename T, size_t BitPos>
-requires std::is_same_v<ValueType<T>, Bit>
+template<typename T, size_t BitPos> requires std::is_same_v<ValueType<T>, Bit>
 struct FrameBit
 {
   using type = FrameElementType;
@@ -1248,8 +1246,7 @@ struct FrameBit
   T &ref_var{variable<T>()};
 };
 
-template<typename T, size_t BytePos>
-requires std::is_same_v<ValueType<T>, Byte>
+template<typename T, size_t BytePos> requires std::is_same_v<ValueType<T>, Byte>
 struct FrameByte
 {
   using type = FrameElementType;
@@ -1336,8 +1333,9 @@ template<typename T>
 concept ReceivableFrame = std::is_same_v<T, PSR_ResponseFrameType>
     || std::is_same_v<T, SSR_CommandFrameType>;
 
-template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts>
-requires ValidFrame<FrameByteSize, T, Ts...>
+template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts> requires ValidFrame<FrameByteSize,
+                                                                                                           T,
+                                                                                                           Ts...>
 class Frame
 {
 public:
@@ -3833,8 +3831,7 @@ auto make_loadswitch_driver()
       std::ref(io::variable<ChannelRedDoNotWalkDriver<I>>));  /**/
 }
 
-template<LoadswitchChannelID I>
-requires (I <= num_loadswitches) && (I >= 1)
+template<LoadswitchChannelID I> requires (I <= num_loadswitches) && (I >= 1)
 class LoadswitchChannel
 {
 public:
@@ -3879,8 +3876,7 @@ using LoadswitchChannelIndexes =
         >
     >;
 
-template<DetectorChannelID I>
-requires (I <= num_detector_channels) && (I >= 1)
+template<DetectorChannelID I> requires (I <= num_detector_channels) && (I >= 1)
 class DetectorChannel
 {
 public:
@@ -3898,8 +3894,7 @@ private:
   VehicleDetCall<I> &state_{io::variable<io::input::VehicleDetCall<I>>};
 };
 
-template<DetectorChannelID I>
-requires (I <= num_detector_channels) && (I >= 1)
+template<DetectorChannelID I> requires (I <= num_detector_channels) && (I >= 1)
 using DetectorWiring = std::tuple<DetectorChannel<I>, SensorIDs>;
 
 struct DetectorWiringFactory
