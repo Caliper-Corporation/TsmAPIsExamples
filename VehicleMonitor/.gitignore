@@ -31,10 +31,10 @@
 *.out
 *.app
 
-.vs
-.int
-.out
-.build
+/.vs/
+/.int/
+/.out/
+/.build/
 /.idea/*
 *.aps
-JSON
+/JSON/
