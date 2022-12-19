@@ -1,6 +1,5 @@
-.build/
-*/cmake-build-*/*
-.idea/**
-/release
-/debug
-out/
+/.build/
+/.idea/
+/.out/
+/.int/
+/dev/
