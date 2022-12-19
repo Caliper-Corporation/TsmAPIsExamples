@@ -34,7 +34,7 @@
 .vs
 .int
 .out
+.build
+/.idea/*
 *.aps
-/VehicleMonitor/JSON/Schemas/Catalog
-/VehicleMonitor/.build
-/VehicleMonitor/.idea
+JSON
