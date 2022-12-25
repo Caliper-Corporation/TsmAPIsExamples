@@ -55,9 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <span>
 
 #ifdef _WIN32
-
 #include <windows.h>
-
 #elif __linux__
 #include <dlfcn.h>
 #else
@@ -66,6 +64,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <matchit/matchit.hpp>
 #include <pugixml/pugixml.hpp>
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
@@ -74,38 +73,81 @@ namespace vtc {
 
 namespace fs = std::filesystem;
 
-namespace {
+/* VtcLogger is an alias of a shared_ptr of spdlog::logger.
+ * std::shared_ptr is not thread-safe.
+ */
+using VtcLogger = std::shared_ptr<spdlog::logger>;
 
-struct LoggerHolder
+namespace { // Anonymous namespace for VtcLoggerHolder
+/*
+ * VtcLoggerHolder is a proxy to a global singleton logger instance.
+ */
+struct VtcLoggerHolder
 {
-  static std::atomic<std::shared_ptr<spdlog::logger>> logger;
+  /*
+   * Inline initialization is possible with C++17. Alternatively, we can initialize logger
+   * outside VtcLoggerHolder declaration but inside the anonymous namespace. In this case,
+   * VtcLoggerHolder is a member of unnamed namespace, its static data member does not
+   * have external linkage.
+   */
+  inline static std::atomic<VtcLogger> logger{nullptr};
 };
 
-std::atomic<std::shared_ptr<spdlog::logger>> LoggerHolder::logger = std::atomic<std::shared_ptr<spdlog::logger>>{};
+} // End of anonymous namespace for VtcLoggerHolder
 
-}
-
-std::shared_ptr<spdlog::logger> logger()
+/*
+ * Thread-safe access to the global VtcLogger instance. It ought to be called only
+ * after logger has been set up, i.e., setup_logger has been called; otherwise, nullptr
+ * will be returned.
+ */
+VtcLogger logger()
 {
-  return LoggerHolder::logger;
+  return VtcLoggerHolder::logger;
 }
 
-void setup_logger(const fs::path &a_path, const std::string &a_name)
+/*!
+ * Setup the logger with a given output path and file name. The log file will be saved
+ * to the designated output path, using the specified logger name appended with "-log.txt".
+ *
+ * The parent path needs to be existing. If for any reason, the log file cannot be created,
+ * default logger will be used (on Windows, default logger is debug output). If the log
+ * file can be created, the log file will be rotated by 1MB file size and up to 3 files.
+ *
+ * This function can be called multiple times, as long as a_logger_name is different. However,
+ * if the same logger name has been used, an exception will be thrown.
+ *
+ * @param a_path A path where to save the log file.
+ * @param a_logger_name Name of the logger as well as part of the output file name.
+ *
+ * @returns true if the intended logger is created, false default logger.
+ */
+bool setup_logger(const fs::path &a_path, const std::string &a_logger_name)
 {
   auto p = a_path / "log";
   std::error_code ec;
 
-  std::shared_ptr<spdlog::logger> the_logger;
+  VtcLogger the_logger{nullptr};
+  bool default_logger_created;
 
-  if (fs::create_directory(p, ec) || fs::exists(p))
-    the_logger = spdlog::rotating_logger_mt(a_name, (p / (a_name + "-log.txt")).string(), 1024 * 1024, 3);
-  else
+  if (fs::create_directory(p, ec) || fs::exists(p)) {
+    // a_logger_name will be used as the internal logger name, as well as part of the output file name.
+    the_logger = spdlog::rotating_logger_mt(a_logger_name,
+                                            (p / (a_logger_name + "-log.txt")).string(),
+                                            1024 * 1024,
+                                            3);
+    default_logger_created = false;
+  } else {
 #ifdef _WIN32
-    the_logger = spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_name);
+    the_logger =
+        spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_logger_name + "_windbg");
 #else
-  the_logger = spdlog::default_logger();
+    the_logger = spdlog::default_logger();
 #endif
-  LoggerHolder::logger = the_logger;
+    default_logger_created = true;
+  }
+
+  VtcLoggerHolder::logger = the_logger;
+  return !default_logger_created;
 }
 
 // A dirty trick to generate template specialization tag.
