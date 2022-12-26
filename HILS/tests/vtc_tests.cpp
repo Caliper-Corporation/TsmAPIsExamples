@@ -46,7 +46,7 @@ MPL 1.1/GPL 2.0/LGPL 2.1 tri-license
 using namespace vtc;
 
 //----------------------------------------------------
-TEST_SUITE_BEGIN("VtcLogger");
+TEST_SUITE_BEGIN("Utility");
 
 /*
 // A trick to set up logger before entering any teste cases.
@@ -78,11 +78,6 @@ TEST_CASE("setup_logger works as expected")
   }
 }
 
-TEST_SUITE_END;
-
-//----------------------------------------------------
-TEST_SUITE_BEGIN("Channel");
-
 TEST_CASE("Channel composition channel IDs can be encoded as single index")
 {
   Byte a = 1;
@@ -92,24 +87,35 @@ TEST_CASE("Channel composition channel IDs can be encoded as single index")
   CHECK(I == 0x0102);
 }
 
-TEST_SUITE_END;
-
-//----------------------------------------------------
-TEST_SUITE_BEGIN("Variable");
-
 TEST_CASE("Compile-time internal variable name can be retrieved")
 {
-  auto name_1 = variable_type_name<mmu::_24VoltMonitor_I>();
+  auto name_1 = type_name<mmu::_24VoltMonitor_I>();
   mmu::_24VoltMonitor_I var;
   CHECK(var.value == Bit::Off);
-  auto name_2 = variable_type_name<decltype(var)>();
+  auto name_2 = type_name<decltype(var)>();
   CHECK(name_1 == name_2);
+}
+
+TEST_CASE("get() integer sequence works as expected")
+{
+  auto seq = std::integer_sequence<unsigned, 9, 2, 5, 1, 9, 1, 15>{};
+  auto index = 6;
+  auto val = vtc::get(seq, index); // val equals to 15.
+  CHECK_EQ(val, 15);
+}
+
+TEST_CASE("substring_as_array() works as expected")
+{
+  using namespace std::literals;
+  constexpr auto sv = "substring_as_array() works as expected"sv;
+  auto arr = vtc::substring_as_array(sv, std::make_index_sequence<sv.length()>{});
+  CHECK_EQ(arr[1], 'u');
 }
 
 TEST_SUITE_END;
 
 //----------------------------------------------------
-TEST_SUITE_BEGIN("Output");
+TEST_SUITE_BEGIN("IO");
 
 TEST_CASE("Output variable NotActive can be set")
 {

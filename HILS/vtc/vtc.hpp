@@ -232,7 +232,6 @@ struct Variable
   using value_t = T;
 
   Variable() = default;
-
   Variable(Variable &) = delete;
   Variable(Variable &&) = delete;
   Variable &operator=(Variable &) = delete;
@@ -260,25 +259,19 @@ struct Variable
 template<typename T>
 using ValueType = typename T::Variable::value_t;
 
-/* For getting variable name during compile time.
-
-   References:
-
-   1. StackOverflow: A standard way for getting variable name at compile time
-      https://stackoverflow.com/questions/38696440/a-standard-way-for-getting-variable-name-at-compile-time
-
-   2. Getting an Unmangled Type Name at Compile Time - a really useful and obscure technique
-      https://bitwizeshift.github.io/posts/2021/03/09/getting-an-unmangled-type-name-at-compile-time/
- */
-
 template<std::size_t ...Is>
 constexpr auto substring_as_array(std::string_view str, std::index_sequence<Is...>)
 {
   return std::array{str[Is]..., '\n'};
 }
 
+/*!
+ * Convert the textual name of a type to string_view at compile time.
+ * @tparam T Type to extract name.
+ * @return string_view of the textual name of the type. Null terminator not included.
+ */
 template<typename T>
-constexpr auto type_name_array()
+constexpr auto type_name()->std::string_view
 {
 #if defined(__clang__)
   constexpr auto prefix = std::string_view{"[T = "};
@@ -286,58 +279,57 @@ constexpr auto type_name_array()
   constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
 #elif defined(__GNUC__)
   constexpr auto prefix = std::string_view{"with T = "};
-  // Note signature type_name_array() is constexpr auto, then the return type is removed, so suffix is "]".
-  // Check this https://godbolt.org/z/eK4j6xTbe
   constexpr auto suffix = std::string_view{"]"};
   constexpr auto function = std::string_view{__PRETTY_FUNCTION__};
 #elif defined(_MSC_VER)
-  constexpr auto prefix = std::string_view{"type_name_array<"};
+  constexpr auto prefix = std::string_view{"type_name<"};
   constexpr auto suffix = std::string_view{">(void)"};
   constexpr auto function = std::string_view{__FUNCSIG__};
 #else
 # error
   Unsupported compiler
 #endif
-
   constexpr auto start = function.find(prefix) + prefix.size();
   constexpr auto end = function.rfind(suffix);
 
   static_assert(start < end);
-
-  constexpr auto name = function.substr(start, (end - start));
-  return substring_as_array(name, std::make_index_sequence<name.size()>{});
-}
-
-template<typename T>
-struct type_name_holder
-{
-  static inline constexpr auto value = type_name_array<T>();
-};
-
-template<typename T>
-constexpr auto variable_type_name() -> std::string_view
-{
-  constexpr auto &value = type_name_holder<T>::value;
-  return std::string_view{value.data(), value.size()};
+  return function.substr(start, (end - start));
 }
 
 template<Index Offset, typename SeqType> /* */
 requires (Offset >= 0)
 struct offset_sequence;
 
+/*!
+ * Offsetting a sequence by the given template argument.
+ * @tparam Offset Offset value. Note 0 means offset by 1.
+ * @tparam Is The sequence to be "offset".
+ */
 template<Index Offset, Index... Is>
 struct offset_sequence<Offset, std::integer_sequence<Index, Is...>>
 {
   using type = std::integer_sequence<Index, Is + (Offset + 1)...>;
 };
 
+/*!
+ * Offset value 0 means to "offset" the sequence by 1.
+ */
 template<Index Offset, typename SeqType>
 using offset_sequence_t = typename offset_sequence<Offset, SeqType>::type;
 
+/*!
+  Retrieve an element from integer sequence at compile time. For example,
+
+  auto seq = std::integer_sequence<unsigned, 9, 2, 5, 1, 9, 1, 15>{};
+  auto val = get(seq, 6); // val equals to 15.
+
+  @param i The index of the element.
+  @return The element value.
+ */
 template<typename T, T... Is>
-[[maybe_unused]] constexpr T get(std::integer_sequence<T, Is...>, std::size_t i)
+constexpr T get(std::integer_sequence<T, Is...>, std::size_t i)
 {
-  constexpr T arr[] = {Is...};
+  constexpr auto arr = std::array{Is...};
   return arr[i];
 }
 
@@ -370,13 +362,9 @@ struct [[maybe_unused]] CuVariable : Variable<ValueT, I>
   using type = CuVariableType;
 
   CuVariable() = default;
-
   CuVariable(CuVariable &) = delete;
-
   CuVariable(CuVariable &&) = delete;
-
   CuVariable &operator=(CuVariable &) = delete;
-
   CuVariable &operator=(CuVariable &&) = delete;
 };
 
