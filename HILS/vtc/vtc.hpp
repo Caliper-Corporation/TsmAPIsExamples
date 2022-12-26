@@ -73,31 +73,37 @@ namespace vtc {
 
 namespace fs = std::filesystem;
 
-/* VtcLogger is an alias of a shared_ptr of spdlog::logger.
- * std::shared_ptr is not thread-safe.
+/*!
+ * Alias of a shared_ptr of spdlog::logger. Note std::shared_ptr is not thread-safe.
  */
 using VtcLogger = std::shared_ptr<spdlog::logger>;
 
-namespace { // Anonymous namespace for VtcLoggerHolder
-/*
- * VtcLoggerHolder is a proxy to a global singleton logger instance.
+/*!
+ * Unnamed namespace for VtcLoggerHolder in order to have a global thread-safe
+ * singleton logger without defining it in a separate translational unit.
+ */
+namespace {
+/*!
+ * Proxy class for thread-safe singleton logger.
  */
 struct VtcLoggerHolder
 {
-  /*
-   * Inline initialization is possible with C++17. Alternatively, we can initialize logger
-   * outside VtcLoggerHolder declaration but inside the anonymous namespace. In this case,
-   * VtcLoggerHolder is a member of unnamed namespace, its static data member does not
-   * have external linkage.
+  /*!
+   * Inline initialization is possible with C++17. Alternatively, we can define
+   * the logger separately outside VtcLoggerHolder class declaration but inside
+   * the unnamed namespace. In this case, VtcLoggerHolder is a member of unnamed
+   * namespace, its static data member does not have external linkage, which
+   * allows this header to be included multiple times in different translational
+   * unit.
    */
   inline static std::atomic<VtcLogger> logger{nullptr};
 };
 
-} // End of anonymous namespace for VtcLoggerHolder
+} // End of unnamed namespace for VtcLoggerHolder
 
-/*
- * Thread-safe access to the global VtcLogger instance. It ought to be called only
- * after logger has been set up, i.e., setup_logger has been called; otherwise, nullptr
+/*!
+ * Thread-safe access to the singleton logger. It ought to be called only after
+ * logger has been set up, i.e., setup_logger has been called; otherwise, nullptr
  * will be returned.
  */
 VtcLogger logger()
@@ -106,40 +112,44 @@ VtcLogger logger()
 }
 
 /*!
- * Setup the logger with a given output path and file name. The log file will be saved
- * to the designated output path, using the specified logger name appended with "-log.txt".
+ * Setup the logger singleton with a given output path and file name. The log file
+ * will be saved  to the designated output path, using the specified logger name
+ * appended with "-log.txt".
  *
- * The parent path needs to be existing. If for any reason, the log file cannot be created,
- * default logger will be used (on Windows, default logger is debug output). If the log
- * file can be created, the log file will be rotated by 1MB file size and up to 3 files.
+ * The parent path needs to be pre-existing. If for any reason, the log file cannot
+ * be created, default logger will be used (on Windows, that is is the debug output).
+ * If the log file can be created, the log file will be rotated by 1MB file size
+ * and up to 3 files.
  *
- * This function can be called multiple times, as long as a_logger_name is different. However,
- * if the same logger name has been used, an exception will be thrown.
+ * This function can be called multiple times, as long as a_logger_name is different
+ * each time. However, if the same logger name has been used, an exception will
+ * be thrown.
  *
  * @param a_path A path where to save the log file.
- * @param a_logger_name Name of the logger as well as part of the output file name.
+ * @param a_logger_name Name of internal logger as well as part of output file name.
  *
  * @returns true if the intended logger is created, false default logger.
  */
 bool setup_logger(const fs::path &a_path, const std::string &a_logger_name)
 {
-  auto p = a_path / "log";
+  using namespace spdlog;
+
+  const auto p = a_path / "log";
   std::error_code ec;
 
   VtcLogger the_logger{nullptr};
   bool default_logger_created;
 
   if (fs::create_directory(p, ec) || fs::exists(p)) {
-    // a_logger_name will be used as the internal logger name, as well as part of the output file name.
-    the_logger = spdlog::rotating_logger_mt(a_logger_name,
-                                            (p / (a_logger_name + "-log.txt")).string(),
-                                            1024 * 1024,
-                                            3);
+    const auto log_file = (p / (a_logger_name + "-log.txt")).string();
+    the_logger = rotating_logger_mt(a_logger_name, // Internal logger name
+                                    log_file,      // Output file name
+                                    1024 * 1024,   // 1 MB log file size
+                                    3);            // rotate by 3 files at most
     default_logger_created = false;
   } else {
 #ifdef _WIN32
-    the_logger =
-        spdlog::synchronous_factory::template create<spdlog::sinks::windebug_sink_mt>(a_logger_name + "_windbg");
+    the_logger = synchronous_factory::create<sinks::windebug_sink_mt>(a_logger_name + "_windbg");
 #else
     the_logger = spdlog::default_logger();
 #endif
@@ -150,31 +160,72 @@ bool setup_logger(const fs::path &a_path, const std::string &a_logger_name)
   return !default_logger_created;
 }
 
-// A dirty trick to generate template specialization tag.
+/*!
+ * A dirty trick to generate template specialization tag.
+ */
 #define AUTO_TAG_ID __LINE__
 
+/*!
+ * Enum representing binary bit value.
+ */
 enum class Bit : bool
 {
   Off = false,
   On = true
 };
 
+/*!
+ * 8 bit unsigned integer.
+ */
 using Byte = uint8_t;
-using Integer = uint32_t;
+
+/*!
+ * 16 bit unsigned integer.
+ */
 using Word = uint16_t;
 
+/*!
+ * 32 bit unsigned integer.
+ */
+using Integer = uint32_t;
+
+/*!
+ * Index for various controller cabinet input and output variables.
+ */
 using Index = uint16_t;
+
+/*!
+ * Type tag for specializing variable template.
+ */
 using Tag = uint32_t;
 
+/*!
+ * Validate if an index is valid given its allowed maximum value.
+ * @tparam I The subject index value.
+ * @tparam N Maximum allowed index value.
+ */
 template<Index I, size_t N>
 concept ValidIndex = (I >= 1) && (I <= N);
 
+/*!
+ * Validate if the value type of a controller variable is valid.
+ * @tparam T The value type.
+ */
 template<typename T>
 concept ValidValueType = std::is_same_v<T, Bit>
     || std::is_same_v<T, Byte>
     || std::is_same_v<T, Word>
     || std::is_same_v<T, Integer>;
 
+/*!
+ * A cabinet variable representing an indexed cabinet entity, for example,
+ * Variable<Byte, 1> can be used to represent Phase 1. The template allows
+ * compile-time definition of "array-like" entities while preventing
+ * dynamic memory allocation during run time.
+ *
+ * @tparam T The value type of the cabinet variable.
+ * @tparam I Index of the cabinet variable.
+ */
 template<typename T, Index I> requires ValidValueType<T>
 struct Variable
 {
@@ -183,11 +234,8 @@ struct Variable
   Variable() = default;
 
   Variable(Variable &) = delete;
-
   Variable(Variable &&) = delete;
-
   Variable &operator=(Variable &) = delete;
-
   Variable &operator=(Variable &&) = delete;
 
   auto &operator()()
@@ -195,10 +243,20 @@ struct Variable
     return value;
   }
 
+  /*!
+   * Index of the subject variable.
+   */
   static constexpr Index index{I};
+
+  /*!
+   * Thread-safe atomic access of the variable value.
+   */
   std::atomic<T> value{};
 };
 
+/*!
+ * Get the value type of a type derived from Variable type.
+ */
 template<typename T>
 using ValueType = typename T::Variable::value_t;
 
@@ -996,14 +1054,16 @@ void SetMMU16ChannelCompatibility(const std::bitset<0x78> &a_mmu16_comp,
  * @param a_seq - Compile time integer sequence, the first one being the subject channel.
  */
 template<Index Ix, Index Iy, Index... Iys>
-void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp, std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
+void GetMMU16ChannelCompatibility(std::bitset<0x78> &a_mmu16_comp,
+                                  std::integer_sequence<Index, Ix, Iy, Iys...> a_seq)
 {
   // @formatter:off
   a_mmu16_comp[ChannelSegmentStartPos<Ix>() + Iy - Ix - 1]
       = (mmu::variable<ChannelCompatibilityStatus<Ix, Iy>>.value == Bit::On) ? 1 : 0;
 
   if constexpr (a_seq.size() > 2) {
-    return GetMMU16ChannelCompatibility(a_mmu16_comp, std::integer_sequence<Index, Ix, Iys...>{});
+    return GetMMU16ChannelCompatibility(a_mmu16_comp,
+                                        std::integer_sequence<Index, Ix, Iys...>{});
   } else {
     return;
   }
@@ -1377,9 +1437,13 @@ template<typename T>
 concept ReceivableFrame = std::is_same_v<T, PSR_ResponseFrameType>
     || std::is_same_v<T, SSR_CommandFrameType>;
 
-template<Byte Address, Byte FrameID, size_t FrameByteSize, typename T, typename ...Ts> requires ValidFrame<FrameByteSize,
-                                                                                                           T,
-                                                                                                           Ts...>
+template<
+    Byte Address,
+    Byte FrameID,
+    size_t FrameByteSize,
+    typename T,
+    typename ...Ts
+> requires ValidFrame<FrameByteSize, T, Ts...>
 class Frame
 {
 public:
