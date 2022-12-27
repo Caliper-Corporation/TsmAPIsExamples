@@ -402,31 +402,31 @@ constexpr size_t maxPhaseGroups{5};
 
 namespace detector {
 
-constexpr size_t max_vehicle_detectors{128};
-[[maybe_unused]] constexpr size_t max_vehicle_detector_status_groups{40};
-constexpr size_t max_pedestrian_detectors{72};
+constexpr size_t maxVehicleDetectors{128};
+constexpr size_t maxVehicleDetectorStatusGroups{16};
+constexpr size_t maxPedestrianDetectors{72};
 
 }
 
 namespace ring {
 
 constexpr size_t max_rings{16};
-[[maybe_unused]] constexpr size_t max_sequences{20};
-[[maybe_unused]] constexpr size_t max_ring_control_groups{2};
+constexpr size_t max_sequences{20};
+constexpr size_t max_ring_control_groups{2};
 
 }
 
 namespace channel {
 
 constexpr size_t max_channels{32};
-[[maybe_unused]] constexpr size_t max_channel_status_groups{4};
+constexpr size_t max_channel_status_groups{4};
 
 }
 
 namespace overlap {
 
 constexpr size_t max_overlaps{32};
-[[maybe_unused]] constexpr size_t max_overlap_status_groups{4};
+constexpr size_t max_overlap_status_groups{4};
 
 }
 
@@ -446,20 +446,20 @@ constexpr size_t max_special_function_outputs{16};
 namespace coord {
 
 constexpr size_t max_patterns{128};
-[[maybe_unused]] constexpr size_t max_splits{128};
+constexpr size_t max_splits{128};
 
 }
 
 namespace timebase_asc {
 
-[[maybe_unused]] constexpr size_t max_timebase_asc_actions{64};
+constexpr size_t max_timebase_asc_actions{64};
 
 }
 
 namespace prioritor {
 
 constexpr size_t max_prioritors{16};
-[[maybe_unused]] constexpr size_t max_prioritor_groups{9};
+constexpr size_t max_prioritor_groups{9};
 
 }
 
@@ -664,7 +664,7 @@ using Watchdog[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
 namespace input {
 
-template<Index I> requires ValidIndex<I, cu::detector::max_vehicle_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
 using ChannelFaultStatus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using CoordFreeSwitch = IoVariable<AUTO_TAG_ID, Bit>;
@@ -685,7 +685,7 @@ using OverlapOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::coord::max_patterns>
 using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::detector::max_pedestrian_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
 using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
@@ -851,7 +851,7 @@ using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitWalkRestModifier = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::detector::max_vehicle_detectors>
+template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
 using VehicleDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, biu::max_det_bius>

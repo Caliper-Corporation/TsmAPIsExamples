@@ -555,7 +555,7 @@ struct HilsCITestObject : hils::HilsCI
   {
     using namespace vtc::serial;
     auto device = serial::device::SerialDevice{"MGHDLC1"};
-    return device.ready();
+    return serial::device::SerialDevice::ready();
   }
 };
 
