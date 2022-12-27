@@ -410,56 +410,56 @@ constexpr size_t maxPedestrianDetectors{72};
 
 namespace ring {
 
-constexpr size_t max_rings{16};
-constexpr size_t max_sequences{20};
-constexpr size_t max_ring_control_groups{2};
+constexpr size_t maxRings{16};
+constexpr size_t maxSequences{20};
+constexpr size_t maxRingControlGroups{2};
 
 }
 
 namespace channel {
 
-constexpr size_t max_channels{32};
-constexpr size_t max_channel_status_groups{4};
+constexpr size_t maxChannels{32};
+constexpr size_t maxChannelStatusGroups{4};
 
 }
 
 namespace overlap {
 
-constexpr size_t max_overlaps{32};
-constexpr size_t max_overlap_status_groups{4};
+constexpr size_t maxOverlaps{32};
+constexpr size_t maxOverlapStatusGroups{4};
 
 }
 
 namespace preempt {
 
-constexpr size_t max_preempts{40};
+constexpr size_t maxPreempts{40};
 
 }
 
 namespace unit {
 
-[[maybe_unused]] constexpr size_t max_alarm_groups{1};
-constexpr size_t max_special_function_outputs{16};
+constexpr size_t maxAlarmGroups{1};
+constexpr size_t maxSpecialFunctionOutputs{16};
 
 }
 
 namespace coord {
 
-constexpr size_t max_patterns{128};
-constexpr size_t max_splits{128};
+constexpr size_t maxPatterns{128};
+constexpr size_t maxSplits{128};
 
 }
 
 namespace timebase_asc {
 
-constexpr size_t max_timebase_asc_actions{64};
+constexpr size_t maxTimebaseAscActions{64};
 
 }
 
 namespace prioritor {
 
-constexpr size_t max_prioritors{16};
-constexpr size_t max_prioritor_groups{9};
+constexpr size_t maxPrioritors{16};
+constexpr size_t maxPrioritorGroups{9};
 
 }
 
@@ -535,13 +535,13 @@ using AltFlashState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
 using AuxFunctionState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelGreenWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelRedDoNotWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelYellowPedClearDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using CustomAlarm[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
@@ -555,16 +555,16 @@ using GlobalVariable[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
 using OverlapGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
 using OverlapProtectedGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
 using OverlapRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
 using OverlapYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
@@ -609,10 +609,10 @@ using PhaseWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptStatusFlash[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using StatusBitA_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
@@ -627,7 +627,7 @@ using StatusBitB_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
 using StatusBitC_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::unit::max_special_function_outputs>
+template<Index I> requires ValidIndex<I, cu::unit::maxSpecialFunctionOutputs>
 using SpecialFunction = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
@@ -679,10 +679,10 @@ using MinGreen_2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
+template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
 using OverlapOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::coord::max_patterns>
+template<Index I> requires ValidIndex<I, cu::coord::maxPatterns>
 using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
@@ -700,61 +700,61 @@ using PhasePedOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptGateDown[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptGateUp[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptHighPrioritorLow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptInputCRC[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptInputNormalOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
+template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptInputNormalOn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::prioritor::max_prioritors>
+template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
 using PrioritorCheckIn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::prioritor::max_prioritors>
+template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
 using PrioritorCheckOut[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires (I >= 1)
 using PrioritorPreemptDetector[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingInhibitMaxTermination = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingMax2Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingMax3Selection[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingOmitRedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingPedestrianRecycle = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingRedRest = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingStopTiming = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::ring::max_rings>
+template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using SpecialFunctionInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using UnitAlarm_1 = IoVariable<AUTO_TAG_ID, Bit>;
@@ -886,13 +886,13 @@ struct MmuVariable : Variable<ValueT, I>
   MmuVariable &operator=(MmuVariable &&) = delete;
 };
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelGreenWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelRedDoNotWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelYellowPedClearStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
 using ControllerVoltMonitor = MmuVariable<AUTO_TAG_ID, Bit>;
@@ -927,7 +927,7 @@ using StartupFlashCall = MmuVariable<AUTO_TAG_ID, Bit>;
 
 using FYAFlashRateFailure = MmuVariable<AUTO_TAG_ID, Bit>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using MinimumYellowChangeDisable = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
 using MinimumFlashTimeBit_0 = MmuVariable<AUTO_TAG_ID, Bit>;
@@ -949,17 +949,17 @@ using CVMFaultMonitorLatch = MmuVariable<AUTO_TAG_ID, Bit>;
  * @remarks The two channel IDs are encoded as the index. index = left-hand-side channel as high-byte,
  * right-hand-size channel as low-byte
  */
-template<Index Ix, Index Iy> requires ValidIndex<Ix, cu::channel::max_channels>
-    && ValidIndex<Iy, cu::channel::max_channels> && (Ix < Iy)
+template<Index Ix, Index Iy> requires ValidIndex<Ix, cu::channel::maxChannels>
+    && ValidIndex<Iy, cu::channel::maxChannels> && (Ix < Iy)
 using ChannelCompatibilityStatus = MmuVariable<AUTO_TAG_ID, Bit, (Ix << 8) | Iy>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelGreenWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelRedDoNotWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::channel::max_channels>
+template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelYellowPedClearDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
 
 using LoadSwitchFlash = MmuVariable<AUTO_TAG_ID, Bit>;
