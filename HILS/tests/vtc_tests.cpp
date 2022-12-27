@@ -115,6 +115,17 @@ TEST_CASE("substring_as_array() works as expected")
 TEST_SUITE_END;
 
 //----------------------------------------------------
+TEST_SUITE_BEGIN("CU");
+
+TEST_CASE("ValidCuVariable Concept passes for a valid cu variable.")
+{
+  auto cuv = cu::CuVariable<0, Byte, 0>{};
+  CHECK(cu::ValidCuVariable<decltype(cuv)>);
+}
+
+TEST_SUITE_END;
+
+//----------------------------------------------------
 TEST_SUITE_BEGIN("IO");
 
 TEST_CASE("Output variable NotActive can be set")

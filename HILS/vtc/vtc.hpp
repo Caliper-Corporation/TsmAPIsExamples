@@ -80,7 +80,7 @@ using VtcLogger = std::shared_ptr<spdlog::logger>;
 
 /*!
  * Unnamed namespace for VtcLoggerHolder in order to have a global thread-safe
- * singleton logger without defining it in a separate translational unit.
+ * singleton logger without defining it in a separate translation unit.
  */
 namespace {
 /*!
@@ -93,7 +93,7 @@ struct VtcLoggerHolder
    * the logger separately outside VtcLoggerHolder class declaration but inside
    * the unnamed namespace. In this case, VtcLoggerHolder is a member of unnamed
    * namespace, its static data member does not have external linkage, which
-   * allows this header to be included multiple times in different translational
+   * allows this header to be included multiple times in different translation
    * unit.
    */
   inline static std::atomic<VtcLogger> logger{nullptr};
@@ -349,15 +349,22 @@ struct add_sequence_front<I, std::integer_sequence<Index, Is...>>
 
 namespace cu {
 
+/*!
+ * Type tag for Controller Unit (CU) variable.
+ */
 struct CuVariableType
 {
 };
 
+/*!
+ * Concept for validating CU variable.
+ * @tparam T
+ */
 template<typename T>
 concept ValidCuVariable = std::is_same_v<typename T::type, CuVariableType>;
 
 template<Tag, typename ValueT, Index I = 0>
-struct [[maybe_unused]] CuVariable : Variable<ValueT, I>
+struct CuVariable : Variable<ValueT, I>
 {
   using type = CuVariableType;
 
@@ -370,9 +377,27 @@ struct [[maybe_unused]] CuVariable : Variable<ValueT, I>
 
 namespace phase {
 
-constexpr size_t max_phases{40};
-[[maybe_unused]] constexpr size_t max_phase_groups{5};
+/*!
+ * The Maximum Number of Phases this Controller Unit supports.
+ * This object indicates the maximum rows which shall appear in the
+ * phaseTable object.
+ *
+ * INTEGER (2..40)
+ * OID 1.3.6.1.4.1.1206.4.2.1.1.1
+ */
+constexpr size_t maxPhases{40};
 
+/*!
+ * The Maximum Number of Phase Groups (8 Phases per group) this
+ * Controller Unit supports. This value is equal to
+ * TRUNCATE((maxPhases + 7) / 8). This object indicates the maximum
+ * rows which shall appear in the phaseStatusGroupTable and
+ * phaseControlGroupTable.
+ *
+ * INTEGER (1..5)
+ * OID 1.3.6.1.4.1.1206.4.2.1.1.3
+ */
+constexpr size_t maxPhaseGroups{5};
 }
 
 namespace detector {
@@ -542,46 +567,46 @@ using OverlapRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::overlap::max_overlaps>
 using OverlapYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PedCall[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseAdvWarning[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseCheck = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseDoNotWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseNext = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseOn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePedClearance[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePreClear[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePreClear2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
@@ -663,16 +688,16 @@ using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::detector::max_pedestrian_detectors>
 using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseForceOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseHold[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePedOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-template<Index I> requires ValidIndex<I, cu::phase::max_phases>
+template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::max_preempts>
