@@ -271,7 +271,7 @@ constexpr auto substring_as_array(std::string_view str, std::index_sequence<Is..
  * @return string_view of the textual name of the type. Null terminator not included.
  */
 template<typename T>
-constexpr auto type_name()->std::string_view
+constexpr auto type_name() -> std::string_view
 {
 #if defined(__clang__)
   constexpr auto prefix = std::string_view{"[T = "};
@@ -375,6 +375,16 @@ struct CuVariable : Variable<ValueT, I>
   CuVariable &operator=(CuVariable &&) = delete;
 };
 
+/*!
+ * Template CU variable.
+ * @tparam T
+ */
+template<typename T> requires ValidCuVariable<T>
+T variable{};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.1
+ */
 namespace phase {
 
 /*!
@@ -385,7 +395,7 @@ namespace phase {
  * INTEGER (2..40)
  * OID 1.3.6.1.4.1.1206.4.2.1.1.1
  */
-constexpr size_t maxPhases{40};
+constexpr Byte maxPhases{40};
 
 /*!
  * The Maximum Number of Phase Groups (8 Phases per group) this
@@ -397,74 +407,151 @@ constexpr size_t maxPhases{40};
  * INTEGER (1..5)
  * OID 1.3.6.1.4.1.1206.4.2.1.1.3
  */
-constexpr size_t maxPhaseGroups{5};
-}
+constexpr Byte maxPhaseGroups{5};
 
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.2
+ */
 namespace detector {
 
-constexpr size_t maxVehicleDetectors{128};
-constexpr size_t maxVehicleDetectorStatusGroups{16};
-constexpr size_t maxPedestrianDetectors{72};
+/*!
+ * The Maximum Number of Vehicle Detectors this Controller Unit supports. This object
+ * indicates the maximum rows which shall appear in the vehicleDetectorTable object.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.2.1
+ */
+constexpr Byte maxVehicleDetectors{128};
 
-}
+/*!
+ * The maximum number of detector status groups (8 detectors per group) this device supports.
+ * This value is equal to TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object indicates
+ * the maximum number of rows which shall appear in the vehicleDetectorStatusGroupTable object.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.2.3
+ */
+constexpr Byte maxVehicleDetectorStatusGroups{16};
 
-namespace ring {
+/*!
+ * The Maximum Number of Pedestrian Detectors this Controller Unit supports.
+ * This object indicates the maximum rows which shall appear in the pedestrianDetectorTable object.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.2.6
+ */
+constexpr Byte maxPedestrianDetectors{72};
 
-constexpr size_t maxRings{16};
-constexpr size_t maxSequences{20};
-constexpr size_t maxRingControlGroups{2};
+};
 
-}
-
-namespace channel {
-
-constexpr size_t maxChannels{32};
-constexpr size_t maxChannelStatusGroups{4};
-
-}
-
-namespace overlap {
-
-constexpr size_t maxOverlaps{32};
-constexpr size_t maxOverlapStatusGroups{4};
-
-}
-
-namespace preempt {
-
-constexpr size_t maxPreempts{40};
-
-}
-
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.3
+ */
 namespace unit {
 
-constexpr size_t maxAlarmGroups{1};
-constexpr size_t maxSpecialFunctionOutputs{16};
+/*!
+ * This object contains the maximum number of alarm groups (8 alarm inputs per group)
+ * this device supports. This object indicates the maximum rows which shall appear
+ * in the alarmGroupTable object.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.3.11
+ */
+constexpr Byte maxAlarmGroups{1};
 
-}
+/*!
+ * The Maximum Number of Special Functions this Actuated Controller Unit supports.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.3.13
+ */
+constexpr Byte maxSpecialFunctionOutputs{16};
 
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.4
+ */
 namespace coord {
 
-constexpr size_t maxPatterns{128};
-constexpr size_t maxSplits{128};
+/*!
+ * The maximum number of Patterns this Controller Unit supports. This object
+ * indicates how many rows are in the patternTable object (254 and 255 are defined
+ * as non-pattern Status for Free and Flash).
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.4.5
+ */
+constexpr Byte maxPatterns{128};
 
-}
+/*!
+ * The maximum number of Split Plans this Actuated Controller Unit supports.
+ * This object indicates how many Split plans are in the splitTable object.
+ *
+ * .1.3.6.1.4.1.1206.4.2.1.4.8
+ */
+constexpr Byte maxSplits{128};
 
-namespace timebase_asc {
+};
 
-constexpr size_t maxTimebaseAscActions{64};
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.5
+ */
+namespace timebaseAsc {
 
-}
+/*!
+ *  The Maximum Number of Actions this device supports. This object indicates
+ *  the maximum rows which shall appear in the timebaseAscActionTable object.
+ *
+ *  .1.3.6.1.4.1.1206.4.2.1.5.2
+ */
+constexpr Byte maxTimebaseAscActions{64};
 
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.6
+ */
+namespace preempt {
+
+constexpr Byte maxPreempts{40};
+
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.7
+ */
+namespace ring {
+
+constexpr Byte maxRings{16};
+constexpr Byte maxSequences{20};
+constexpr Byte maxRingControlGroups{2};
+
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.8
+ */
+namespace channel {
+
+constexpr Byte maxChannels{32};
+constexpr Byte maxChannelStatusGroups{4};
+
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.4.2.1.9
+ */
+namespace overlap {
+
+constexpr Byte maxOverlaps{32};
+constexpr Byte maxOverlapStatusGroups{4};
+
+};
+
+/*!
+ * .1.3.6.1.4.1.1206.3.36.1.1.13
+ */
 namespace prioritor {
-
-constexpr size_t maxPrioritors{16};
-constexpr size_t maxPrioritorGroups{9};
-
-}
-
-template<typename T> requires ValidCuVariable<T>
-T variable{};
+constexpr Byte maxPrioritors{16};
+constexpr Byte maxPrioritorGroups{2};
+};
 
 } // end of namespace vc::cu
 
@@ -486,13 +573,9 @@ struct [[maybe_unused]] BiuVariable : Variable<ValueT, I>
   using type = BiuVariableType;
 
   BiuVariable() = default;
-
   BiuVariable(BiuVariable &) = delete;
-
   BiuVariable(BiuVariable &&) = delete;
-
   BiuVariable &operator=(BiuVariable &) = delete;
-
   BiuVariable &operator=(BiuVariable &&) = delete;
 };
 
@@ -516,13 +599,9 @@ struct IoVariable : Variable<ValueT, I>
   using type = IoVariableType;
 
   IoVariable() = default;
-
   IoVariable(IoVariable &) = delete;
-
   IoVariable(IoVariable &&) = delete;
-
   IoVariable &operator=(IoVariable &) = delete;
-
   IoVariable &operator=(IoVariable &&) = delete;
 };
 
@@ -876,13 +955,9 @@ struct MmuVariable : Variable<ValueT, I>
   using type = MmuVariableType;
 
   MmuVariable() = default;
-
   MmuVariable(MmuVariable &) = delete;
-
   MmuVariable(MmuVariable &&) = delete;
-
   MmuVariable &operator=(MmuVariable &) = delete;
-
   MmuVariable &operator=(MmuVariable &&) = delete;
 };
 
