@@ -409,7 +409,7 @@ constexpr Byte maxPhases{40};
  */
 constexpr Byte maxPhaseGroups{5};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.2
@@ -441,7 +441,7 @@ constexpr Byte maxVehicleDetectorStatusGroups{16};
  */
 constexpr Byte maxPedestrianDetectors{72};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.3
@@ -464,7 +464,7 @@ constexpr Byte maxAlarmGroups{1};
  */
 constexpr Byte maxSpecialFunctionOutputs{16};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.4
@@ -488,7 +488,7 @@ constexpr Byte maxPatterns{128};
  */
 constexpr Byte maxSplits{128};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.5
@@ -503,7 +503,7 @@ namespace timebaseAsc {
  */
 constexpr Byte maxTimebaseAscActions{64};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.6
@@ -512,7 +512,7 @@ namespace preempt {
 
 constexpr Byte maxPreempts{40};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.7
@@ -523,7 +523,7 @@ constexpr Byte maxRings{16};
 constexpr Byte maxSequences{20};
 constexpr Byte maxRingControlGroups{2};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.8
@@ -533,7 +533,7 @@ namespace channel {
 constexpr Byte maxChannels{32};
 constexpr Byte maxChannelStatusGroups{4};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.4.2.1.9
@@ -543,15 +543,17 @@ namespace overlap {
 constexpr Byte maxOverlaps{32};
 constexpr Byte maxOverlapStatusGroups{4};
 
-};
+}
 
 /*!
  * .1.3.6.1.4.1.1206.3.36.1.1.13
  */
 namespace prioritor {
+
 constexpr Byte maxPrioritors{16};
 constexpr Byte maxPrioritorGroups{2};
-};
+
+}
 
 } // end of namespace vc::cu
 
