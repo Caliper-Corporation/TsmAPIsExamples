@@ -510,6 +510,12 @@ constexpr Byte maxTimebaseAscActions{64};
  */
 namespace preempt {
 
+/*!
+ * The Maximum Number of Preempts this Actuated Controller Unit supports.
+ * This object indicates the maximum rows which shall appear in the
+ * preemptTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.6.1
+ */
 constexpr Byte maxPreempts{40};
 
 }
@@ -519,8 +525,27 @@ constexpr Byte maxPreempts{40};
  */
 namespace ring {
 
+/*!
+ * The value of this object shall specify the maximum number of rings
+ * this device supports.
+ * .1.3.6.1.4.1.1206.4.2.1.7.1
+ */
 constexpr Byte maxRings{16};
+
+/*!
+ * The value of this object shall specify the maximum number of sequence plans
+ * this device supports.
+ * .1.3.6.1.4.1.1206.4.2.1.7.2
+ */
 constexpr Byte maxSequences{20};
+
+/*!
+ * The maximum number of Ring Control Groups (8 rings per group) this Actuated
+ * Controller Unit supports. This value is equal to TRUNCATE[(maxRings + 7) / 8].
+ * This object indicates the maximum rows which shall appear in the
+ * ringControlGroupTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.7.4
+ */
 constexpr Byte maxRingControlGroups{2};
 
 }
@@ -530,7 +555,21 @@ constexpr Byte maxRingControlGroups{2};
  */
 namespace channel {
 
+/*!
+ * The Maximum Number of Channels this Actuated Controller Unit supports.
+ * This object indicates the maximum rows which shall appear in the
+ * channelTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.8.1
+ */
 constexpr Byte maxChannels{32};
+
+/*!
+ * The maximum number of Channel Status Groups (8 channels per group) this
+ * Actuated Controller Unit supports. This value is equal to
+ * TRUNCATE [(maxChannels + 7) / 8]. This object indicates the maximum
+ * rows which shall appear in the channelStatusGroupTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.8.3
+ */
 constexpr Byte maxChannelStatusGroups{4};
 
 }
@@ -540,7 +579,21 @@ constexpr Byte maxChannelStatusGroups{4};
  */
 namespace overlap {
 
+/*!
+ * The Maximum Number of Overlaps this Actuated Controller Unit supports.
+ * This object indicates the maximum number of rows which shall appear
+ * in the overlapTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.9.1
+ */
 constexpr Byte maxOverlaps{32};
+
+/*!
+ * The Maximum Number of Overlap Status Groups (8 overlaps per group)
+ * this Actuated Controller Unit supports. This value is equal to
+ * TRUNCATE [(maxOverlaps + 7) / 8]. This object indicates the maximum rows
+ * which shall appear in the overlapStatusGroupTable object.
+ * .1.3.6.1.4.1.1206.4.2.1.9.3
+ */
 constexpr Byte maxOverlapStatusGroups{4};
 
 }
