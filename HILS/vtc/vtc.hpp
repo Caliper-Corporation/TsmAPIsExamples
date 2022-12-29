@@ -347,6 +347,9 @@ struct add_sequence_front<I, std::integer_sequence<Index, Is...>>
   using type = std::integer_sequence<Index, I, Is...>;
 };
 
+/*!
+ * namespace cu naming convention all follows the same names as NTCIP 1202 camelCase.
+ */
 namespace cu {
 
 /*!
@@ -623,7 +626,7 @@ template<typename T>
 concept ValidBiuVariable = std::is_same_v<typename T::type, BiuVariableType>;
 
 template<Tag, typename ValueT, Index I = 0>
-struct [[maybe_unused]] BiuVariable : Variable<ValueT, I>
+struct  BiuVariable : Variable<ValueT, I>
 {
   using type = BiuVariableType;
 
@@ -665,9 +668,9 @@ T variable{};
 
 namespace output {
 
-using AltFlashState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using AltFlashState = IoVariable<AUTO_TAG_ID, Bit>;
 
-using AuxFunctionState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using AuxFunctionOn = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelGreenWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
@@ -678,76 +681,76 @@ using ChannelRedDoNotWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
 using ChannelYellowPedClearDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
 
-using CustomAlarm[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using CustomAlarm = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I> requires ValidIndex<I, biu::max_det_bius>
 using DetectorReset = IoVariable<AUTO_TAG_ID, Byte, I>;
 
-using FlashState[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using FlashState = IoVariable<AUTO_TAG_ID, Bit>;
 
-using GlobalVariable[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using GlobalVariable = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapProtectedGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapProtectedGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapRed = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapYellow = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PedCall[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PedCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseAdvWarning[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseAdvWarning = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseCheck = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseDoNotWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseDoNotWalk = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseGreen[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseNext = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhaseOn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePedClearance[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePreClear[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePreClear = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePreClear2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhasePreClear2 = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseRed[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseRed = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseWalk[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseWalk = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseYellow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseYellow = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptStatusFlash[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptStatusFlash = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using StatusBitA_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -766,7 +769,7 @@ using SpecialFunction = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitFaultMonitor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitFaultMonitor = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitFreeCoordStatus = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -790,43 +793,43 @@ using UnitTimingPlanC = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitVoltageMonitor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitVoltageMonitor = IoVariable<AUTO_TAG_ID, Bit>;
 
-using Watchdog[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using Watchdog = IoVariable<AUTO_TAG_ID, Bit>;
 
 } // end of namespace vc::io::output
 
 namespace input {
 
 template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
-using ChannelFaultStatus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using ChannelFaultStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using CoordFreeSwitch = IoVariable<AUTO_TAG_ID, Bit>;
 
-using CustomAlarm[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using CustomAlarm = IoVariable<AUTO_TAG_ID, Bit>;
 
-using DoorAjor[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using DoorAjor = IoVariable<AUTO_TAG_ID, Bit>;
 
-using ManualControlGroupAction[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using ManualControlGroupAction = IoVariable<AUTO_TAG_ID, Bit>;
 
-using MinGreen_2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using MinGreen_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
 using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
 
 template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapOmit[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using OverlapOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::coord::maxPatterns>
-using PatternInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PatternInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
 using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseForceOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseHold[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PhaseHold = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePedOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
@@ -835,34 +838,34 @@ template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
 using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptGateDown[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptGateDown = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptGateUp[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptGateUp = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptHighPrioritorLow[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptHighPrioritorLow = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
 using PreemptInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputCRC[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputCRC = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputNormalOff[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputNormalOff = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputNormalOn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PreemptInputNormalOn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
-using PrioritorCheckIn[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorCheckIn = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
-using PrioritorCheckOut[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorCheckOut = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires (I >= 1)
-using PrioritorPreemptDetector[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using PrioritorPreemptDetector = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
@@ -874,7 +877,7 @@ template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingMax2Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingMax3Selection[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using RingMax3Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingOmitRedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
@@ -889,7 +892,7 @@ template<Index I> requires ValidIndex<I, cu::ring::maxRings>
 using RingStopTiming = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using SpecialFunctionInput[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit, I>;
+using SpecialFunctionInput = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 using UnitAlarm_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -905,41 +908,41 @@ using UnitAlternateSequenceD = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitCallPedNAPlus[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitCallPedNAPlus = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitCallToNonActuated_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitCallToNonActuated_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitClockReset[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitClockReset = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitCMUMMUFlashStatus = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitDimming = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitExternWatchDog[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitExternWatchDog = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitExternalMinRecall = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitExternalStart = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIndicatorLampControl[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIndicatorLampControl = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitIntervalAdvance = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_0[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_0 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_1[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_1 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_2[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitIOModeBit_3[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitIOModeBit_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitITSLocalFlashSense[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitITSLocalFlashSense = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitLocalFlash = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitLocalFlashSense[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitLocalFlashSense = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitManualControlEnable = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -949,11 +952,11 @@ using UnitOffset_2 = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitOffset_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanA[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSignalPlanA = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitSignalPlanB[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitSignalPlanB = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitStopTIme[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitStopTIme = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitSystemAddressBit_0 = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -965,7 +968,7 @@ using UnitSystemAddressBit_3 = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitSystemAddressBit_4 = IoVariable<AUTO_TAG_ID, Bit>;
 
-using UnitTBCHoldOnline[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Bit>;
+using UnitTBCHoldOnline = IoVariable<AUTO_TAG_ID, Bit>;
 
 using UnitTBCOnline = IoVariable<AUTO_TAG_ID, Bit>;
 
@@ -989,7 +992,7 @@ template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
 using VehicleDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
 
 template<Index I> requires ValidIndex<I, biu::max_det_bius>
-using VehicleDetReset[[maybe_unused]] = IoVariable<AUTO_TAG_ID, Byte, I>;
+using VehicleDetReset = IoVariable<AUTO_TAG_ID, Byte, I>;
 
 } // end of namespace vc::io::input
 
