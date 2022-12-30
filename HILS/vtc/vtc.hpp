@@ -930,7 +930,8 @@ struct Watchdog : IoVariable<OutputType, Bit>
 
 namespace input {
 
-template<Index I> /* */ requires ValidIndex<I, cu::detector::maxVehicleDetectors>
+template<Index I> /* */
+requires ValidIndex<I, cu::detector::maxVehicleDetectors>
 struct ChannelFaultStatus : IoVariable<InputType, Bit, I>
 {
 };
@@ -989,7 +990,8 @@ struct PhaseHold : IoVariable<InputType, Bit, I>
 {
 };
 
-template<Index I> /* */requires ValidIndex<I, cu::phase::maxPhases>
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
 struct PhasePedOmit : IoVariable<InputType, Bit, I>
 {
 };
