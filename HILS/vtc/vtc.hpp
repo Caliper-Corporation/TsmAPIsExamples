@@ -4055,11 +4055,8 @@ class SerialDevice
     }
 
     SerialApiModule(SerialApiModule &) = delete;
-
     SerialApiModule(SerialApiModule &&) = delete;
-
     SerialApiModule &operator=(SerialApiModule &) = delete;
-
     SerialApiModule &operator=(SerialApiModule &&) = delete;
 
     ~SerialApiModule()
@@ -4654,11 +4651,8 @@ class HilsCI
 {
 public:
   HilsCI(const HilsCI &) = delete;
-
   HilsCI(HilsCI &&) = delete;
-
   HilsCI &operator=(HilsCI &) = delete;
-
   HilsCI &operator=(HilsCI &&) = delete;
 
   auto &loadswitch_wirings() const
