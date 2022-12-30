@@ -374,8 +374,9 @@ struct CuVariable : Variable<ValueT, I>
 };
 
 /*!
- * Template CU variable.
- * @tparam T
+ * Template variable pattern so we can instantiate and access global
+ * CU variable instances in a unified fashion.
+ * @tparam T The type of the variable.
  */
 template<typename T> requires ValidCuVariable<T>
 T variable{};
@@ -606,7 +607,7 @@ constexpr Byte maxPrioritorGroups{2};
 
 }
 
-} // end of namespace vc::cu
+} // end of namespace vtc::cu
 
 namespace biu {
 
@@ -632,6 +633,11 @@ struct BiuVariable : Variable<ValueT, I>
   BiuVariable &operator=(BiuVariable &&) = delete;
 };
 
+/*!
+ * Template variable pattern so we can instantiate and access global
+ * BIU variable instances in a unified fashion.
+ * @tparam T The type of the variable.
+ */
 template<typename T> requires ValidBiuVariable<T>
 T variable{};
 
@@ -666,44 +672,28 @@ struct IoVariable : Variable<ValueT, I>
   IoVariable &operator=(IoVariable &&) = delete;
 };
 
-template<typename T>
-requires ValidIoVariable<T>
+/*!
+ * Template variable pattern so we can instantiate and access global
+ * IO variable instances in a unified fashion.
+ * @tparam T The type of the variable.
+ */
+template<typename T> requires ValidIoVariable<T>
 T variable{};
 
 namespace output {
 
+/*!
+ * Mapped to an output and commonly used in user logic, in pair
+ * with FlashState.
+ */
 struct AltFlashState : IoVariable<OutputType, Bit>
 {
 };
 
-struct AuxFunctionOn : IoVariable<OutputType, Bit>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::channel::maxChannels>
-struct ChannelGreenWalkDriver : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::channel::maxChannels>
-struct ChannelRedDoNotWalkDriver : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::channel::maxChannels>
-struct ChannelYellowPedClearDriver : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, biu::max_det_bius>
-struct DetectorReset : IoVariable<OutputType, Byte, I>
-{
-};
-
+/*!
+ * Mapped to an output and commonly used in user logic, in pair
+ * with AltFlashState.
+ */
 struct FlashState : IoVariable<OutputType, Bit>
 {
 };
@@ -716,51 +706,55 @@ struct NotActive : IoVariable<OutputType, Bit>
 {
 };
 
-template<Index I> /* */
-requires ValidIndex<I, cu::overlap::maxOverlaps>
-struct OverlapGreen : IoVariable<OutputType, Bit, I>
+/*!
+ * Some "old" NEMA cabinets have inputs or test switches tied to AuxFunction.
+ * Treated as interchangeable with SpecialFunctionOn. Both can be used as
+ * placeholder variables to be called in Time of Day action schedules or
+ * in user logic while being mapped to an cabinet output.
+ */
+struct AuxFunctionOn : IoVariable<OutputType, Bit>
 {
 };
 
+/*!
+ * Load Switch Driver Basic Vehicle (three per phase) for Channel I,
+ * as provision of Green output for basic vehicle phase, or provision
+ * of Walk output for Pedestrian Movement.
+ *
+ * Per Phase or Per Pedestrian Movement output - see NEMA-TS2 3.5.3.12
+ * @tparam I Channel index, [1, maxChannels].
+ */
 template<Index I> /* */
-requires ValidIndex<I, cu::overlap::maxOverlaps>
-struct OverlapProtectedGreen : IoVariable<OutputType, Bit, I>
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelGreenWalkDriver : IoVariable<OutputType, Bit, I>
 {
 };
 
+/*!
+ * Load Switch Driver Basic Vehicle (three per phase) for Channel I,
+ * as provision of Red output for basic vehicle phase, or provision
+ * of Don't Walk output for Pedestrian Movement.
+ *
+ * Per Phase or Per Pedestrian Movement output - see NEMA-TS2 3.5.3.12
+ * @tparam I Channel index, [1, maxChannels].
+ */
 template<Index I> /* */
-requires ValidIndex<I, cu::overlap::maxOverlaps>
-struct OverlapRed : IoVariable<OutputType, Bit, I>
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelRedDoNotWalkDriver : IoVariable<OutputType, Bit, I>
 {
 };
 
+/*!
+ * Load Switch Driver Basic Vehicle (three per phase) for Channel I,
+ * as provision of Yellow output for basic vehicle phase, or provision
+ * of Pedestrian Clearance output for Pedestrian Movement.
+ *
+ * Per Phase or Per Pedestrian Movement output - see NEMA-TS2 3.5.3.12
+ * @tparam I Channel index, [1, maxChannels].
+ */
 template<Index I> /* */
-requires ValidIndex<I, cu::overlap::maxOverlaps>
-struct OverlapYellow : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PedCall : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseAdvWarning : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseCheck : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseDoNotWalk : IoVariable<OutputType, Bit, I>
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelYellowPedClearDriver : IoVariable<OutputType, Bit, I>
 {
 };
 
@@ -772,37 +766,7 @@ struct PhaseGreen : IoVariable<OutputType, Bit, I>
 
 template<Index I> /* */
 requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseNext : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseOmit : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseOn : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhasePedClearance : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhasePreClear : IoVariable<OutputType, Bit, I>
-{
-};
-
-template<Index I> /* */
-requires ValidIndex<I, cu::phase::maxPhases>
-struct PhasePreClear2 : IoVariable<OutputType, Bit, I>
+struct PhaseYellow : IoVariable<OutputType, Bit, I>
 {
 };
 
@@ -820,7 +784,250 @@ struct PhaseWalk : IoVariable<OutputType, Bit, I>
 
 template<Index I> /* */
 requires ValidIndex<I, cu::phase::maxPhases>
-struct PhaseYellow : IoVariable<OutputType, Bit, I>
+struct PhasePedClearance : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseDoNotWalk : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePreClear : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePreClear2 : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseAdvWarning : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * An output to indicate call status (vehicle or pedestrian, or both) of the phase,
+ * activated when the CU is not in the Green interval of that phase, which has a
+ * demand in that phase. Neither the Phase Omit nor Pedestrian Omit inputs shall
+ * affect the PhaseCheck output.
+ *
+ * Per Phase - see NEMA-TS2 3.5.3.12
+ * @tparam I Index of the phase, [1, maxPhases]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseCheck : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PedCall : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * An output to indicate phase status. The PhaseOn output of a particular phase
+ * activated during the Green, Yellow, and Red Clearance intervals of that phase.
+ * It shall be permissible for this output to be active during the
+ * Red Dwell state.
+ *
+ * Per Phase - see NEMA-TS2 3.5.3.12
+ * @tparam I Index of the phase, [1, maxPhases]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseOn : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * An output of a particular phase activated when the phase is committed
+ * to be next in sequence and remains present until the phase becomes
+ * active. The phase next to be serviced shall be determined at the end of
+ * Green interval of the terminating phase; except that if the decision
+ * cannot be made at the end of the Green interval, it shall not be
+ * made until after the end of all Vehicle Change and Clearance intervals.
+ *
+ * Per Phase - see NEMA-TS2 3.5.3.12
+ * @tparam I Index of the phase, [1, maxPhases]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseNext : IoVariable<OutputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseOmitStatus : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*
+ One or more of the coded status bit states shown in NEMA-TS2 Table 3-12
+ might be omitted from a normal cycle of operation. (AEI) Only one of the
+ coded status codes shall be active when the following conditions are
+ present in the CU:
+
+ --------------------------------------------------------------------
+ Code                   Bit States                   State
+   #            A           B            C           Names
+ --------------------------------------------------------------------
+   0           OFF          OFF          OFF         Min Green
+   1           ON           OFF          OFF         Extension
+   2           OFF          ON           OFF         Maximum
+   3           ON           ON           OFF         Green Rest
+ --------------------------------------------------------------------
+   4           OFF          OFF          ON          Yellow Change
+   5           ON           OFF          ON          Red Clearance
+ --------------------------------------------------------------------
+   6           OFF          ON           ON          Red Rest
+   7           ON           ON           ON          Undefined
+ --------------------------------------------------------------------
+
+  The active phase is in Green interval and operating in ACTUATED MODE:
+      Code 0 - Min Timing - When timing initial, Walk, or Ped Clearance
+                            portion of the Green interval
+      Code 1 - Ext Timing - The portion of Green interval following the
+                            completion of min timings when timing an extension(s)
+      Code 2 - Max Timing - That portion of Green interval following the
+                            completion of min timings when not timing an extension
+                            and the Max Green is Timing (e.g., when the Hold
+                            input is active)
+      Code 3 - Green Rest - That portion of Green interval when the min timings are
+                            complete, Passage Timer is timed out, and the Max Green
+                            timer is either timed out or has not started.
+
+  The active phase is in Green interval and operating in NON-ACTUATED MODE:
+      Code 0 - Walk       - When timing the Walk portion of the Green interval
+                            (non-actuated State A)
+      Code 1 - Walk Hold  - When the Walk output is active, Walk timing is complete
+                            and Hold input is active (non-actuated State B)
+      Code 2 - PedClr     - When timing the Pedestrian Clearance interval or the
+                            remaining portion of Min Green (non-actuated State C)
+      Code 3 - Green Rest - When the timing of Pedestrian and Min Green intervals
+                            are complete (non-actuated State D)
+
+  The active phase is not in its Green interval.
+      Code 4 - YeChange   - When timing Yellow Change.
+      Code 5 - RedClr     - When timing Red Clearance.
+      Code 6 - Red Rest   - When timing is complete and a Red indication is displayed.
+      Code 7 - Undefined  - What do say?
+*/
+
+/*!
+ * Bit A of the coded Ring 1 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitA_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Bit B of the coded Ring 1 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitB_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Bit C of the coded Ring 1 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitC_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Bit A of the coded Ring 2 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitA_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Bit BV of the coded Ring 2 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitB_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Bit C of the coded Ring 2 status.
+ * Per Ring - See NEMA-TS2 3.5.4.2
+ */
+struct StatusBitC_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapProtectedGreen : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * Load Switch Drivers, Vehicle Overlap (three per overlap)
+ * Provision of Green output for the overlap channel.
+ *
+ * A circuit closure to Logic Ground shall be maintained at the output
+ * at all times. The output shall energize the appropriate overlap
+ * signal load switching circuit to result in a Green indication for the
+ * duration of such required indication.
+ *
+ * Per Unit - See NEMA-TS2 3.5.5.6
+ * @tparam I Overlap index, [1, maxOverlaps]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapGreen : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * Load Switch Drivers, Vehicle Overlap (three per overlap)
+ * Provision of Red output for the overlap channel.
+ *
+ * A circuit closure to Logic Ground shall be maintained at the output
+ * at all times. The output shall energize the appropriate overlap
+ * signal load switching circuit to result in a Red indication for the
+ * duration of such required indication.
+ *
+ * Per Unit - See NEMA-TS2 3.5.5.6
+ * @tparam I Overlap index, [1, maxOverlaps]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapRed : IoVariable<OutputType, Bit, I>
+{
+};
+
+/*!
+ * Load Switch Drivers, Vehicle Overlap (three per overlap)
+ * Provision of Yellow output for the overlap channel.
+ *
+ * A circuit closure to Logic Ground shall be maintained at the output
+ * at all times. The output shall energize the appropriate overlap
+ * signal load switching circuit to result in a Yellow indication for the
+ * duration of such required indication.
+ *
+ * Per Unit - See NEMA-TS2 3.5.5.6
+ * @tparam I Overlap index, [1, maxOverlaps]
+ */
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapYellow : IoVariable<OutputType, Bit, I>
 {
 };
 
@@ -836,93 +1043,165 @@ struct PreemptStatusFlash : IoVariable<OutputType, Bit, I>
 {
 };
 
-struct StatusBitA_Ring_1 : IoVariable<OutputType, Bit>
-{
-};
-
-struct StatusBitB_Ring_1 : IoVariable<OutputType, Bit>
-{
-};
-
-struct StatusBitC_Ring_1 : IoVariable<OutputType, Bit>
-{
-};
-
-struct StatusBitA_Ring_2 : IoVariable<OutputType, Bit>
-{
-};
-
-struct StatusBitB_Ring_2 : IoVariable<OutputType, Bit>
-{
-};
-
-struct StatusBitC_Ring_2 : IoVariable<OutputType, Bit>
-{
-};
-
 template<Index I> /* */
 requires ValidIndex<I, cu::unit::maxSpecialFunctionOutputs>
 struct SpecialFunction : IoVariable<OutputType, Bit, I>
 {
 };
 
-struct UnitAutomaticFlash : IoVariable<OutputType, Bit>
+/*!
+ * See NEMA-TS2 3.9.1.2
+ */
+struct UnitAutomaticFlashStatus : IoVariable<OutputType, Bit>
 {
 };
 
+/*!
+ * An open collector output which is maintained True (Low state) as long as the
+ * voltages within the CU do not drop below predetermined levels required to
+ * provide normal operation.
+ *
+ * The output will also be False (High state) during CU generated flash modes.
+ *
+ * Per Unit - See NEMA-TS2 3.5.5.6
+ */
 struct UnitFaultMonitor : IoVariable<OutputType, Bit>
 {
 };
 
-struct UnitFreeCoordStatus : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitOffset_1 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitOffset_2 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitOffset_3 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTBCAux_1 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTBCAux_2 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTBCAux_3 : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTimingPlanA : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTimingPlanB : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTimingPlanC : IoVariable<OutputType, Bit>
-{
-};
-
-struct UnitTimingPlanD : IoVariable<OutputType, Bit>
-{
-};
-
+/*!
+ * CU Voltage Monitor (Type A2 Only). An open collector output which is maintained
+ * True (Low state) as long as the voltages within the CU do not drop below
+ * predetermined levels required to provide normal operation.
+ *
+ * The output will also be False (High state) during CU generated flash modes.
+ *
+ * This output operates concurrently with Fault Monitor output except during periods
+ * of No Fault Flash (i.e., Automatic Flash, and Preempt Flash).
+ *
+ * Per Unit - See NEMA-TS2 3.5.5.6
+ */
 struct UnitVoltageMonitor : IoVariable<OutputType, Bit>
 {
 };
 
+/*!
+ *
+ */
+struct UnitFreeCoordStatus : IoVariable<OutputType, Bit>
+{
+};
+
+/*
+ Pattern Outputs—In the applicable mode, seven outputs for master type
+ interconnect interface drivers shall be available. The outputs shall
+ echo the active pattern.
+
+ All outputs shall be constantly ON when active except offset which
+ is OFF for a minimum of 3 seconds or 3% of the cycle once each cycle
+ beginning at the “0” point of the cycle.
+
+ Pattern outputs shall be interpreted as command requests in accordance
+ with Table 3–6 and Table 3–7.
+
+ See NEMA-TS2 3.4.5.3
+
+ Table 3-7 Offset (See NEMA-TS2 3.4.5.2)
+ --------------------------------------------
+ Command      Off 1       Off 2      Off 3
+ Request      Input       Input      Input
+ --------------------------------------------
+ Offset 1     ON          OFF        OFF
+ Offset 2     OFF         ON         OFF
+ Offset 3     OFF         OFF        ON
+ Sync         OFF         OFF        OFF
+ --------------------------------------------
+
+ */
+
+/*!
+ * Pattern Output Offset Bit 1. See NEMA-TS2 3.4.5.2
+ */
+struct UnitOffset_1 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Pattern Output Offset Bit 2. See NEMA-TS2 3.4.5.2
+ */
+struct UnitOffset_2 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Pattern Output Offset Bit 3. See NEMA-TS2 3.4.5.2
+ */
+struct UnitOffset_3 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ See NEMA-TS2 3.4.5.2 Table 3-6 Timing Plan
+ */
+struct UnitTimingPlanA : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ See NEMA-TS2 3.4.5.2 Table 3-6 Timing Plan
+ */
+struct UnitTimingPlanB : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ See NEMA-TS2 3.4.5.2 Table 3-6 Timing Plan
+ */
+struct UnitTimingPlanC : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ See NEMA-TS2 3.4.5.2 Table 3-6 Timing Plan
+ */
+struct UnitTimingPlanD : IoVariable<OutputType, Bit>
+{
+};
+
+/*
+ * See NEMA-TS2 3.8.3 External Interface
+ * Time Base Outputs - Three outputs for Time Base Auxiliary. They shall be On
+ * when their respective auxiliary is part of the current time base event.
+ */
+
+/*!
+ * Time Base Auxiliary 1 See NEMA-TS2 3.8.3 External Interface
+ */
+struct UnitTBCAux_1 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Time Base Auxiliary 2 See NEMA-TS2 3.8.3 External Interface
+ */
+struct UnitTBCAux_2 : IoVariable<OutputType, Bit>
+{
+};
+
+/*!
+ * Time Base Auxiliary 3 See NEMA-TS2 3.8.3 External Interface
+ */
+struct UnitTBCAux_3 : IoVariable<OutputType, Bit>
+{
+};
+
 struct Watchdog : IoVariable<OutputType, Bit>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, biu::max_det_bius>
+struct DetectorReset : IoVariable<OutputType, Byte, I>
 {
 };
 
@@ -1318,7 +1597,7 @@ struct VehicleDetReset : IoVariable<InputType, Byte, I>
 
 } // end of namespace vc::io::input
 
-} // end of namespace vc::io
+} // end of namespace vtc::io
 
 namespace mmu {
 
@@ -2524,7 +2803,7 @@ using TfBiu03_OutputsInputsRequestFrame
     FrameBit<io::output::UnitOffset_1, 0x1C>,
     FrameBit<io::output::UnitOffset_2, 0x1D>,
     FrameBit<io::output::UnitOffset_3, 0x1E>,
-    FrameBit<io::output::UnitAutomaticFlash, 0x1F>,
+    FrameBit<io::output::UnitAutomaticFlashStatus, 0x1F>,
     // ----------------------------------------------
     // Byte 4
     // ----------------------------------------------
