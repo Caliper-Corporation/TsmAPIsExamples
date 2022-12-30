@@ -36,10 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   MPL 1.1/GPL 2.0/LGPL 2.1 tri-license
 */
-#pragma warning(disable:4068)
 
+#pragma warning(disable:4068)
 #pragma clang diagnostic push
-#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedTypeAliasInspection"
 #pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "OCUnusedStructInspection"
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
@@ -159,11 +159,6 @@ bool setup_logger(const fs::path &a_path, const std::string &a_logger_name)
   VtcLoggerHolder::logger = the_logger;
   return !default_logger_created;
 }
-
-/*!
- * A dirty trick to generate template specialization tag.
- */
-#define AUTO_TAG_ID __LINE__
 
 /*!
  * Enum representing binary bit value.
@@ -366,7 +361,7 @@ struct CuVariableType
 template<typename T>
 concept ValidCuVariable = std::is_same_v<typename T::type, CuVariableType>;
 
-template<Tag, typename ValueT, Index I = 0>
+template<typename ValueT, Index I = 0>
 struct CuVariable : Variable<ValueT, I>
 {
   using type = CuVariableType;
@@ -625,8 +620,8 @@ struct BiuVariableType
 template<typename T>
 concept ValidBiuVariable = std::is_same_v<typename T::type, BiuVariableType>;
 
-template<Tag, typename ValueT, Index I = 0>
-struct  BiuVariable : Variable<ValueT, I>
+template<typename ValueT, Index I = 0>
+struct BiuVariable : Variable<ValueT, I>
 {
   using type = BiuVariableType;
 
@@ -648,13 +643,21 @@ struct IoVariableType
 {
 };
 
-template<typename T>
-concept ValidIoVariable = std::is_same_v<typename T::type, IoVariableType>;
+struct InputType : IoVariableType
+{
+};
 
-template<Tag, typename ValueT, Index I = 0>
+struct OutputType : IoVariableType
+{
+};
+
+template<typename T>
+concept ValidIoVariable = std::is_base_of_v<IoVariableType, typename T::type>;
+
+template<typename IoT, typename ValueT, Index I = 0>
 struct IoVariable : Variable<ValueT, I>
 {
-  using type = IoVariableType;
+  using type = IoT;
 
   IoVariable() = default;
   IoVariable(IoVariable &) = delete;
@@ -663,336 +666,653 @@ struct IoVariable : Variable<ValueT, I>
   IoVariable &operator=(IoVariable &&) = delete;
 };
 
-template<typename T> requires ValidIoVariable<T>
+template<typename T>
+requires ValidIoVariable<T>
 T variable{};
 
 namespace output {
 
-using AltFlashState = IoVariable<AUTO_TAG_ID, Bit>;
+struct AltFlashState : IoVariable<OutputType, Bit>
+{
+};
 
-using AuxFunctionOn = IoVariable<AUTO_TAG_ID, Bit>;
+struct AuxFunctionOn : IoVariable<OutputType, Bit>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelGreenWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelGreenWalkDriver : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelRedDoNotWalkDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelRedDoNotWalkDriver : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelYellowPedClearDriver = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelYellowPedClearDriver : IoVariable<OutputType, Bit, I>
+{
+};
 
-using CustomAlarm = IoVariable<AUTO_TAG_ID, Bit>;
+template<Index I> /* */
+requires ValidIndex<I, biu::max_det_bius>
+struct DetectorReset : IoVariable<OutputType, Byte, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, biu::max_det_bius>
-using DetectorReset = IoVariable<AUTO_TAG_ID, Byte, I>;
+struct FlashState : IoVariable<OutputType, Bit>
+{
+};
 
-using FlashState = IoVariable<AUTO_TAG_ID, Bit>;
+struct GlobalVariable : IoVariable<OutputType, Bit>
+{
+};
 
-using GlobalVariable = IoVariable<AUTO_TAG_ID, Bit>;
+struct NotActive : IoVariable<OutputType, Bit>
+{
+};
 
-using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapGreen : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapProtectedGreen : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapProtectedGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapRed : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapRed = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapYellow : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapYellow = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PedCall : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PedCall = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseAdvWarning : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseAdvWarning = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseCheck : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseCheck = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseDoNotWalk : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseDoNotWalk = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseGreen : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseGreen = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseNext : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseNext = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseOmit : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseOn : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseOn = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePedClearance : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePreClear : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePreClear = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePreClear2 : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePreClear2 = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseRed : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseRed = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseWalk : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseWalk = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseYellow : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseYellow = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptStatus : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptStatusFlash : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptStatusFlash = IoVariable<AUTO_TAG_ID, Bit, I>;
+struct StatusBitA_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitA_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
+struct StatusBitB_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitB_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
+struct StatusBitC_Ring_1 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitC_Ring_1 = IoVariable<AUTO_TAG_ID, Bit>;
+struct StatusBitA_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitA_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
+struct StatusBitB_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitB_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
+struct StatusBitC_Ring_2 : IoVariable<OutputType, Bit>
+{
+};
 
-using StatusBitC_Ring_2 = IoVariable<AUTO_TAG_ID, Bit>;
+template<Index I> /* */
+requires ValidIndex<I, cu::unit::maxSpecialFunctionOutputs>
+struct SpecialFunction : IoVariable<OutputType, Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::unit::maxSpecialFunctionOutputs>
-using SpecialFunction = IoVariable<AUTO_TAG_ID, Bit, I>;
+struct UnitAutomaticFlash : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitFaultMonitor : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitFaultMonitor = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitFreeCoordStatus : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitFreeCoordStatus = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitOffset_1 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitOffset_1 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitOffset_2 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitOffset_2 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitOffset_3 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitOffset_3 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTBCAux_1 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTBCAux_1 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTBCAux_2 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTBCAux_2 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTBCAux_3 : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTBCAux_3 = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTimingPlanA : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTimingPlanA = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTimingPlanB : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTimingPlanB = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTimingPlanC : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTimingPlanC = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitTimingPlanD : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
+struct UnitVoltageMonitor : IoVariable<OutputType, Bit>
+{
+};
 
-using UnitVoltageMonitor = IoVariable<AUTO_TAG_ID, Bit>;
-
-using Watchdog = IoVariable<AUTO_TAG_ID, Bit>;
+struct Watchdog : IoVariable<OutputType, Bit>
+{
+};
 
 } // end of namespace vc::io::output
 
 namespace input {
 
-template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
-using ChannelFaultStatus = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-using CoordFreeSwitch = IoVariable<AUTO_TAG_ID, Bit>;
-
-using CustomAlarm = IoVariable<AUTO_TAG_ID, Bit>;
-
-using DoorAjor = IoVariable<AUTO_TAG_ID, Bit>;
-
-using ManualControlGroupAction = IoVariable<AUTO_TAG_ID, Bit>;
-
-using MinGreen_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using NotActive = IoVariable<AUTO_TAG_ID, Bit>;
-
-template<Index I> requires ValidIndex<I, cu::overlap::maxOverlaps>
-using OverlapOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::coord::maxPatterns>
-using PatternInput = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
-using PedDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhaseHold = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePedOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::phase::maxPhases>
-using PhasePhaseOmit = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptGateDown = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptGateUp = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptHighPrioritorLow = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInput = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputCRC = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputNormalOff = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::preempt::maxPreempts>
-using PreemptInputNormalOn = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
-using PrioritorCheckIn = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::prioritor::maxPrioritors>
-using PrioritorCheckOut = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires (I >= 1)
-using PrioritorPreemptDetector = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingForceOff = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingInhibitMaxTermination = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingMax2Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingMax3Selection = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingOmitRedClearance = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingPedestrianRecycle = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingRedRest = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using RingStopTiming = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, cu::ring::maxRings>
-using SpecialFunctionInput = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-using UnitAlarm_1 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAlarm_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAlternateSequenceA = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAlternateSequenceB = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAlternateSequenceC = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAlternateSequenceD = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitAutomaticFlash = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitCallPedNAPlus = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitCallToNonActuated_1 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitCallToNonActuated_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitClockReset = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitCMUMMUFlashStatus = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitDimming = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitExternWatchDog = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitExternalMinRecall = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitExternalStart = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIndicatorLampControl = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIntervalAdvance = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIOModeBit_0 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIOModeBit_1 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIOModeBit_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitIOModeBit_3 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitITSLocalFlashSense = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitLocalFlash = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitLocalFlashSense = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitManualControlEnable = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitOffset_1 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitOffset_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitOffset_3 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSignalPlanA = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSignalPlanB = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitStopTIme = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSystemAddressBit_0 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSystemAddressBit_1 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSystemAddressBit_2 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSystemAddressBit_3 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitSystemAddressBit_4 = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTBCHoldOnline = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTBCOnline = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTestInputA = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTestInputB = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTestInputC = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTimingPlanA = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTimingPlanB = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTimingPlanC = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitTimingPlanD = IoVariable<AUTO_TAG_ID, Bit>;
-
-using UnitWalkRestModifier = IoVariable<AUTO_TAG_ID, Bit>;
-
-template<Index I> requires ValidIndex<I, cu::detector::maxVehicleDetectors>
-using VehicleDetCall = IoVariable<AUTO_TAG_ID, Bit, I>;
-
-template<Index I> requires ValidIndex<I, biu::max_det_bius>
-using VehicleDetReset = IoVariable<AUTO_TAG_ID, Byte, I>;
+template<Index I> /* */ requires ValidIndex<I, cu::detector::maxVehicleDetectors>
+struct ChannelFaultStatus : IoVariable<InputType, Bit, I>
+{
+};
+
+struct CoordFreeSwitch : IoVariable<InputType, Bit>
+{
+};
+
+struct CustomAlarm : IoVariable<InputType, Bit>
+{
+};
+
+struct DoorAjar : IoVariable<InputType, Bit>
+{
+};
+
+struct ManualControlGroupAction : IoVariable<InputType, Bit>
+{
+};
+
+struct MinGreen_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct NotActive : IoVariable<InputType, Bit>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::overlap::maxOverlaps>
+struct OverlapOmit : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::coord::maxPatterns>
+struct PatternInput : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
+struct PedDetCall : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseForceOff : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhaseHold : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePedOmit : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::phase::maxPhases>
+struct PhasePhaseOmit : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptGateDown : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptGateUp : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptHighPrioritorLow : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptInput : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptInputCRC : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptInputNormalOff : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::preempt::maxPreempts>
+struct PreemptInputNormalOn : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::prioritor::maxPrioritors>
+struct PrioritorCheckIn : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::prioritor::maxPrioritors>
+struct PrioritorCheckOut : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires (I >= 1)
+struct PrioritorPreemptDetector : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingForceOff : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingInhibitMaxTermination : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingMax2Selection : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingMax3Selection : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingOmitRedClearance : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingPedestrianRecycle : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingRedRest : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct RingStopTiming : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::ring::maxRings>
+struct SpecialFunctionInput : IoVariable<InputType, Bit, I>
+{
+};
+
+struct UnitAlarm_1 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAlarm_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAlternateSequenceA : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAlternateSequenceB : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAlternateSequenceC : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAlternateSequenceD : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitAutomaticFlash : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitCallPedNAPlus : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitCallToNonActuated_1 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitCallToNonActuated_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitClockReset : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitCMUMMUFlashStatus : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitDimming : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitExternWatchDog : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitExternalMinRecall : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitExternalStart : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIndicatorLampControl : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIntervalAdvance : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIOModeBit_0 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIOModeBit_1 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIOModeBit_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitIOModeBit_3 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitITSLocalFlashSense : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitLocalFlash : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitLocalFlashSense : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitManualControlEnable : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitOffset_1 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitOffset_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitOffset_3 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSignalPlanA : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSignalPlanB : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitStopTIme : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSystemAddressBit_0 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSystemAddressBit_1 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSystemAddressBit_2 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSystemAddressBit_3 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitSystemAddressBit_4 : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTBCHoldOnline : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTBCOnline : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTestInputA : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTestInputB : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTestInputC : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTimingPlanA : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTimingPlanB : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTimingPlanC : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitTimingPlanD : IoVariable<InputType, Bit>
+{
+};
+
+struct UnitWalkRestModifier : IoVariable<InputType, Bit>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, cu::detector::maxVehicleDetectors>
+struct VehicleDetCall : IoVariable<InputType, Bit, I>
+{
+};
+
+template<Index I> /* */
+requires ValidIndex<I, biu::max_det_bius>
+struct VehicleDetReset : IoVariable<InputType, Byte, I>
+{
+};
 
 } // end of namespace vc::io::input
 
@@ -1007,7 +1327,7 @@ struct MmuVariableType
 template<typename T>
 concept ValidMmuVariable = std::is_same_v<typename T::type, MmuVariableType>;
 
-template<Tag, typename ValueT, Index I = 0>
+template<typename ValueT, Index I = 0>
 struct MmuVariable : Variable<ValueT, I>
 {
   using type = MmuVariableType;
@@ -1019,85 +1339,155 @@ struct MmuVariable : Variable<ValueT, I>
   MmuVariable &operator=(MmuVariable &&) = delete;
 };
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelGreenWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelGreenWalkStatus : MmuVariable<Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelRedDoNotWalkStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelRedDoNotWalkStatus : MmuVariable<Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelYellowPedClearStatus = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelYellowPedClearStatus : MmuVariable<Bit, I>
+{
+};
 
-using ControllerVoltMonitor = MmuVariable<AUTO_TAG_ID, Bit>;
+struct ControllerVoltMonitor : MmuVariable<Bit>
+{
+};
 
-using _24VoltMonitor_I = MmuVariable<AUTO_TAG_ID, Bit>;
+struct _24VoltMonitor_I : MmuVariable<Bit>
+{
+};
 
-using _24VoltMonitor_II = MmuVariable<AUTO_TAG_ID, Bit>;
+struct _24VoltMonitor_II : MmuVariable<Bit>
+{
+};
 
-using _24VoltMonitorInhibit = MmuVariable<AUTO_TAG_ID, Bit>;
+struct _24VoltMonitorInhibit : MmuVariable<Bit>
+{
+};
 
-using Reset = MmuVariable<AUTO_TAG_ID, Bit>;
+struct Reset : MmuVariable<Bit>
+{
+};
 
-using RedEnable = MmuVariable<AUTO_TAG_ID, Bit>;
+struct RedEnable : MmuVariable<Bit>
+{
+};
 
-using Conflict = MmuVariable<AUTO_TAG_ID, Bit>;
+struct Conflict : MmuVariable<Bit>
+{
+};
 
-using RedFailure = MmuVariable<AUTO_TAG_ID, Bit>;
+struct RedFailure : MmuVariable<Bit>
+{
+};
 
-using DiagnosticFailure = MmuVariable<AUTO_TAG_ID, Bit>;
+struct DiagnosticFailure : MmuVariable<Bit>
+{
+};
 
-using MinimumClearanceFailure = MmuVariable<AUTO_TAG_ID, Bit>;
+struct MinimumClearanceFailure : MmuVariable<Bit>
+{
+};
 
-using Port1TimeoutFailure = MmuVariable<AUTO_TAG_ID, Bit>;
+struct Port1TimeoutFailure : MmuVariable<Bit>
+{
+};
 
-using FailedAndOutputRelayTransferred = MmuVariable<AUTO_TAG_ID, Bit>;
+struct FailedAndOutputRelayTransferred : MmuVariable<Bit>
+{
+};
 
-using FailedAndImmediateResponse = MmuVariable<AUTO_TAG_ID, Bit>;
+struct FailedAndImmediateResponse : MmuVariable<Bit>
+{
+};
 
-using LocalFlashStatus = MmuVariable<AUTO_TAG_ID, Bit>;
+struct LocalFlashStatus : MmuVariable<Bit>
+{
+};
 
-using StartupFlashCall = MmuVariable<AUTO_TAG_ID, Bit>;
+struct StartupFlashCall : MmuVariable<Bit>
+{
+};
 
-using FYAFlashRateFailure = MmuVariable<AUTO_TAG_ID, Bit>;
+struct FYAFlashRateFailure : MmuVariable<Bit>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using MinimumYellowChangeDisable = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct MinimumYellowChangeDisable : MmuVariable<Bit, I>
+{
+};
 
-using MinimumFlashTimeBit_0 = MmuVariable<AUTO_TAG_ID, Bit>;
+struct MinimumFlashTimeBit_0 : MmuVariable<Bit>
+{
+};
 
-using MinimumFlashTimeBit_1 = MmuVariable<AUTO_TAG_ID, Bit>;
+struct MinimumFlashTimeBit_1 : MmuVariable<Bit>
+{
+};
 
-using MinimumFlashTimeBit_2 = MmuVariable<AUTO_TAG_ID, Bit>;
+struct MinimumFlashTimeBit_2 : MmuVariable<Bit>
+{
+};
 
-using MinimumFlashTimeBit_3 = MmuVariable<AUTO_TAG_ID, Bit>;
+struct MinimumFlashTimeBit_3 : MmuVariable<Bit>
+{
+};
 
-using _24VoltLatch = MmuVariable<AUTO_TAG_ID, Bit>;
+struct _24VoltLatch : MmuVariable<Bit>
+{
+};
 
-using CVMFaultMonitorLatch = MmuVariable<AUTO_TAG_ID, Bit>;
+struct CVMFaultMonitorLatch : MmuVariable<Bit>
+{
+};
 
 /*!
  * The compatibility status of two MMU channels.
  * @tparam Ix - MMU channel.
  * @tparam Iy - MMU channel.
- * @remarks The two channel IDs are encoded as the index. index = left-hand-side channel as high-byte,
+ * @remarks The two channel IDs are encoded as the index. index : left-hand-side channel as high-byte,
  * right-hand-size channel as low-byte
  */
-template<Index Ix, Index Iy> requires ValidIndex<Ix, cu::channel::maxChannels>
-    && ValidIndex<Iy, cu::channel::maxChannels> && (Ix < Iy)
-using ChannelCompatibilityStatus = MmuVariable<AUTO_TAG_ID, Bit, (Ix << 8) | Iy>;
+template<Index Ix, Index Iy> /* */
+requires ValidIndex<Ix, cu::channel::maxChannels> && ValidIndex<Iy, cu::channel::maxChannels> && (Ix < Iy)
+struct ChannelCompatibilityStatus : MmuVariable<Bit, (Ix << 8) | Iy>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelGreenWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelGreenWalkDriver : MmuVariable<Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelRedDoNotWalkDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelRedDoNotWalkDriver : MmuVariable<Bit, I>
+{
+};
 
-template<Index I> requires ValidIndex<I, cu::channel::maxChannels>
-using ChannelYellowPedClearDriver = MmuVariable<AUTO_TAG_ID, Bit, I>;
+template<Index I> /* */
+requires ValidIndex<I, cu::channel::maxChannels>
+struct ChannelYellowPedClearDriver : MmuVariable<Bit, I>
+{
+};
 
-using LoadSwitchFlash = MmuVariable<AUTO_TAG_ID, Bit>;
+struct LoadSwitchFlash : MmuVariable<Bit>
+{
+};
 
-template<typename T> requires ValidMmuVariable<T>
+template<typename T> /* */
+requires ValidMmuVariable<T>
 T variable{};
 
 /*!
@@ -1380,43 +1770,58 @@ struct BroadcastVariableType
 template<typename T>
 concept ValidBroadcastVariable = std::is_same_v<typename T::type, BroadcastVariableType>;
 
-template<Tag, typename ValueT, Index I = 0>
+template<typename ValueT, Index I = 0>
 struct BroadcastVariable : Variable<ValueT, I>
 {
   using type = BroadcastVariableType;
 
   BroadcastVariable() = default;
-
   BroadcastVariable(BroadcastVariable &) = delete;
-
   BroadcastVariable(BroadcastVariable &&) = delete;
-
   BroadcastVariable &operator=(BroadcastVariable &) = delete;
-
   BroadcastVariable &operator=(BroadcastVariable &&) = delete;
 };
 
-using CuReportedMonth = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedMonth : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedDay = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedDay : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedYear = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedYear : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedHour = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedHour : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedMinutes = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedMinutes : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedSeconds = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedSeconds : BroadcastVariable<Byte>
+{
+};
 
-using CuReportedTenthsOfSeconds = BroadcastVariable<AUTO_TAG_ID, Byte>;
+struct CuReportedTenthsOfSeconds : BroadcastVariable<Byte>
+{
+};
 
 template<Index I> requires ValidIndex<I, biu::max_tf_bius>
-using CuReportedTfBiuPresence = BroadcastVariable<AUTO_TAG_ID, Bit, I>;
+struct CuReportedTfBiuPresence : BroadcastVariable<Bit, I>
+{
+};
 
 template<Index I> requires ValidIndex<I, biu::max_det_bius>
-using CuReportedDrBiuPresence = BroadcastVariable<AUTO_TAG_ID, Bit, I>;
+struct CuReportedDrBiuPresence : BroadcastVariable<Bit, I>
+{
+};
 
-template<typename T> requires ValidBroadcastVariable<T>
+template<typename T> /* */
+requires ValidBroadcastVariable<T>
 T variable{};
 
 } // end of namespace vtc::broadcast
@@ -1596,13 +2001,9 @@ public:
   using type = T;
 
   Frame() noexcept = default;
-
   Frame(Frame &) = delete;
-
   Frame(Frame &&) = delete;
-
   Frame &operator=(Frame &) = delete;
-
   Frame &operator=(Frame &&) = delete;
 
   template<typename = T>

@@ -119,7 +119,7 @@ TEST_SUITE_BEGIN("CU");
 
 TEST_CASE("ValidCuVariable Concept passes for a valid cu variable.")
 {
-  auto cuv = cu::CuVariable<0, Byte, 0>{};
+  auto cuv = cu::CuVariable<Byte, 0>{};
   CHECK(cu::ValidCuVariable<decltype(cuv)>);
 }
 
@@ -140,7 +140,7 @@ TEST_CASE("Output variable NotActive can be set")
 
   CHECK(std::is_same_v<std::remove_cvref_t<decltype(io::variable<output::NotActive>())>, std::atomic<Bit>>);
   CHECK(std::is_same_v<output::NotActive::value_t, Bit>);
-  CHECK(std::is_same_v<output::NotActive::type, IoVariableType>);
+  CHECK(std::is_same_v<output::NotActive::type, OutputType>);
 }
 
 TEST_CASE("Output variable ChannelGreenWalkDriver can be set")
@@ -154,6 +154,18 @@ TEST_CASE("Output variable ChannelGreenWalkDriver can be set")
   CHECK(io::variable<output::ChannelGreenWalkDriver<1>>.value == Bit::On);
 
   io::variable<output::ChannelGreenWalkDriver<1>>.value = Bit::Off;
+}
+
+TEST_CASE("Output variable has correct type tag")
+{
+  using namespace io;
+  CHECK(std::is_same_v<output::ChannelGreenWalkDriver<1>::type, OutputType>);
+}
+
+TEST_CASE("Input variable has correct type tag")
+{
+  using namespace io;
+  CHECK(std::is_same_v<input::RingForceOff<1>::type, InputType>);
 }
 
 TEST_SUITE_END;
