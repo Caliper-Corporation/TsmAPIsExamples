@@ -1093,7 +1093,7 @@ struct UnitFreeCoordStatus : IoVariable<OutputType, Bit>
 };
 
 /*
- Pattern Outputs—In the applicable mode, seven outputs for master type
+ Pattern Outputs — In the applicable mode, seven outputs for master type
  interconnect interface drivers shall be available. The outputs shall
  echo the active pattern.
 
@@ -1215,6 +1215,9 @@ struct ChannelFaultStatus : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * TF BIU 2 for setting free (no coord).
+ */
 struct CoordFreeSwitch : IoVariable<InputType, Bit>
 {
 };
@@ -1251,6 +1254,11 @@ struct PatternInput : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * Provision to enter a pedestrian demand for service into the appropriate
+ * phase of the CU.
+ * @tparam I
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::detector::maxPedestrianDetectors>
 struct PedDetCall : IoVariable<InputType, Bit, I>
@@ -1263,18 +1271,87 @@ struct PhaseForceOff : IoVariable<InputType, Bit, I>
 {
 };
 
+/*
+  Hold retains the existing Green indications and has different CU responses:
+
+  a. For a non-actuated phase, energizing the Hold input shall maintain the CU in
+     the timed-out Walk period with a Green and Walk indication displayed.
+
+     Energizing the Hold input while timing the Walk portion shall not inhibit
+     the timing of this period. De-energizing the Hold input and with the Walk
+     interval timed out shall cause the CU to advance into the Pedestrian
+     Clearance interval.
+
+     Re-application of the Hold input while timing the Pedestrian Clearance
+     portion shall neither inhibit the timing of this period nor termination
+     of the phase.
+
+  b. For an actuated phase, energizing, and de-energizing the Hold input
+     shall be as follows:
+
+     Energizing the Hold input shall allow the CU to time normally but shall
+     inhibit its advance into the vehicle change interval. Energizing the Hold
+     input shall inhibit the recycle of the pedestrian service unless
+     the Pedestrian Recycle input is active and a serviceable pedestrian call
+     exists on the phase. The rest state indications for that phase shall be Green
+     for traffic and Don’t Walk for pedestrians.
+
+     De-energizing Hold input shall allow the CU to advance into the Green Dwell/Select
+     state when all Green periods are timed out.
+
+     De-energizing Hold input with all intervals timed out, shall allow the CU
+     to recycle the Walk interval if there is no conflicting demand for service
+     and a pedestrian call exists for that phase. However, if there is any
+     serviceable demand on a conflicting phase with the Hold de-energized and
+     with all intervals timed-out, the CU shall advance into the Yellow Change
+     interval and not recycle the Walk on that phase until those demands have
+     been served.
+ */
+
+/*!
+ * Hold a phase.
+ * @tparam I Index of the phase.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::phase::maxPhases>
 struct PhaseHold : IoVariable<InputType, Bit, I>
 {
 };
 
+/*
+  Inhibit the selection of a phase due to a pedestrian call on that phase and to
+  prohibit the servicing of a pedestrian call on the phase.
+
+  This input when active shall prevent the starting of the pedestrian movement
+  of that phase. After the beginning of the phase Green, a pedestrian call shall
+  be serviced or recycled only in the absence of a serviceable conflicting call
+  and with Pedestrian Omit on the phase nonactive. Activation of this input
+  shall not affect a pedestrian movement in the process of timing.
+ */
+
+/*!
+ * Inhibit the selection of a phase due to a pedestrian call on that phase.
+ * @tparam I Index of the phase.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::phase::maxPhases>
 struct PhasePedOmit : IoVariable<InputType, Bit, I>
 {
 };
 
+/*
+  Cause omission of a phase, even in presence of demand. It shall affect phase
+  selection. The omission shall continue in effect until the signal is removed.
+  The phase to be omitted shall not present a conflicting call to any other
+  phase, but shall accept and store calls.
+
+  Activation of this input shall not affect a phase in the process of timing.
+*/
+
+/*!
+ * Omit a phase.
+ * @tparam I Index of the pase.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::phase::maxPhases>
 struct PhasePhaseOmit : IoVariable<InputType, Bit, I>
@@ -1341,18 +1418,38 @@ struct PrioritorPreemptDetector : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * Provision for termination of the Green timing in the actuated mode, or Walk Hold
+ * in the non-actuated mode of the active phase in the timing ring. Such terminating
+ * subject to presence of a serviceable conflicting call. The Force Off function
+ * shall not be effective during the timing of the Initial, Walk, or Pedestrian
+ * Clearance. The Force Off input shall be effective only as long as the input is
+ * sustained.
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingForceOff : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * An input to disable the maximum termination functions of all phases in the
+ * selected timing ring. The input shall not inhibit the timing of Maximum
+ * Green.
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingInhibitMaxTermination : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * Input to allow the selection of a second maximum time setting on
+ * all phases of the ring.
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingMax2Selection : IoVariable<InputType, Bit, I>
@@ -1365,24 +1462,62 @@ struct RingMax3Selection : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * An input to cause omission of Red Clearance interval timing(s).
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingOmitRedClearance : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * An input to control the recycling of the pedestrian movement. The
+ * recycling operation is dependent upon whether the phase is
+ * in the actuated or non-actuated mode.
+ *
+ * When the phase is in actuated model, if a serviceable pedestrian
+ * call exists on the phase, and Hold input is active, the pedestrian movement
+ * shall be recycled when Pedestrian Recycle input is active, regardless
+ * whether a serviceable conflicting call exists.
+ *
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingPedestrianRecycle : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * Input to require rest in Red of all phases in the timing ring by continuous
+ * application of an external signal. Registration of a serviceable conflicting
+ * call shall result in immediate advance from Red Rest to Green of the
+ * demanding phase. Registration of a serviceable conflicting call before entry
+ * into Red Rest state, even with this signal applied, shall result in
+ * termination of the active phase and selection of the next phase in the normal
+ * manner and with appropriate change and clearance intervals.
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingRedRest : IoVariable<InputType, Bit, I>
 {
 };
 
+/*!
+ * An input which when activated causes cessation of CU ring timing for the duration
+ * of such activation. Upon removal of activation from this input, all portions which
+ * were timing will resume timing. During stop timing, vehicle actuation on non-Green
+ * phases shall be recognized; vehicle actuation on Green phases shall reset the
+ * Passage Time timer in the normal manner; and the CU shall not terminate any
+ * interval or interval portion or select another phase, except by activation of the
+ * Interval Advance input. Operation of the Interval Advance with Stop Time activated
+ * shall clear any stored calls on a phase when the CU is advanced through the Green
+ * interval of that phase.
+ * @tparam I Index of the ring.
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::ring::maxRings>
 struct RingStopTiming : IoVariable<InputType, Bit, I>
@@ -1427,10 +1562,30 @@ struct UnitCallPedNAPlus : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Call to Non-actuated Mode for Ring 1
+ *
+ * When activated will cause any phases appropriately programed to operate
+ * in the Non-actuated Model. Only phases equipped for pedestrian service
+ * shall be used for Non-actuated Mode operation.
+ *
+ * Basically this is equivalent to placing Max Recall + Ped Recall on the
+ * phase.
+ */
 struct UnitCallToNonActuated_1 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Call to Non-actuated Mode for Ring 2
+ *
+ * When activated will cause any phases appropriately programed to operate
+ * in the Non-actuated Model. Only phases equipped for pedestrian service
+ * shall be used for Non-actuated Mode operation.
+ *
+ * Basically this is equivalent to placing Max Recall + Ped Recall on the
+ * phase.
+ */
 struct UnitCallToNonActuated_2 : IoVariable<InputType, Bit>
 {
 };
@@ -1451,30 +1606,67 @@ struct UnitExternWatchDog : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Input to place a recurring demand on all vehicle phases for a minimum
+ * vehicle service.
+ */
 struct UnitExternalMinRecall : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * An input to cause the CU to revert to its programed initialization phases
+ * and intervals upon application. Upon removal of this input, the CU shall
+ * commence normal timing.
+ */
 struct UnitExternalStart : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Input to disable CU indicators. The CU might not employ this input (AEI)
+ */
 struct UnitIndicatorLampControl : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * A complete ON-OFF operation of this input shall cause immediate
+ * termination of the interval in process of timing. Where concurrent
+ * interval timing exists, use of this input shall cause immediate
+ * termination of the interval which would terminate next without
+ * such actuation.
+ *
+ * See NEMA-TS2 3.5.5.5
+ */
 struct UnitIntervalAdvance : IoVariable<InputType, Bit>
 {
 };
 
+/*
+ I/O Mode bits allows NEMA-TS2 Type 2 to select I/O function of
+ specific hardware I/O based on the bits.
+
+ See NEMA-TS2 3.5.5.5, Item 15
+ */
+
+/*!
+ * I/O Mode Bit 0
+ */
 struct UnitIOModeBit_0 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * I/O Mode Bit 1
+ */
 struct UnitIOModeBit_1 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * I/O Mode Bit 2
+ */
 struct UnitIOModeBit_2 : IoVariable<InputType, Bit>
 {
 };
@@ -1495,6 +1687,14 @@ struct UnitLocalFlashSense : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * An input to place vehicle and pedestrian calls on all phases, stop
+ * CU timing in all intervals except vehicle change and clearance intervals,
+ * and inhibit the operation of Interval Advance during vehicle change
+ * and clearance intervals.
+ *
+ * See NEMA-TS2 3.5.5.5
+ */
 struct UnitManualControlEnable : IoVariable<InputType, Bit>
 {
 };
@@ -1523,22 +1723,37 @@ struct UnitStopTIme : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+  System Address Bit 0
+ */
 struct UnitSystemAddressBit_0 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+  System Address Bit 1
+ */
 struct UnitSystemAddressBit_1 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+  System Address Bit 2
+ */
 struct UnitSystemAddressBit_2 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+  System Address Bit 3
+ */
 struct UnitSystemAddressBit_3 : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+  System Address Bit 4
+ */
 struct UnitSystemAddressBit_4 : IoVariable<InputType, Bit>
 {
 };
@@ -1551,14 +1766,23 @@ struct UnitTBCOnline : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Test input A, for manufacture's use only.
+ */
 struct UnitTestInputA : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Test input B, for manufacture's use only.
+ */
 struct UnitTestInputB : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * Test input C, for manufacture's use only.
+ */
 struct UnitTestInputC : IoVariable<InputType, Bit>
 {
 };
@@ -1579,10 +1803,35 @@ struct UnitTimingPlanD : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * This input when true shall modify non-actuated operation only. With this
+ * input active, non-actuated phases shall remain in the timed-out Walk state
+ * (rest in Walk) in the absence of a serviceable conflicting call without
+ * regard to the Hold input status. With this input non-active, non-actuated
+ * phases shall not remain in the timed-out Walk state unless the Hold
+ * input is active.
+ */
 struct UnitWalkRestModifier : IoVariable<InputType, Bit>
 {
 };
 
+/*!
+ * At minimum, each vehicle detector input shall be enabled by assignment to
+ * any one phase, via program entry. Each shall be capable of Delay, Extension,
+ * and Switching as follows:
+ *
+ *   Delay     - Actuation shall be capable of being delayed when the phase is
+ *               not green (0-255, 1 sec increment)
+ *   Extension - Actuation shall be capable of being extended from the point of
+ *               by an adjustable program entered time (0-25.5, 0.1 sec inc)
+ *               when the phase is green
+ *   Switch    - Actuation shall be capable of being switched to another phase
+ *               when the assigned phase is Yellow or Red and the program
+ *               entered phase is Green.
+ *
+ * See NEMA-TS2 3.5.5.5
+ * @tparam I
+ */
 template<Index I> /* */
 requires ValidIndex<I, cu::detector::maxVehicleDetectors>
 struct VehicleDetCall : IoVariable<InputType, Bit, I>
