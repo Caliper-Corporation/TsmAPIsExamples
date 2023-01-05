@@ -185,8 +185,6 @@ private:
 
   /** ID of the vehicle */
   const long id_{0};
-
-
 };
 
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */

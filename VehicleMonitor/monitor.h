@@ -48,30 +48,36 @@ namespace vmplugin {
 template<size_t N>
 struct VehicleMonitorName//
 {
+  /*!
+   * Non-explicit conversion allowed.
+   * @param str
+   */
   constexpr VehicleMonitorName(const wchar_t (&str)[N])
   {
     std::copy_n(str, N, value);
   }
 
-  wchar_t value[N];
+  constexpr VehicleMonitorName() = default;
+
+  wchar_t value[N] = {};
 };
 
 using VehicleMonitorOptions = unsigned long;
 
 template<VehicleMonitorOptions Opts>
-concept ValidVehicleMonitorOptions = (((Opts << 2) & 0x00000001) == 0) && (((Opts << 3) & 0x00000001) == 0);
+concept ValidVehicleMonitorOptions = (((Opts << 2) & 0x0000'0001) == 0) && (((Opts << 3) & 0x0000'0001) == 0);
 
 template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
-template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
-  requires ValidVehicleMonitorOptions<Opts>
+template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name> /* */
+requires ValidVehicleMonitorOptions<Opts>
 class VehicleMonitor : public CUserVehicleMonitor
 {
 public:
   using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
 
-  ~VehicleMonitor()
+  ~VehicleMonitor() override
   {
     ::SysFreeString(name_);
     tsmapp_ = nullptr;
@@ -82,7 +88,7 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-  const BSTR GetName() const override
+  [[nodiscard]] const BSTR GetName() const override
   {
     return name_;
   };
@@ -97,7 +103,7 @@ public:
      @returns   Null to advise TransModeler not to attach, else a pointer to an
                 IUserVehicle.
      */
-  IUserVehicle *AttachVehicle(long id, const SVehicleProperty &prop, VehicleMonitorOptions *opts)
+  IUserVehicle *AttachVehicle(long id, const SVehicleProperty &prop, VehicleMonitorOptions *opts) override
   {
     *opts = Opts;
     return new T(id, prop);
@@ -110,30 +116,30 @@ public:
      */
   static bool Load() noexcept
   {
-    return vm_ ? true : []() {
+    return vm_ || []() {
       vm_.reset(new VehicleMonitorType());
       return VehicleMonitor::RegisterVehicleMonitor(vm_.get());
     }();
   }
 
   /**
-     The singletone vehicle monitor.
+     The singleton vehicle monitor.
 
      @returns   A pointer to VehicleMonitor associated with a user-defined vehicle class.
      */
-  static const auto &instance() noexcept
+  [[maybe_unused]] static const auto &instance() noexcept
   {
     return vm_;
   }
 
   /**
-     Unloads the singleton monitor from TransModdler.
+     Unloads the singleton monitor from TransModeler.
 
-     @returns   True if it succeeds, false if it fails.
+     @returns   True if it succeeds, false if it fails or there is no vm to unload.
      */
   static bool Unload() noexcept
   {
-    return !vm_ ? false : []() -> bool {
+    return vm_ && []() -> bool {
       auto result = VehicleMonitor::UnregisterVehicleMonitor(vm_.get());
       vm_ = nullptr;
       return result;
@@ -156,7 +162,7 @@ public:
      @param     run_type    Type of the run.
      @param     preload     Whether this is a preload run.
      */
-  void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
+  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload) override
   {
   }
 
@@ -170,7 +176,7 @@ public:
 
      @param     state   TransModeler state.
      */
-  void SimulationStopped(TsmState state) override
+  void SimulationStopped(TsmApi::TsmState state) override
   {
   }
 
@@ -179,7 +185,7 @@ public:
 
      @param     state   TransModeler state.
      */
-  void EndSimulation(TsmState state) override
+  void EndSimulation(TsmApi::TsmState state) override
   {
   }
 
@@ -198,14 +204,20 @@ public:
 
      @returns   TsmApi::ITsmApplicationPtr.
      */
-  TsmApi::ITsmApplicationPtr tsmapp() const noexcept
+  [[maybe_unused]] [[nodiscard]] TsmApi::ITsmApplicationPtr tsmapp() const noexcept
   {
     return tsmapp_;
   };
 
+  [[maybe_unused]] double sim_step() noexcept
+  {
+    static double step = tsmapp_ ? tsmapp_->StepSize : 0;
+    return step;
+  }
+
 protected:
   /** Default constructor with "protected" access level. */
-  VehicleMonitor() noexcept : name_{::SysAllocString(Name.value)}
+  VehicleMonitor() noexcept: name_{::SysAllocString(Name.value)}
   {
     tsmapp_ = []() -> TsmApi::ITsmApplication * {
       CComPtr<TsmApi::ITsmApplication> app;
