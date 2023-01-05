@@ -172,6 +172,16 @@ public:
   }
 
   /**
+     Fires with each simulation step
+
+    @param time Current time of simulation clock.
+   */
+  void Advance(double time) override
+  {
+
+  }
+
+  /**
      Fires after simulation has been stopped.
 
      @param     state   TransModeler state.
