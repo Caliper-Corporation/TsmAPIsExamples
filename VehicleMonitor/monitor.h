@@ -178,7 +178,6 @@ public:
    */
   void Advance(double time) override
   {
-
   }
 
   /**
