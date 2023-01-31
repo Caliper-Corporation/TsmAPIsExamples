@@ -4607,16 +4607,41 @@ class SerialDevice
     }
 
     // Error code as uint32_t, defined in winerror.h on Windows platform.
+
+    /*!
+     * Function signature for simple command function that takes a device
+     * handle and returns an integer error code.
+     */
     using SimpleCommandFunc = uint32_t __stdcall(DeviceHandle);
 
+    /*!
+     * Function signature for I/O read and write to a buffer.
+     * The first arg is the device handle, the second is the buffer
+     * the third is the buffer size.
+     */
     using IoFunc = uint32_t __stdcall(DeviceHandle, uint8_t *, int32_t);
 
+    /*!
+     * Function signature for setting integer value by parameter ID.
+     */
     using SetValueByIdFunc = uint32_t __stdcall(DeviceHandle, uint32_t, int32_t);
 
+    /*!
+     * Function signature for enable or disable option identified by the
+     * second parameter.
+     */
     using SetValueFunc = uint32_t __stdcall(DeviceHandle, int32_t);
 
+    /*!
+     * Open device. The first is device name, the second is
+     * device handle returned.
+     */
     using OpenFunc = uint32_t __stdcall(char *, void **);
 
+    /*!
+     * Set parameter. The first parameter is the device handle,
+     * the second is the pointer to param struct.
+     */
     using SetParamsFunc = uint32_t __stdcall(DeviceHandle, SerialDeviceParams *);
 
     uint32_t cancel_reading(DeviceHandle a_dev)
