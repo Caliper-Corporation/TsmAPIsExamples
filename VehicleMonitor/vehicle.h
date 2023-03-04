@@ -60,7 +60,7 @@ public:
   void Arrival(double time) override;
 
   /**
-     Fires whenever vehicle state is changed.
+     Fires at each simulation step.
 
      @param     time    Current time of the simulation clock.
      @param     state   Vehicle state data.
@@ -172,7 +172,7 @@ public:
      @returns   True to ignore the message and continue, false to skip receiving
                 further callback notification.
      */
-  bool OnFail(const BSTR msg) override;
+  bool OnFail(BSTR msg) override;
 
   [[maybe_unused]] [[nodiscard]] auto id() const -> long
   {
@@ -185,13 +185,15 @@ private:
 
   /** ID of the vehicle */
   const long id_{0};
+
+  float accel_{0};
 };
 
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
 using MyVehicleMonitor = vmplugin::VehicleMonitor<
-    MyVehicle,              // User vehicle type
-    VM_UPDATE | VM_POSITION,// Callback options
-    L"Cool Vehicle Monitor" // Vehicle monitor name
+    MyVehicle,                                   // User vehicle type
+    VM_UPDATE | VM_POSITION | VM_CF,             // Callback options
+    L"MyVehicleMonitor"                          // Vehicle monitor name
     >;
 
 }// namespace vmplugin

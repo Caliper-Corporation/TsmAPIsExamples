@@ -43,8 +43,6 @@ namespace vmplugin {
 
 */
 
-auto logger = spdlog::basic_logger_mt("vm_logger", "D:/logs/vm-log.txt");
-
 void MyVehicle::Departure(double time)
 {
   // Fill in user logic
@@ -58,6 +56,8 @@ void MyVehicle::Arrival(double time)
 void MyVehicle::Update(double time, const SVehicleBasicState &state)
 {
   // Fill in user logic
+  if (id_ == 366)
+    accel_ = 10;
 }
 
 float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData &data, float acc)
@@ -67,7 +67,7 @@ float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingDa
 
 float MyVehicle::Acceleration(double time, float acc)
 {
-  return (flt_miss);// ignored
+  return (id_ == 366) ? accel_ : flt_miss;// ignored
 }
 
 short MyVehicle::LaneChange(double time, short dir, bool *mandatory)
@@ -97,7 +97,7 @@ void MyVehicle::Stalled(double time, bool stalled)
   // Fill in user logic
 }
 
-bool MyVehicle::OnFail(const BSTR msg)
+bool MyVehicle::OnFail(BSTR msg)
 {
   return false;
 }

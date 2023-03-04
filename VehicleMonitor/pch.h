@@ -43,13 +43,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // add headers that you want to pre-compile here
 #include <algorithm>
+#include <functional>
 #include <memory>
 
 #include <atlbase.h>
 #include <Tsm/TsmApi/VehicleMonitor.h>
 #include <tsmapi.tlh>
 
+#define SPDLOG_WCHAR_FILENAMES
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 
 #endif //PCH_H

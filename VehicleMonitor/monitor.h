@@ -50,7 +50,7 @@ struct VehicleMonitorName//
 {
   /*!
    * Non-explicit conversion allowed.
-   * @param str
+   * @param str Unicode name of the monitor.
    */
   constexpr VehicleMonitorName(const wchar_t (&str)[N])
   {
@@ -153,6 +153,17 @@ public:
      */
   void OpenProject(const BSTR name) override
   {
+    [&]() {
+      using namespace std;
+
+      if (!tsmapp_)
+        return;
+
+      auto project_folder = tsmapp_->GetProjectFolder();
+      wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
+      auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt", 1024*1024, 5);
+      logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
+    }();
   }
 
   /**
@@ -201,6 +212,7 @@ public:
   /** Fires when closing the project. */
   void CloseProject() override
   {
+    logger_ = nullptr;
   }
 
   /** Fires on application exit. */
@@ -224,6 +236,11 @@ public:
     return step;
   }
 
+  const std::shared_ptr<spdlog::logger> logger() const
+  {
+    return logger_;
+  }
+
 protected:
   /** Default constructor with "protected" access level. */
   VehicleMonitor() noexcept: name_{::SysAllocString(Name.value)}
@@ -239,6 +256,7 @@ private:
   BSTR name_{nullptr};
   inline static std::unique_ptr<VehicleMonitorType> vm_{nullptr};
   TsmApi::ITsmApplicationPtr tsmapp_{nullptr};
+  std::shared_ptr<spdlog::logger> logger_{nullptr};
 };
 
 }// namespace vmplugin
