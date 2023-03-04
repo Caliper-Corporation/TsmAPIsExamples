@@ -173,7 +173,7 @@ public:
      @param     run_type    Type of the run.
      @param     preload     Whether this is a preload run.
      */
-  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload) override
+  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload)
   {
   }
 
@@ -196,7 +196,7 @@ public:
 
      @param     state   TransModeler state.
      */
-  void SimulationStopped(TsmApi::TsmState state) override
+  void SimulationStopped(TsmApi::TsmState state)
   {
   }
 
@@ -205,7 +205,7 @@ public:
 
      @param     state   TransModeler state.
      */
-  void EndSimulation(TsmApi::TsmState state) override
+  void EndSimulation(TsmApi::TsmState state)
   {
   }
 
