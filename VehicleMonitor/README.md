@@ -64,7 +64,7 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   using MyVehicleMonitor = vmplugin::VehicleMonitor<
       MyVehicle,                  // User vehicle type
       VM_UPDATE | VM_POSITION,    // Callback options
-      L"Cool Vehicle Monitor"     // Vehicle monitor name
+      L"MyVehicleMonitor"         // Vehicle monitor name
   >;
   ```
 
@@ -111,6 +111,11 @@ Vehicle Monitor API has overlapping use cases with TransModeler COM-based API, e
   
 ### Thread-Safety
 Accessing instance-specific data from inside the callbacks are thread-safe. However, accessing global data inside the callbacks are not thread-safe. 
+
+### Logging
+A log file will be created in {ProjectFolder}\MyVehicleMonitor\vm_log.txt.  Note that "MyVehicleMonitor" is the name of the vehicle monitor specified by the user when instantiating the vehicle monitor template.
+
+To reference the logger inside user define vehicle, use MyVehicleMonitor::instance->logger()
 
 ## How to Debug
 
