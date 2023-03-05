@@ -1,5 +1,6 @@
 #pragma warning(disable : 4068)
 #pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #pragma ide diagnostic ignored "Simplify"
 #pragma ide diagnostic ignored "UnusedParameter"
 
@@ -172,10 +173,12 @@ public:
 
       auto project_folder = tsmapp_->GetProjectFolder();
       wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
-      auto rotating_sink =
-          make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt", 1024 * 1024, 5);
+      auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
+                                                                             1024 * 1024, 5);
       logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
     }();
+
+    sim_step();
   }
 #pragma clang diagnostic pop
 
@@ -233,10 +236,13 @@ public:
   {
   }
 
-  [[maybe_unused]] double sim_step() noexcept
+  /**
+   * This can only be called after a simulation project has been opened.
+   * @return Simulation step size.
+   */
+  double sim_step() noexcept
   {
-    static double step = tsmapp_ ? tsmapp_->StepSize : 0;
-    return step;
+    return tsmapp_ ? tsmapp_->StepSize : 0;
   }
 
   [[nodiscard]] std::shared_ptr<spdlog::logger> logger() const
