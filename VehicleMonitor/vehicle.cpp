@@ -35,13 +35,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace vmplugin {
 
-/*
- Add implementation to individual callbacks. Use the following code to access
- network elements.
-
- MyVehicleMonitor::instance()->tsmapp()->Network
-*/
-
 [[maybe_unused]] auto MyVehicle::logger()
 {
   return MyVehicleMonitor::instance()->logger();

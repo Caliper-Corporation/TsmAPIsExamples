@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
+#pragma ide diagnostic ignored "UnusedParameter"
 #pragma once
 
 /*
@@ -48,14 +51,17 @@ namespace vmplugin {
 template<size_t N>
 struct VehicleMonitorName//
 {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "google-explicit-constructor"
   /*!
    * Non-explicit conversion allowed.
    * @param str Unicode name of the monitor.
    */
-  constexpr VehicleMonitorName(const wchar_t (&str)[N])
+  [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N])
   {
     std::copy_n(str, N, value);
   }
+#pragma clang diagnostic pop
 
   constexpr VehicleMonitorName() = default;
 
@@ -88,10 +94,13 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-const-return-type"
   [[nodiscard]] const BSTR GetName() const override
   {
     return name_;
   };
+#pragma clang diagnostic pop
 
   /**
      Attach the user vehicle to an associated TransModeler's vehicle entity.
@@ -146,6 +155,8 @@ public:
     }();
   }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-misplaced-const"
   /**
      Fires when a simulation project is being opened.
 
@@ -165,6 +176,7 @@ public:
       logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
     }();
   }
+#pragma clang diagnostic pop
 
   /**
      Fires before starting the simulation.
@@ -220,23 +232,13 @@ public:
   {
   }
 
-  /**
-     Gets TransModeller application instance.
-
-     @returns   TsmApi::ITsmApplicationPtr.
-     */
-  [[maybe_unused]] [[nodiscard]] TsmApi::ITsmApplicationPtr tsmapp() const noexcept
-  {
-    return tsmapp_;
-  };
-
   [[maybe_unused]] double sim_step() noexcept
   {
     static double step = tsmapp_ ? tsmapp_->StepSize : 0;
     return step;
   }
 
-  const std::shared_ptr<spdlog::logger> logger() const
+  [[nodiscard]] std::shared_ptr<spdlog::logger> logger() const
   {
     return logger_;
   }
@@ -262,3 +264,5 @@ private:
 }// namespace vmplugin
 
 #endif
+
+#pragma clang diagnostic pop
