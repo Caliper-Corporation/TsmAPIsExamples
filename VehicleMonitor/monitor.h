@@ -1,7 +1,7 @@
+#pragma warning(disable : 4068)
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "Simplify"
 #pragma ide diagnostic ignored "UnusedParameter"
-#pragma once
 
 /*
 BSD 3 - Clause License
@@ -172,7 +172,8 @@ public:
 
       auto project_folder = tsmapp_->GetProjectFolder();
       wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
-      auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt", 1024*1024, 5);
+      auto rotating_sink =
+          make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt", 1024 * 1024, 5);
       logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
     }();
   }
@@ -266,3 +267,4 @@ private:
 #endif
 
 #pragma clang diagnostic pop
+#pragma warning (default : 4068)
