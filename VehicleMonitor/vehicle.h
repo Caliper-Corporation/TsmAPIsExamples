@@ -180,12 +180,16 @@ public:
   }
 
 private:
+  /** Returns a logger for logging. */
+  [[nodiscard]] static auto logger();
+
   /** Vehicle property */
   [[maybe_unused]] const SVehicleProperty prop_{};
 
   /** ID of the vehicle */
   const long id_{0};
 
+  /** User calculated acceleration */
   float accel_{0};
 };
 

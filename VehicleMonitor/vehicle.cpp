@@ -40,8 +40,12 @@ namespace vmplugin {
  network elements.
 
  MyVehicleMonitor::instance()->tsmapp()->Network
-
 */
+
+[[maybe_unused]] auto MyVehicle::logger()
+{
+  return MyVehicleMonitor::instance()->logger();
+}
 
 void MyVehicle::Departure(double time)
 {
@@ -55,36 +59,51 @@ void MyVehicle::Arrival(double time)
 
 void MyVehicle::Update(double time, const SVehicleBasicState &state)
 {
-  // Fill in user logic
-  if (id_ == 366)
-    accel_ = 10;
+  // Fill in user logic.
+  // We can save the data to private data members of the subject vehicle instance.
+  // Note - MyVehicle::Update is fired with every simulation step.
+  // Here we just print out the vehicle's current state.
+  if (id_ == 366) {
+    // Log the current acceleration
+    logger()->info("OnUpdate: time={:.1f},veh={},acc={:.2f},grade={},speed={:.3f},idSegment={}",
+                   time, id_, state.fAcc, state.fGrade, state.fSpeed, state.idSegment);
+  }
 }
 
 float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData &data, float acc)
 {
-  return (flt_miss);// ignored
+  return flt_miss; // ignored
 }
 
 float MyVehicle::Acceleration(double time, float acc)
 {
-  return (id_ == 366) ? accel_ : flt_miss;// ignored
+  if (id_ == 366) {
+    accel_ = accel_ + 0.1f; // Each time we increment the acceleration by 0.1 m/s^2
+    logger()->info("OnAcceleration: time={:.1f},veh={},tsm_suggested_acc={:.2f}, new_acc={:.2f}",
+                   time, id_, acc, accel_);
+    return accel_;
+  } else {
+    return flt_miss;
+  }
 }
 
 short MyVehicle::LaneChange(double time, short dir, bool *mandatory)
 {
-  return (short_miss);// ignored
+  return short_miss;// ignored
 }
 
 float MyVehicle::TransitStop(double time, const STransitStopInfo &info, float dwell)
 {
-  return (flt_miss);// ignored
+  return flt_miss; // ignored
 }
 
 void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
-  // Fill in user logic 
-  // log simulation step time, vehicle id, x, and y
-  // logger->info(",{},{},{},{}", time, id_, pos.x, pos.y);
+  // Fill in user logic
+  if (id_ == 366) {
+    // log simulation step time, vehicle id, x, and y
+    logger()->info("OnPosition: time={:.1f},veh={},pos.x={},pos.y={}", time, id_, pos.x, pos.y);
+  }
 }
 
 void MyVehicle::Parked(double time)
