@@ -200,7 +200,7 @@ public:
   void SimulationStarted() override
   {
     // Refresh sim_step_ when opening the project. This is the make sure to reflect the
-    // up to date sim_step_ in case it has been changed after project open.
+    // up-to-date sim_step_ in case it has been changed after project open.
     sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
   }
 
