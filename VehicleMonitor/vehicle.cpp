@@ -40,14 +40,28 @@ namespace vmplugin {
   return MyVehicleMonitor::instance()->logger();
 }
 
+MyVehicle::~MyVehicle()
+{
+  // Add destructor logic to clean up
+}
+
 void MyVehicle::Departure(double time)
 {
   // Fill in user logic
+  if (id_ == 366) {
+    uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnDeparture: time={:.1f},tid={}", time, tid);
+  }
 }
 
 void MyVehicle::Arrival(double time)
 {
   // Fill in user logic
+
+  if (id_ == 366) {
+    uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnArrival: time={:.1f},tid={}", time, tid);
+  }
 }
 
 void MyVehicle::Update(double time, const SVehicleBasicState &state)
@@ -58,8 +72,9 @@ void MyVehicle::Update(double time, const SVehicleBasicState &state)
   // Here we just print out the vehicle's current state.
   if (id_ == 366) {
     // Log the current acceleration
-    logger()->info("OnUpdate: time={:.1f},veh={},acc={:.2f},grade={},speed={:.3f},idSegment={}",
-                   time, id_, state.fAcc, state.fGrade, state.fSpeed, state.idSegment);
+    uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnUpdate: time={:.1f},tid={},veh={},acc={:.2f},grade={},speed={:.3f},idSegment={}",
+                   time, tid, id_, state.fAcc, state.fGrade, state.fSpeed, state.idSegment);
   }
 }
 
@@ -72,8 +87,9 @@ float MyVehicle::Acceleration(double time, float acc)
 {
   if (id_ == 366) {
     accel_ = accel_ + 0.1f; // Each time we increment the acceleration by 0.1 m/s^2
-    logger()->info("OnAcceleration: time={:.1f},veh={},tsm_suggested_acc={:.2f}, new_acc={:.2f}",
-                   time, id_, acc, accel_);
+    uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnAcceleration: time={:.1f},tid={}, veh={},tsm_suggested_acc={:.2f}, new_acc={:.2f}",
+                   time, tid, id_, acc, accel_);
     return accel_;
   } else {
     return flt_miss;
@@ -94,8 +110,9 @@ void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
   // Fill in user logic
   if (id_ == 366) {
-    // log simulation step time, vehicle id, x, and y
-    logger()->info("OnPosition: time={:.1f},veh={},pos.x={},pos.y={}", time, id_, pos.x, pos.y);
+    // log simulation step time, vehicle id, longitude, and latitude
+    uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnPosition: time={:.1f},tid={},veh={},pos.x={},pos.y={}", time, tid, id_, pos.x, pos.y);
   }
 }
 

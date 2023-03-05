@@ -1,9 +1,3 @@
-#pragma warning(disable : 4068)
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
-#pragma ide diagnostic ignored "Simplify"
-#pragma ide diagnostic ignored "UnusedParameter"
-
 /*
 BSD 3 - Clause License
 
@@ -35,11 +29,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #ifndef VMPLUGIN_MONITOR
 #define VMPLUGIN_MONITOR
 
-#include "pch.h"// Pre-compiled header
+#include "pch.h"// Pre-compiled header. Must stay here.
+
+#pragma warning(disable : 4068)
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+#pragma ide diagnostic ignored "Simplify"
+#pragma ide diagnostic ignored "UnusedParameter"
 
 namespace vmplugin {
 
@@ -88,7 +87,7 @@ public:
   {
     ::SysFreeString(name_);
     tsmapp_ = nullptr;
-  }
+   }
 
   VehicleMonitor(VehicleMonitor &) = delete;
   VehicleMonitor(VehicleMonitor &&) = delete;
@@ -116,6 +115,10 @@ public:
   IUserVehicle *AttachVehicle(long id, const SVehicleProperty &prop, VehicleMonitorOptions *opts) override
   {
     *opts = Opts;
+    if (id == 366) {
+      uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+      logger()->info("AttachVehicle: tid={}", tid);
+    }
     return new T(id, prop);
   }
 
@@ -168,17 +171,16 @@ public:
     [&]() {
       using namespace std;
 
-      if (!tsmapp_)
-        return;
-
       auto project_folder = tsmapp_->GetProjectFolder();
       wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
       auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
                                                                              1024 * 1024, 5);
+      // Project specific logger.
       logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
     }();
 
-    sim_step();
+    // Refresh sim_step_ when opening the project.
+    sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
   }
 #pragma clang diagnostic pop
 
@@ -191,11 +193,15 @@ public:
      */
   void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload)
   {
+
   }
 
   /** Fires after simulation has been successful started. */
   void SimulationStarted() override
   {
+    // Refresh sim_step_ when opening the project. This is the make sure to reflect the
+    // up to date sim_step_ in case it has been changed after project open.
+    sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
   }
 
   /**
@@ -223,12 +229,13 @@ public:
      */
   void EndSimulation(TsmApi::TsmState state)
   {
+
   }
 
   /** Fires when closing the project. */
   void CloseProject() override
   {
-    logger_ = nullptr;
+    logger_ = nullptr; // Logger is project specific.
   }
 
   /** Fires on application exit. */
@@ -242,7 +249,7 @@ public:
    */
   double sim_step() noexcept
   {
-    return tsmapp_ ? tsmapp_->StepSize : 0;
+    return sim_step_;
   }
 
   [[nodiscard]] std::shared_ptr<spdlog::logger> logger() const
@@ -252,19 +259,14 @@ public:
 
 protected:
   /** Default constructor with "protected" access level. */
-  VehicleMonitor() noexcept: name_{::SysAllocString(Name.value)}
-  {
-    tsmapp_ = []() -> TsmApi::ITsmApplication * {
-      CComPtr<TsmApi::ITsmApplication> app;
-      HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
-      return SUCCEEDED(hr) ? app.Detach() : nullptr;
-    }();
-  }
+  VehicleMonitor() noexcept: name_{::SysAllocString(Name.value)}, tsmapp_{ThePlugin::CreateTsmAppInstance()}
+  {}
 
 private:
+  double sim_step_{0};
+  TsmApi::ITsmApplicationPtr tsmapp_{nullptr};
   BSTR name_{nullptr};
   inline static std::unique_ptr<VehicleMonitorType> vm_{nullptr};
-  TsmApi::ITsmApplicationPtr tsmapp_{nullptr};
   std::shared_ptr<spdlog::logger> logger_{nullptr};
 };
 

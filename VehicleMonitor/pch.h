@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
 
+#pragma warning(disable : 4068)
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
 #ifndef PCH_H
 #define PCH_H
 
@@ -54,4 +57,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 
+#include <guiddef.h>
+
+namespace vmplugin {
+
+struct ThePlugin
+{
+  // CLSID for ITsmApplication interface.
+  static constexpr CLSID tsmapp_clsid{0x1E9F5CCD, 0x6AA2, 0x45F2, {0x83, 0x47, 0xF0, 0x33, 0x94, 0x3A, 0x04, 0x9C}};
+  /*
+   * A faster way of creating TsmApplication interface by avoiding the use of CLSIDFromProgID.
+   * The caller is responsible for releasing the interface.
+   */
+  static TsmApi::ITsmApplicationPtr CreateTsmAppInstance()
+  {
+    CComPtr<TsmApi::ITsmApplication> app;
+    HRESULT hr = app.CoCreateInstance(tsmapp_clsid);
+    return SUCCEEDED(hr) ? app.Detach() : nullptr;
+  }
+};
+
+}
 #endif //PCH_H
+#pragma clang diagnostic pop
+#pragma warning(default : 4068)

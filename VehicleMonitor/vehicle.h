@@ -45,6 +45,8 @@ class MyVehicle : public IUserVehicle
 public:
   MyVehicle(const long id, const SVehicleProperty &prop) noexcept : id_{id}, prop_{prop} {}
 
+  ~MyVehicle();
+
   /**
      Fires when a vehicle entering the network.
 

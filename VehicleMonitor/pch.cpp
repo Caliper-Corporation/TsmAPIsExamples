@@ -35,3 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // for compilation to succeed.
 
 #include "pch.h"
+
+namespace vmplugin {
+
+}
