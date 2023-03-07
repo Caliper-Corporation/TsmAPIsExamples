@@ -34,12 +34,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "pch.h"// Pre-compiled header. Must stay here.
 
-#pragma warning(disable : 4068)
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
-#pragma ide diagnostic ignored "Simplify"
-#pragma ide diagnostic ignored "UnusedParameter"
-
 namespace vmplugin {
 
 /**
@@ -51,8 +45,6 @@ namespace vmplugin {
 template<size_t N>
 struct VehicleMonitorName//
 {
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "google-explicit-constructor"
   /**
    * Non-explicit conversion allowed.
    *
@@ -62,7 +54,6 @@ struct VehicleMonitorName//
   {
     std::copy_n(str, N, value);
   }
-#pragma clang diagnostic pop
 
   constexpr VehicleMonitorName() = default;
 
@@ -112,13 +103,10 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-const-return-type"
   [[nodiscard]] const BSTR GetName() const override
   {
     return name_;
   };
-#pragma clang diagnostic pop
 
   /**
    * Attach the user vehicle to an associated TransModeler's vehicle entity.
@@ -179,9 +167,6 @@ public:
     }();
   }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-misplaced-const"
-
   /**
    * Fires when a simulation project is being opened.
    *
@@ -205,7 +190,6 @@ public:
     // Refresh sim_step_ when opening the project.
     sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
   }
-#pragma clang diagnostic pop
 
   /**
    * Fires before starting the simulation.
@@ -297,6 +281,3 @@ private:
 }// namespace vmplugin
 
 #endif
-
-#pragma clang diagnostic pop
-#pragma warning (default : 4068)

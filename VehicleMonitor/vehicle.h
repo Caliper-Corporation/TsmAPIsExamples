@@ -47,7 +47,8 @@ namespace vmplugin {
 class MyVehicle : public IUserVehicle
 {
 public:
-  MyVehicle(const long id, const SVehicleProperty &prop) noexcept : id_{id}, prop_{prop} {}
+  MyVehicle(const long id, const SVehicleProperty &prop) noexcept: id_{id}, prop_{prop}
+  {}
 
   ~MyVehicle();
 
@@ -168,7 +169,7 @@ public:
    * @param     coord   Vehicle position data including longitude, latitude and
    *                    altitude.
    */
-  void Coordinate(double time, const SVehicleCoordinate& coord) override;
+  void Coordinate(double time, const SVehicleCoordinate &coord) override;
 
   /**
    * Fires when the subject vehicle has parked at a parking space.
@@ -221,7 +222,7 @@ using MyVehicleMonitor = vmplugin::VehicleMonitor<
     MyVehicle,                                   // User vehicle type
     VM_UPDATE | VM_COORDINATE | VM_CF,           // Callback options
     L"MyVehicleMonitor"                          // Vehicle monitor name
-    >;
+>;
 
 }// namespace vmplugin
 
