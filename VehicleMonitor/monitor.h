@@ -82,7 +82,7 @@ concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_construc
  * A vehicle monitor. All of its methods will be fired within main thread.
  *
  * @tparam  T       User defined vehicle type.
- * @tparam  Opts    Vehice monitor options, including the following:
+ * @tparam  Opts    Vehicle monitor options, including the following:
  *                  VM_NONE
  *                  VM_UPDATE
  *                  VM_POSITION
