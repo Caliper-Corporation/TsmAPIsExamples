@@ -200,7 +200,6 @@ public:
    */
   void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload)
   {
-
   }
 
   /** Fires after simulation has been successful started. */
@@ -236,7 +235,6 @@ public:
    */
   void EndSimulation(TsmApi::TsmState state)
   {
-
   }
 
   /** Fires when closing the project. */
