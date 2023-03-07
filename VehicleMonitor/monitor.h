@@ -43,19 +43,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace vmplugin {
 
 /**
- A utility class for specifying compile-time vehicle monitor name as a non-
- type template parameter.
-
- @tparam    N   Number of wide characters.
+ * A utility class for specifying compile-time vehicle monitor name as a non-
+ * type template parameter.
+ *
+ * @tparam  N   Number of wide characters.
  */
 template<size_t N>
 struct VehicleMonitorName//
 {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "google-explicit-constructor"
-  /*!
+  /**
    * Non-explicit conversion allowed.
-   * @param str Unicode name of the monitor.
+   *
+   * @param     str Unicode name of the monitor.
    */
   [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N])
   {
@@ -70,12 +71,29 @@ struct VehicleMonitorName//
 
 using VehicleMonitorOptions = unsigned long;
 
+/** Check the fourth bit counted from right is always 0. */
 template<VehicleMonitorOptions Opts>
-concept ValidVehicleMonitorOptions = (((Opts << 2) & 0x0000'0001) == 0) && (((Opts << 3) & 0x0000'0001) == 0);
+concept ValidVehicleMonitorOptions = (((Opts >> 3) & 0x0000'0001) == 0);
 
 template<typename T>
 concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_constructible_v<T, long, SVehicleProperty>;
 
+/**
+ * A vehicle monitor. All of its methods will be fired within main thread.
+ *
+ * @tparam  T       User defined vehicle type.
+ * @tparam  Opts    Vehice monitor options, including the following:
+ *                  VM_NONE
+ *                  VM_UPDATE
+ *                  VM_POSITION
+ *                  VM_COORDINATE
+ *                  VM_CF_SUBJECT
+ *                  VM_CF_LEADER
+ *                  VM_CF_FOLLOWER
+ *                  VM_LANE_CHANGE
+ *                  VM_ALL
+ * @tparam  Name    Name of the vehicle monitor.
+ */
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name> /* */
 requires ValidVehicleMonitorOptions<Opts>
 class VehicleMonitor : public CUserVehicleMonitor
@@ -103,30 +121,30 @@ public:
 #pragma clang diagnostic pop
 
   /**
-     Attach the user vehicle to an associated TransModeler's vehicle entity.
-
-     @param             id      Vehicle ID, assigned by TransModeler.
-     @param             prop    Property of TransModeler vehicle entity.
-     @param [in,out]    opts    Monitor options for the vehicle.
-
-     @returns   Null to advise TransModeler not to attach, else a pointer to an
-                IUserVehicle.
-     */
+   * Attach the user vehicle to an associated TransModeler's vehicle entity.
+   *
+   * @param             id      Vehicle ID, assigned by TransModeler.
+   * @param             prop    Property of TransModeler vehicle entity.
+   * @param [in,out]    opts    Monitor options for the vehicle.
+   *
+   * @returns   Null to advise TransModeler not to attach, else a pointer to an
+   *            IUserVehicle.
+   */
   IUserVehicle *AttachVehicle(long id, const SVehicleProperty &prop, VehicleMonitorOptions *opts) override
   {
     *opts = Opts;
     if (id == 366) {
-      uint32_t tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+      auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
       logger()->info("AttachVehicle: tid={}", tid);
     }
     return new T(id, prop);
   }
 
   /**
-     Load the singleton monitor to TransModeler.
-
-     @returns   True if it succeeds, false if it fails.
-     */
+   * Load the singleton monitor to TransModeler.
+   *
+   * @returns   True if it succeeds, false if it fails.
+   */
   static bool Load() noexcept
   {
     return vm_ || []() {
@@ -136,20 +154,22 @@ public:
   }
 
   /**
-     The singleton vehicle monitor.
-
-     @returns   A pointer to VehicleMonitor associated with a user-defined vehicle class.
-     */
+   * The singleton vehicle monitor.
+   *
+   * @returns   A pointer to VehicleMonitor associated with a user-defined
+   *            vehicle class.
+   */
   [[maybe_unused]] static const auto &instance() noexcept
   {
     return vm_;
   }
 
   /**
-     Unloads the singleton monitor from TransModeler.
-
-     @returns   True if it succeeds, false if it fails or there is no vm to unload.
-     */
+   * Unloads the singleton monitor from TransModeler.
+   *
+   * @returns   True if it succeeds, false if it fails or there is no vm to
+   *            unload.
+   */
   static bool Unload() noexcept
   {
     return vm_ && []() -> bool {
@@ -161,22 +181,25 @@ public:
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-misplaced-const"
-  /**
-     Fires when a simulation project is being opened.
 
-     @param     name    Project file name.
-     */
+  /**
+   * Fires when a simulation project is being opened.
+   *
+   * @param     name    Project file name.
+   */
   void OpenProject(const BSTR name) override
   {
     [&]() {
       using namespace std;
 
-      auto project_folder = tsmapp_->GetProjectFolder();
-      wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
-      auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
-                                                                             1024 * 1024, 5);
-      // Project specific logger.
-      logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
+      if (tsmapp_) {
+          auto project_folder = tsmapp_->GetProjectFolder();
+          wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
+          auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
+              1024 * 1024, 2);
+          // Project specific logger.
+          logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
+      }
     }();
 
     // Refresh sim_step_ when opening the project.
@@ -185,12 +208,12 @@ public:
 #pragma clang diagnostic pop
 
   /**
-     Fires before starting the simulation.
-
-     @param     run         Zero-based index of the run.
-     @param     run_type    Type of the run.
-     @param     preload     Whether this is a preload run.
-     */
+   * Fires before starting the simulation.
+   *
+   * @param     run         Zero-based index of the run.
+   * @param     run_type    Type of the run.
+   * @param     preload     Whether this is a preload run.
+   */
   void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload)
   {
 
@@ -205,28 +228,28 @@ public:
   }
 
   /**
-     Fires with each simulation step
-
-    @param time Current time of simulation clock.
+   * Fires with each simulation step.
+   *
+   * @param     time    Current time of simulation clock.
    */
   void Advance(double time) override
   {
   }
 
   /**
-     Fires after simulation has been stopped.
-
-     @param     state   TransModeler state.
-     */
+   * Fires after simulation has been stopped.
+   *
+   * @param     state   TransModeler state.
+   */
   void SimulationStopped(TsmApi::TsmState state)
   {
   }
 
   /**
-     Fires at the end of the simulation.
-
-     @param     state   TransModeler state.
-     */
+   * Fires at the end of the simulation.
+   *
+   * @param     state   TransModeler state.
+   */
   void EndSimulation(TsmApi::TsmState state)
   {
 
@@ -245,7 +268,8 @@ public:
 
   /**
    * This can only be called after a simulation project has been opened.
-   * @return Simulation step size.
+   *
+   * @returns   Simulation step size.
    */
   double sim_step() noexcept
   {

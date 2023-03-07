@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 23)
 project(VehicleMonitor)
 
-set(TSM_FOLDER "C://Program Files//TransModeler 6.1//")
+set(TSM_FOLDER "C://Program Files//TransModeler 7.0//")
 
 include_directories(
         "${CMAKE_SOURCE_DIR}"

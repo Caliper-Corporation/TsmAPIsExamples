@@ -64,15 +64,18 @@ namespace vmplugin {
 struct ThePlugin
 {
   // CLSID for ITsmApplication interface.
-  static constexpr CLSID tsmapp_clsid{0x1E9F5CCD, 0x6AA2, 0x45F2, {0x83, 0x47, 0xF0, 0x33, 0x94, 0x3A, 0x04, 0x9C}};
+  [[maybe_unused]] static constexpr CLSID tsmapp_clsid{0x1E9F5CCD, 0x6AA2, 0x45F2,
+                                                       {0x83, 0x47, 0xF0, 0x33, 0x94, 0x3A, 0x04, 0x9C}};
+
   /*
-   * A faster way of creating TsmApplication interface by avoiding the use of CLSIDFromProgID.
-   * The caller is responsible for releasing the interface.
+   * A faster way of creating TsmApplication interface is to use CLSID directly rather than ProgID.
+   * However, TSM COM Dlls are reg-free, so we would have to use ProgID. Note the caller is
+   * responsible for releasing the interface.
    */
   static TsmApi::ITsmApplicationPtr CreateTsmAppInstance()
   {
     CComPtr<TsmApi::ITsmApplication> app;
-    HRESULT hr = app.CoCreateInstance(tsmapp_clsid);
+    HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
     return SUCCEEDED(hr) ? app.Detach() : nullptr;
   }
 };
