@@ -62,7 +62,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #error Unsupported platform.
 #endif
 
-#include <matchit/matchit.hpp>
+#include <matchit/matchit.h>
 #include <pugixml/pugixml.hpp>
 
 #include <spdlog/spdlog.h>
