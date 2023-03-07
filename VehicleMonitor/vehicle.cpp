@@ -59,7 +59,7 @@ void MyVehicle::Arrival(double time)
   // Fill in user logic
 
   if (id_ == 366) {
-   auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnArrival: time={:.1f},tid={}", time, tid);
   }
 }
@@ -116,14 +116,14 @@ void MyVehicle::Position(double time, const SVehiclePosition &pos)
   }
 }
 
-void MyVehicle::Coordinate(double time, const SVehicleCoordinate& coord)
+void MyVehicle::Coordinate(double time, const SVehicleCoordinate &coord)
 {
-    // Fill in user logic
-    if (id_ == 366) {
-        // log simulation step time, vehicle id, longitude, and latitude
-        auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
-        logger()->info("OnPosition: time={:.1f},tid={},veh={},lon={},lat={}", time, tid, id_, coord.lon, coord.lat);
-    }
+  // Fill in user logic
+  if (id_ == 366) {
+    // log simulation step time, vehicle id, longitude, and latitude
+    auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    logger()->info("OnPosition: time={:.1f},tid={},veh={},lon={},lat={}", time, tid, id_, coord.lon, coord.lat);
+  }
 }
 
 void MyVehicle::Parked(double time)

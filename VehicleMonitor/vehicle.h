@@ -50,7 +50,7 @@ public:
   MyVehicle(const long id, const SVehicleProperty &prop) noexcept: id_{id}, prop_{prop}
   {}
 
-  ~MyVehicle();
+  virtual ~MyVehicle();
 
   /**
    * Fires when a vehicle entering the network.
@@ -196,7 +196,7 @@ public:
    * @returns   True to ignore the message and continue, false to skip
    *            receiving further callback notification.
    */
-  bool OnFail(BSTR msg) override;
+  bool OnFail(const BSTR msg) override;
 
   [[maybe_unused]] [[nodiscard]] auto id() const -> long
   {
@@ -218,7 +218,7 @@ private:
 };
 
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
-using MyVehicleMonitor = vmplugin::VehicleMonitor<
+using MyVehicleMonitor = VehicleMonitor<
     MyVehicle,                                   // User vehicle type
     VM_UPDATE | VM_COORDINATE | VM_CF,           // Callback options
     L"MyVehicleMonitor"                          // Vehicle monitor name

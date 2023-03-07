@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VMPLUGIN_MONITOR
 #define VMPLUGIN_MONITOR
 
-#include "pch.h"// Pre-compiled header. Must stay here.
+#include "pch.h" // Pre-compiled header. Must stay here.
 
 namespace vmplugin {
 
@@ -96,7 +96,7 @@ public:
   {
     ::SysFreeString(name_);
     tsmapp_ = nullptr;
-   }
+  }
 
   VehicleMonitor(VehicleMonitor &) = delete;
   VehicleMonitor(VehicleMonitor &&) = delete;
@@ -178,12 +178,12 @@ public:
       using namespace std;
 
       if (tsmapp_) {
-          auto project_folder = tsmapp_->GetProjectFolder();
-          wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
-          auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
-              1024 * 1024, 2);
-          // Project specific logger.
-          logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
+        auto project_folder = tsmapp_->GetProjectFolder();
+        wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
+        auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
+                                                                               1024 * 1024, 2);
+        // Project specific logger.
+        logger_ = make_shared<spdlog::logger>("vm_logger", rotating_sink);
       }
     }();
 
@@ -198,7 +198,7 @@ public:
    * @param     run_type    Type of the run.
    * @param     preload     Whether this is a preload run.
    */
-  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload)
+  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload) override
   {
   }
 
@@ -224,7 +224,7 @@ public:
    *
    * @param     state   TransModeler state.
    */
-  void SimulationStopped(TsmApi::TsmState state)
+  void SimulationStopped(TsmApi::TsmState state) override
   {
   }
 
@@ -233,7 +233,7 @@ public:
    *
    * @param     state   TransModeler state.
    */
-  void EndSimulation(TsmApi::TsmState state)
+  void EndSimulation(TsmApi::TsmState state) override
   {
   }
 
