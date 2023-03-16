@@ -253,7 +253,7 @@ public:
    *
    * @returns   Simulation step size.
    */
-  double sim_step() noexcept
+  [[maybe_unused]] [[nodiscard]] double sim_step() noexcept
   {
     return sim_step_;
   }
@@ -261,6 +261,11 @@ public:
   [[nodiscard]] std::shared_ptr<spdlog::logger> logger() const
   {
     return logger_;
+  }
+
+  [[maybe_unused]] [[nodiscard]] TsmApi::ITsmApplicationPtr tsmapp() const
+  {
+    return tsmapp_;
   }
 
 protected:
