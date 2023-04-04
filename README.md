@@ -2,33 +2,44 @@
 This repo provides various example projects,  illustrating the usage of TransModeler Application Programming Interfaces (APIs).
 
 # Introduction
-TransModeler features a comprehensive set of flexible and powerful Application Programming Interfaces (APIs). The APIs can be used to develop *plugins* and *extensions* that extend TransModeler user interface, customize the underlying models, integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate state-of-the-art ITS and Connected and Autonomous Vehicle (CAV) technologies.  
+TransModeler offers a comprehensive set of flexible and powerful APIs that enable users to:
+- Extend the user interface, 
+- Customize models, 
+- Integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate cutting-edge ITS and CAV technologies. 
 
-For ITS system integrators, hardware system manufactures, or auto makers, the APIs also allow TransModeler to be used as a powerful high-performance real-time simulation engine for Artificial Intelligence (AI) applications,  hardware-in-the-loop and system-in-the-loop simulations, and Decision Support Systems (DSS),  in distributed, cloud-based, or edge computing environments.
+For ITS system integrators, hardware system manufacturers, and automakers, the APIs allow TransModeler to serve as:
+- A powerful real-time simulation engine for AI applications, 
+- Hardware-in-the-loop (HILS) and system-in-the-loop  (SILS) simulations, and 
+- Decision Support Systems (DSS), in distributed, cloud-based, or edge computing environments.
 
-TransModeler APIs support the following programming languages:
+The TransModeler APIs support several programming languages, including:
+- Caliper Script (a.k.a. GISDK), a proprietary scripting language designed specifically for transportation and traffic modeling tasks, and 
+- Any COM-compliant languages, such as C++, .NET (e.g., C#, F# or C++/CLI), Delphi, and Python. 
 
-- **Caliper Script** (a.k.a GISDK) is Caliper-proprietary scripting language. Versatile and flexible, it is a domain specific language (DSL) designed to facilitate, automate, and streamline everyday activities of transportation and traffic modelling. Its many modern language features of a dynamic language are similar to Javascript, yet much more powerful and specialized when it comes to GIS, high-performance matrix computations, transportation modeling and traffic simulation tasks.
-- **Any COM-compliant Languages** TransModeler APIs features both performant **in-process** and flexible **out-process** COM interfaces that allow using any COM-compliant language to develop TransModeler plugins/extensions/custom applications. This includes .NET (C#, F#, C++/CLI), C++, Delphi, and Python among others.  C++ would provide the best performance while .NET the most convenient choice. 
-    - **Python** would be a good choice of programming language if there is a need to **directly access** to existing Python numerical libraries (e.g., numpy), machine learning, artificial intelligence, or reinforcement learning libraries (e.g., Pandas, FastAI, TensorFlow, OpenAI API etc.)
+Using Python would be particularly useful if direct access to existing numerical, machine learning, artificial intelligence, or reinforcement learning libraries is needed, such as numpy, Pandas, FastAI, TensorFlow, or OpenAI API. 
+
+C++ provides the best performance, while .NET is the most convenient.
 
 # Deployment
-Applications developed using TransModeler APIs can be deployed as **in-process plugins** that share the same process space as TransModeler, or as a **stand-alone application** in its own process space (i.e., out-of-process client with TransModeler as the COM automation server). This renders great flexibility to meet the needs of different development context.
+Developers can deploy applications created with TransModeler APIs as in-process plugins, which share the same process space as TransModeler, or as a stand-alone application in its own process space. This provides great flexibility to meet the needs of different development contexts.
 
 # Supported Platform
 Windows only, or WINE on Linux.
 
 # License
-BSD-3-Clause License
+BSD-3-Clause License.
 
 # How to Build
-Projects written in native C++ or managed .NET (C#, F#, C++/CLI) languages can be opened by Visual Studio 2022 IDE and built from there.  Projects written in Caliper Script need to be compiled by the Caliper Script compiler shipped with TransModeler. 
+Visual Studio 2022 IDE can open projects written in native C++ or managed .NET languages (C#, F#, C++/CLI), which can then be built from within the IDE. 
 
-Please consult the README of each respective project.
+However, projects written in Caliper Script (i.e., GISDK) require compilation by the Caliper Script compiler included with TransModeler. 
+
+It's recommended to refer to the README file of each project for specific instructions.
 
 # List of Examples
 
-More examples will be added. The following list summarizes existing examples.
+Additional examples will be added to TransModeler's library. The current examples include:
 
-- [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold example of Vehicle Monitor plugin in modern C++/20.
-- [Hardware-in-the-Loop](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/HILS) illustrates how to connect TransModeler with a NEMA-TS2 traffic signal controller via direct SDLC communication using C++.
+- [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor), which serves as a scaffold example of a Vehicle Monitor plugin written in modern C++/20.
+- [Hardware-in-the-Loop](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/HILS), which demonstrates how to connect TransModeler with a NEMA-TS2 traffic signal controller via direct SDLC communication using C++.
+- [Python](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/Python), which provides various Python-based samples for TsmApi applications.
