@@ -8,8 +8,9 @@ For ITS system integrators, hardware system manufactures, or auto makers, the AP
 
 TransModeler APIs support the following programming languages:
 
-- **Caliper Script** is Caliper-proprietary scripting language. Versatile and flexible, it is a domain specific language (DSL) designed to facilitate, automate, and streamline everyday activities of transportation and traffic modelling. Its many modern language features of a dynamic language are similar to Javascript, yet much more powerful and specialized when it comes to GIS, high-performance matrix computations, transportation modeling and traffic simulation tasks.
-- **Any COM-compliant Languages** TransModeler APIs features both performant **in-process** and flexible **out-process** COM interfaces that allow using any COM-compliant language to develop TransModeler plugins/extensions/custom applications. This includes .NET (C#, F#, C++/CLI), C++, Delphi among others.  C++ would provide the best performance while .NET the most convenient choice.
+- **Caliper Script** (a.k.a GISDK) is Caliper-proprietary scripting language. Versatile and flexible, it is a domain specific language (DSL) designed to facilitate, automate, and streamline everyday activities of transportation and traffic modelling. Its many modern language features of a dynamic language are similar to Javascript, yet much more powerful and specialized when it comes to GIS, high-performance matrix computations, transportation modeling and traffic simulation tasks.
+- **Any COM-compliant Languages** TransModeler APIs features both performant **in-process** and flexible **out-process** COM interfaces that allow using any COM-compliant language to develop TransModeler plugins/extensions/custom applications. This includes .NET (C#, F#, C++/CLI), C++, Delphi, and Python among others.  C++ would provide the best performance while .NET the most convenient choice. 
+    - **Python** would be a good choice of programming language if there is a need to **directly access** to existing Python numerical libraries (e.g., numpy), machine learning, artificial intelligence, or reinforcement learning libraries (e.g., Pandas, FastAI, TensorFlow, OpenAI API etc.)
 
 # Deployment
 Applications developed using TransModeler APIs can be deployed as **in-process plugins** that share the same process space as TransModeler, or as a **stand-alone application** in its own process space (i.e., out-of-process client with TransModeler as the COM automation server). This renders great flexibility to meet the needs of different development context.
@@ -30,4 +31,4 @@ Please consult the README of each respective project.
 More examples will be added. The following list summarizes existing examples.
 
 - [Vehicle Monitor](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/VehicleMonitor) presents a scaffold example of Vehicle Monitor plugin in modern C++/20.
-- [Hardware-in-the-Loop](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/HILS) illustrates how to connect TransModeler with a NEMA-TS2 traffic signal controller via direct SDLC communication.
+- [Hardware-in-the-Loop](https://github.com/Caliper-Corporation/TsmAPIsExamples/tree/main/HILS) illustrates how to connect TransModeler with a NEMA-TS2 traffic signal controller via direct SDLC communication using C++.
