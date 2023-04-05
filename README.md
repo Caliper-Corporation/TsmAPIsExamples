@@ -5,7 +5,8 @@ This repo provides various example projects,  illustrating the usage of TransMod
 TransModeler offers a comprehensive set of flexible and powerful APIs that enable users to:
 - Extend the user interface, 
 - Customize models, 
-- Integrate new signal optimization algorithms and congestion mitigation strategies, and incorporate cutting-edge ITS and CAV technologies. 
+- Integrate new signal optimization algorithms and congestion mitigation strategies, and 
+- Incorporate cutting-edge ITS and CAV technologies. 
 
 For ITS system integrators, hardware system manufacturers, and automakers, the APIs allow TransModeler to serve as:
 - A powerful real-time simulation engine for AI applications, 
@@ -30,9 +31,12 @@ Windows only, or WINE on Linux.
 BSD-3-Clause License.
 
 # How to Build
-Visual Studio 2022 IDE can open projects written in native C++ or managed .NET languages (C#, F#, C++/CLI), which can then be built from within the IDE. 
 
-However, projects written in Caliper Script (i.e., GISDK) require compilation by the Caliper Script compiler included with TransModeler. 
+- Visual Studio 2022 IDE can open projects written in native C++ or managed .NET languages (C#, F#, C++/CLI), which can then be built from within the IDE. 
+
+- Projects written in Caliper Script (i.e., GISDK) require compilation by the Caliper Script compiler included with TransModeler. 
+
+- Python samples requires [pywin32](https://pypi.org/project/pywin32/) version 302 or later.
 
 It's recommended to refer to the README file of each project for specific instructions.
 
