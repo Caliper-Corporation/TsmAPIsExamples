@@ -3,10 +3,10 @@ This repo provides various example projects,  illustrating the usage of TransMod
 
 # Introduction
 TransModeler offers a comprehensive set of flexible and powerful APIs that enable users to:
-- Extend the user interface, 
-- Customize models, 
+- Extend the user interface of TransModeler, 
+- Customize driver behavioral models,
 - Integrate new signal optimization algorithms and congestion mitigation strategies, and 
-- Incorporate cutting-edge ITS and CAV technologies. 
+- Incorporate cutting-edge ITS and Connected and Autonomous Vehicles (CAV) technologies. 
 
 For ITS system integrators, hardware system manufacturers, and automakers, the APIs allow TransModeler to serve as:
 - A powerful real-time simulation engine for AI applications, 
@@ -17,7 +17,7 @@ The TransModeler APIs support several programming languages, including:
 - Caliper Script (a.k.a. GISDK), a proprietary scripting language designed specifically for transportation and traffic modeling tasks, and 
 - Any COM-compliant languages, such as C++, .NET (e.g., C#, F# or C++/CLI), Delphi, and Python. 
 
-Using Python would be particularly useful if direct access to existing numerical, machine learning, artificial intelligence, or reinforcement learning libraries is needed, such as numpy, Pandas, FastAI, TensorFlow, or OpenAI API. 
+Using Python would be particularly useful if direct access to existing numerical, machine learning, artificial intelligence, or reinforcement learning libraries is needed, such as [numpy](https://numpy.org/), [pandas](https://pandas.pydata.org/), [fastai](https://github.com/fastai/fastai), [tensorflow](https://pypi.org/project/tensorflow/), or [OpenAI API](https://platform.openai.com/).
 
 C++ provides the best performance, while .NET is the most convenient.
 
