@@ -51,15 +51,55 @@ def main():
         # Get warm up period in min
         warm_up = initial_info[1][1]
 
-
         # Intentionlly add up 1 sec to pass over the warm up end time
         warm_up_end_time = start_time + warm_up * 60 + 1;
         tsm_app.RunTo(warm_up_end_time )
 
         tsm_app.StepMode = 1
         sim_clock_time = warm_up_end_time
+        cur_state  = 1 # red signal state
         while sim_clock_time < end_time :
             # Add per-simulation step processing here.
+            """
+            In TransModeler, signals are per-approach, for example, a standard
+            four-approach intersection has four signals, each signal has three
+            turns - right, through, left (icluding  u-turn). These turns are identified
+            using numbers as 0, 1, 2 repsectively.
+
+            The following code checks the state of the left-turn signal
+            of the east-bound approach of the sample network.
+
+            The signal ID of the left-turn signal of the east-bound approach is 2,
+            left turn is 2
+
+            The returned signal state is represented by the following:
+
+                    BLANK_SIGNAL = 0,
+                    RED_SIGNAL = 1,
+                    YELLOW_SIGNAL = 2,
+                    GREEN_SIGNAL = 3,
+                    FREE_SIGNAL = 4,
+                    RTOR_SIGNAL = 5,
+                    PROTECTED_SIGNAL = 7,
+                    TRANSIT_PROTECTED_SIGNAL = 8,
+                    FLASHINRED_SIGNAL = 9,
+                    FLASHINGYELLOW_SIGNAL = 10,
+                    NONTRANSIT_PERMITTED_SIGNAL = 11,
+                    BLOCKED_SIGNAL = 12,
+                    NONTRANSIT_PROTECTED_SIGNAL = 0xF
+            """
+
+            simulation_state = tsm_app.State
+            if simulation_state == 1: # checks simulation is running.
+                signal = tsm_app.Network.Signal(2)
+                state = signal.TurnSignalState(2)
+
+                if state == 7 and cur_state != 7:  # left, protected signal
+                    cur_time = tsm_app.CurrentTime
+                    cur_time_str = tsm_app.TimeToString(cur_time)
+                    cur_state = state
+                    print(f"At {cur_time_str} Signal 2 Left Turn Starts Green!")
+
             tsm_app.RunSingleStep()
             # End of per-simulation step processing.
             sim_clock_time = sim_clock_time + sim_step
