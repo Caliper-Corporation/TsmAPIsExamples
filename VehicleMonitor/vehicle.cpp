@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2023, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,8 @@ void MyVehicle::Arrival(double time)
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnArrival: time={:.1f},tid={}", time, tid);
   }
+
+  delete this; // Delete the vehicle at this point.
 }
 
 void MyVehicle::Update(double time, const SVehicleBasicState &state)
