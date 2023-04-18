@@ -3,7 +3,6 @@ import os
 import traceback
 import caliperpy
 
-
 def main():
     dk = None
     log_file = None
