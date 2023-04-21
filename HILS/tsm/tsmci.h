@@ -1,7 +1,7 @@
 /*!
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2023 Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -53,15 +53,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*!
   For usage of #import directive, refer to
   https://docs.microsoft.com/en-us/cpp/preprocessor/hash-import-directive-cpp?view=msvc-170
-
-  TsmApi type lib is imported here using lib id. If TransModeler has
-  not been installed, this file won't compile.
-
-  If the compiler complains that cannot find the lib, go the TransModeler installation folder,
-  with administrator privilege, run the following command line:
-  regsvr32 TsmApi.dll
 */
-#import "libid:1DA9E83D-B7FF-49D2-B3FC-49AE2CEE10F7"
+#import "TsmApi.tlb"
 
 /*!
   tsmapi.tlh will be auto-generated and imported into the intermediate output
