@@ -1,7 +1,7 @@
 /*!
 BSD 3 - Clause License
 
-Copyright(c) 2023 Caliper Corporation
+Copyright(c) 2022-2023 Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*!
   C++ Virtual Traffic Cabinet Framework
   TransModeler Hardware-in-Loop Simulation Controller Interface
-  Copyright (C) 2022  Wuping Xin
+  Copyright (C) 2022-2023  Wuping Xin
 
   MPL 1.1/GPL 2.0/LGPL 2.1 tri-license
 */

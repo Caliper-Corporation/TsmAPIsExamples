@@ -60,10 +60,10 @@ BEGIN
       VALUE "FileDescription", "TSM HILS controller interface"
       VALUE "FileVersion", "1.0.0.1"
       VALUE "InternalName", "tsmci"
-      VALUE "LegalCopyright", "Copyright © 2022"
+      VALUE "LegalCopyright", "Copyright © 2023"
       VALUE "OriginalFilename", "tsmci"
       VALUE "ProductName", "tsmci"
-      VALUE "ProductVersion", "1.0.0.1"
+      VALUE "ProductVersion", "2.0.0.1"
     END
   END
 
