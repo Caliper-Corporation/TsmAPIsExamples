@@ -113,7 +113,7 @@ VtcLogger logger()
 
 /*!
  * Setup the logger singleton with a given output path and file name. The log file
- * will be saved  to the designated output path, using the specified logger name
+ * will be saved to the designated output path, using the specified logger name
  * appended with "-log.txt".
  *
  * The parent path needs to be pre-existing. If for any reason, the log file cannot
@@ -203,7 +203,8 @@ template<Index I, size_t N>
 concept ValidIndex = (I >= 1) && (I <= N);
 
 /*!
- * Validate if the value type of a controller variable is valid.
+ * Validate if the value type of a controller variable is valid. Can be one of
+ * the four types: Bit, Byte, Word, and Integer.
  * @tparam T The value type.
  */
 template<typename T>
