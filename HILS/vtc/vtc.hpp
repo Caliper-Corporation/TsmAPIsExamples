@@ -215,9 +215,9 @@ concept ValidValueType = std::is_same_v<T, Bit>
 
 /*!
  * A cabinet variable representing an indexed cabinet entity, for example,
- * Variable<Byte, 1> can be used to represent Phase 1. The template allows
- * compile-time definition of "array-like" entities while preventing
- * dynamic memory allocation during run time.
+ * Variable<Byte, 1> can be used to represent an entity that takes Byte storage
+ * with Index 1. The template allows compile-time definition of "array-like"
+ * entities while preventing dynamic memory allocation during run time.
  *
  * @tparam T The value type of the cabinet variable.
  * @tparam I Index of the cabinet variable.
@@ -233,6 +233,9 @@ struct Variable
   Variable &operator=(Variable &) = delete;
   Variable &operator=(Variable &&) = delete;
 
+  /*!
+   * Operator () returns a reference to the interval value.
+   */
   auto &operator()()
   {
     return value;
