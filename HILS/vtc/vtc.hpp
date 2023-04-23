@@ -1,7 +1,7 @@
 /*!
 BSD 3 - Clause License
 
-Copyright(c) 2022-2023, Caliper Corporation
+Copyright(c) 2023, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*!
   C++ Virtualization Library of Traffic Cabinet
-  Copyright (C) 2022-2023  Wuping Xin
+  Copyright (C) 2022  Wuping Xin
 
   MPL 1.1/GPL 2.0/LGPL 2.1 tri-license
 */
@@ -140,6 +140,7 @@ bool setup_logger(const fs::path &a_path, const std::string &a_logger_name)
   VtcLogger the_logger{nullptr};
   bool default_logger_created;
 
+  // create_directory would return if exists.
   if (fs::create_directory(p, ec) || fs::exists(p)) {
     const auto log_file = (p / (a_logger_name + "-log.txt")).string();
     the_logger = rotating_logger_mt(a_logger_name, // Internal logger name
@@ -208,10 +209,12 @@ concept ValidIndex = (I >= 1) && (I <= N);
  * @tparam T The value type.
  */
 template<typename T>
-concept ValidValueType = std::is_same_v<T, Bit>
-    || std::is_same_v<T, Byte>
-    || std::is_same_v<T, Word>
-    || std::is_same_v<T, Integer>;
+concept ValidValueType = std::disjunction_v<
+    std::is_same<T, Bit>,
+    std::is_same<T, Byte>,
+    std::is_same<T, Word>,
+    std::is_same<T, Integer>
+>;
 
 /*!
  * A cabinet variable representing an indexed cabinet entity, for example,
@@ -258,6 +261,12 @@ struct Variable
 template<typename T>
 using ValueType = typename T::Variable::value_t;
 
+/*!
+ * Convert a string into character array.
+ * @tparam Is Index sequence
+ * @param str String view
+ * @return
+ */
 template<std::size_t ...Is>
 constexpr auto substring_as_array(std::string_view str, std::index_sequence<Is...>)
 {
@@ -2084,7 +2093,7 @@ constexpr size_t ChannelSegmentStartPos()
  * For a given MMU channel, the IDs of other channels that is paired to the subject
  * chanel for compatibility definition.
 */
-template<Index ChannelID, Index MaxChannel = 16> requires (ChannelID >= 1) && (ChannelID < MaxChannel)
+template<Index ChannelID, Index MaxChannel = 16> requires (ChannelID >= 1) &&(ChannelID<MaxChannel)
 using ChannelCompatibilityPairedIndexes
     = offset_sequence_t<ChannelID, std::make_integer_sequence<Index, MaxChannel - ChannelID>>;
 
@@ -2255,37 +2264,53 @@ void SetMMU16ChannelCompatibility(const std::string &a_hexstr)
   std::string bitstr{};
   for (auto &c : a_hexstr) {
     switch (std::toupper(c)) {
-      case '0':bitstr.append("0000");
+      case '0':
+        bitstr.append("0000");
         break;
-      case '1':bitstr.append("0001");
+      case '1':
+        bitstr.append("0001");
         break;
-      case '2':bitstr.append("0010");
+      case '2':
+        bitstr.append("0010");
         break;
-      case '3':bitstr.append("0011");
+      case '3':
+        bitstr.append("0011");
         break;
-      case '4':bitstr.append("0100");
+      case '4':
+        bitstr.append("0100");
         break;
-      case '5':bitstr.append("0101");
+      case '5':
+        bitstr.append("0101");
         break;
-      case '6':bitstr.append("0110");
+      case '6':
+        bitstr.append("0110");
         break;
-      case '7':bitstr.append("0111");
+      case '7':
+        bitstr.append("0111");
         break;
-      case '8':bitstr.append("1000");
+      case '8':
+        bitstr.append("1000");
         break;
-      case '9':bitstr.append("1001");
+      case '9':
+        bitstr.append("1001");
         break;
-      case 'A':bitstr.append("1010");
+      case 'A':
+        bitstr.append("1010");
         break;
-      case 'B':bitstr.append("1011");
+      case 'B':
+        bitstr.append("1011");
         break;
-      case 'C':bitstr.append("1100");
+      case 'C':
+        bitstr.append("1100");
         break;
-      case 'D':bitstr.append("1101");
+      case 'D':
+        bitstr.append("1101");
         break;
-      case 'E':bitstr.append("1110");
+      case 'E':
+        bitstr.append("1110");
         break;
-      case 'F':bitstr.append("1111");
+      case 'F':
+        bitstr.append("1111");
         break;
     }
   }
@@ -5042,7 +5067,8 @@ auto make_loadswitch_driver()
       std::ref(io::variable<ChannelRedDoNotWalkDriver<I>>));  /**/
 }
 
-template<LoadswitchChannelID I> requires (I <= num_loadswitches) && (I >= 1)
+template<LoadswitchChannelID I> requires (I <= num_loadswitches) &&(I
+>= 1)
 class LoadswitchChannel
 {
 public:
@@ -5066,7 +5092,8 @@ private:
   LoadswitchDriver<I> driver_{make_loadswitch_driver<I>()};
 };
 
-template<LoadswitchChannelID I> requires (I <= num_loadswitches) && (I >= 1)
+template<LoadswitchChannelID I> requires (I <= num_loadswitches) &&(I
+>= 1)
 using LoadswitchWiring = std::tuple<LoadswitchChannel<I>, SignalHead>;
 
 struct LoadswitchWiringFactory
@@ -5074,7 +5101,7 @@ struct LoadswitchWiringFactory
   template<LoadswitchChannelID I>
   static auto make()
   {
-    return LoadswitchWiring<I>{};
+    return LoadswitchWiring < I > {};
   }
 };
 
@@ -5087,7 +5114,8 @@ using LoadswitchChannelIndexes =
         >
     >;
 
-template<DetectorChannelID I> requires (I <= num_detector_channels) && (I >= 1)
+template<DetectorChannelID I> requires (I <= num_detector_channels) &&(I
+>= 1)
 class DetectorChannel
 {
 public:
@@ -5105,7 +5133,8 @@ private:
   VehicleDetCall<I> &state_{io::variable<io::input::VehicleDetCall<I>>};
 };
 
-template<DetectorChannelID I> requires (I <= num_detector_channels) && (I >= 1)
+template<DetectorChannelID I> requires (I <= num_detector_channels) &&(I
+>= 1)
 using DetectorWiring = std::tuple<DetectorChannel<I>, SensorIDs>;
 
 struct DetectorWiringFactory
@@ -5113,7 +5142,7 @@ struct DetectorWiringFactory
   template<DetectorChannelID I>
   static auto make()
   {
-    return DetectorWiring<I>{};
+    return DetectorWiring < I > {};
   }
 };
 
