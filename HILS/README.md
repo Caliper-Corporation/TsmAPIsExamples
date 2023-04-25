@@ -1,6 +1,6 @@
 # TransModeller Hardware-in-the-Loop Controller Interface
 
-TransModeler is a powerful traffic simulator with great modelling realism of signalized intersections. This hardware-in-the-loop simulation (HILS) C++ project, illustrates how to connect TransModeler with any NEMA-TS2 controllers using direct Port 1 SDLC communications. No CID is needed, and no proprietary NTCIP objects are required.
+TransModeler is a powerful traffic simulator with great modelling realism of signalized intersections. This hardware-in-the-loop simulation (HILS) C++ project, illustrates how to connect TransModeler with any NEMA-TS2 controllers using direct Port 1 SDLC communications. No proprietary NTCIP objects are required.
 
 ## About HILS
 
@@ -9,6 +9,18 @@ Conventionally, HILS requires costly CID hardware or using relevant proprietary 
 There are a lot of use cases for HILS using native SDLC communications. These use cases include controller firmware bench testing, controller database verification and seamless migration, SDLC-level cyber-security investigation, SDLC frame timing optimization, and connected vehicle applications that need a closest replica of the field conditions including the latency of serial communications.
 
 You can even utilize the direct control over SDLC frames for some interesting/creative work related to ATSPM, for example, ATSPM-in-the-loop which hooks up ATSPM with a traffic simulator in real-time.
+
+## Benefits of HILS
+
+The TransModeler HILS Plugin offers several benefits for traffic management professionals:
+
+* **Realism** - The plugin enables the use of actual controller settings, bringing real-world functionality to the simulation environment. 
+
+* **Flexibility** - Users can test various signal operational strategies, actuated signal parameters, and signal timing plans in a controlled environment without affecting real-world traffic operations. 
+
+* **Safety** - Testing and validating new controller firmware in a simulation environment allows for the identification of potential issues without putting road users at risk. 
+
+* **Seamless Integration** - By allowing for the transfer of tested controller databases from the simulation environment to the field, the plugin minimizes errors and streamlines the implementation process.
 
 ## How to build
 
@@ -28,4 +40,4 @@ The generated tsmci.dll should be put together with an accompanying tsmci.config
 
 ## Dependencies
 
-This TransModeler HILS Controller Interface depends on the `Virtual Traffic Cabinet` (VTC) framework, an open-source C++ library developed by Wuping Xin. More information about VTC can be found in sub folder [vtc](./vtc/README.md). Any questions about VTC should be directed to him directly. 
+This TransModeler HILS Controller Interface depends on the `Virtual Traffic Cabinet` (VTC) framework, an open-source C++ library. More information about VTC can be found at [vtc](https://github.com/wxinix/vtc). 
