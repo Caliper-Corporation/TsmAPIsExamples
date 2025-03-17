@@ -5,6 +5,11 @@ project(VehicleMonitor)
 set(TSM_VER 7.0)
 set(TSM_FOLDER "C://Program Files//TransModeler ${TSM_VER}")
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+endif()
+
+
 include_directories(
         "${CMAKE_SOURCE_DIR}"
         "${CMAKE_SOURCE_DIR}/spdlog"

@@ -50,7 +50,7 @@ struct VehicleMonitorName//
    *
    * @param     str Unicode name of the monitor.
    */
-  [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N])
+  [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N]) //NOLINT
   {
     std::copy_n(str, N, value);
   }
@@ -87,7 +87,7 @@ concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_construc
  */
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name> /* */
 requires ValidVehicleMonitorOptions<Opts>
-class VehicleMonitor : public CUserVehicleMonitor
+class VehicleMonitor final : public CUserVehicleMonitor
 {
 public:
   using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
@@ -103,7 +103,7 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-  [[nodiscard]] const BSTR GetName() const override
+  [[nodiscard]] BSTR const GetName() const override
   {
     return name_;
   };
@@ -172,14 +172,13 @@ public:
    *
    * @param     name    Project file name.
    */
-  void OpenProject(const BSTR name) override
+  void OpenProject(const BSTR name) override //NOLINT
   {
     [&]() {
       using namespace std;
 
-      if (tsmapp_) {
-        auto project_folder = tsmapp_->GetProjectFolder();
-        wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
+      if (tsmapp_) { const auto project_folder = tsmapp_->GetProjectFolder();
+        const wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
         auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
                                                                                1024 * 1024, 2);
         // Project specific logger.
@@ -198,11 +197,11 @@ public:
    * @param     run_type    Type of the run.
    * @param     preload     Whether this is a preload run.
    */
-  void StartSimulation(short run, TsmApi::TsmRunType run_type, VARIANT_BOOL preload) override
+  void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
   {
   }
 
-  /** Fires after simulation has been successful started. */
+  /** Fires after simulation has been successfully started. */
   void SimulationStarted() override
   {
     // Refresh sim_step_ when opening the project. This is the make sure to reflect the
@@ -224,7 +223,7 @@ public:
    *
    * @param     state   TransModeler state.
    */
-  void SimulationStopped(TsmApi::TsmState state) override
+  void SimulationStopped(TsmState state) override
   {
   }
 
@@ -233,7 +232,7 @@ public:
    *
    * @param     state   TransModeler state.
    */
-  void EndSimulation(TsmApi::TsmState state) override
+  void EndSimulation(TsmState state) override
   {
   }
 
@@ -253,7 +252,7 @@ public:
    *
    * @returns   Simulation step size.
    */
-  [[maybe_unused]] [[nodiscard]] double sim_step() noexcept
+  [[maybe_unused]] [[nodiscard]] double sim_step() const noexcept
   {
     return sim_step_;
   }
@@ -270,7 +269,7 @@ public:
 
 protected:
   /** Default constructor with "protected" access level. */
-  VehicleMonitor() noexcept: name_{::SysAllocString(Name.value)}, tsmapp_{ThePlugin::CreateTsmAppInstance()}
+  VehicleMonitor() noexcept: tsmapp_{ThePlugin::CreateTsmAppInstance()}, name_{::SysAllocString(Name.value)}
   {}
 
 private:
