@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2022-2025, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // This also affects IntelliSense performance, including code completion and many code browsing features.
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
+#pragma once
 
 #pragma warning(disable : 4068)
 #pragma clang diagnostic push
@@ -78,8 +79,8 @@ struct ThePlugin
    */
   static TsmApi::ITsmApplicationPtr CreateTsmAppInstance()
   {
-    CComPtr<TsmApi::ITsmApplication> app;
-    HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
+    CComPtr<ITsmApplication> app;
+    const HRESULT hr = app.CoCreateInstance(L"TsmApi.TsmApplication");
     return SUCCEEDED(hr) ? app.Detach() : nullptr;
   }
 };

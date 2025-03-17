@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2022-2025, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pch.h"
 #include "vehicle.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HMODULE hModule, const DWORD ul_reason_for_call, LPVOID lpReserved) //NOLINT
 {
   switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH:
@@ -44,10 +44,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
       vmplugin::MyVehicleMonitor::Unload();
       break;
 
+    /*
     case DLL_THREAD_ATTACH:
       break;
-
     case DLL_THREAD_DETACH:
+    */     
+
+    default:
       break;
   }
 

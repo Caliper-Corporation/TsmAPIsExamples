@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2022-2025, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -47,10 +47,22 @@ namespace vmplugin {
 class MyVehicle : public IUserVehicle
 {
 public:
-  MyVehicle(const long id, const SVehicleProperty &prop) noexcept: id_{id}, prop_{prop}
+  MyVehicle(const long id, const SVehicleProperty &prop) noexcept : prop_{prop}, id_{id}
   {}
 
   virtual ~MyVehicle();
+
+  // Delete copy constructor
+  MyVehicle(const MyVehicle &) = delete;
+
+  // Delete copy assignment operator
+  MyVehicle &operator=(const MyVehicle &) = delete;
+
+  // Delete move constructor
+  MyVehicle(MyVehicle &&) = delete;
+
+  // Delete move assignment operator
+  MyVehicle &operator=(MyVehicle &&) = delete;
 
   /**
    * Fires when a vehicle entering the network.
@@ -133,7 +145,7 @@ public:
    *            of interest.
    *
    * @remarks   CUserVehicleMonitor::AttachVehicle(...) must have set the
-   *            VM_LANE_CHANGE bit in order to receive this callback. Also to
+   *            VM_LANE_CHANGE bit in order to receive this callback. Also, to
    *            receive this call back, ITsmVehicle::LaneChangeOverride
    *            property of the vehicle cannot be set false by another plugin.
    */
@@ -208,10 +220,10 @@ private:
   [[nodiscard]] static auto logger();
 
   /** Vehicle property */
-  [[maybe_unused]] const SVehicleProperty prop_{};
+  [[maybe_unused]] SVehicleProperty prop_{};
 
   /** ID of the vehicle */
-  const long id_{0};
+  long id_{0};
 
   /** User calculated acceleration */
   float accel_{0};
@@ -219,10 +231,10 @@ private:
 
 /** Specify the Vehicle Monitor associated with the user-defined vehicle type. */
 using MyVehicleMonitor = VehicleMonitor<
-    MyVehicle,                                   // User vehicle type
-    VM_UPDATE | VM_COORDINATE | VM_CF,           // Callback options
-    L"MyVehicleMonitor"                          // Vehicle monitor name
->;
+    MyVehicle,                        // User vehicle type
+    VM_UPDATE | VM_COORDINATE | VM_CF,// Callback options
+    L"MyVehicleMonitor"               // Vehicle monitor name
+    >;
 
 }// namespace vmplugin
 

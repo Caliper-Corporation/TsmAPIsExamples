@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2023, Caliper Corporation
+Copyright(c) 2022-2025, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ namespace vmplugin {
   return MyVehicleMonitor::instance()->logger();
 }
 
-MyVehicle::~MyVehicle()
+MyVehicle::~MyVehicle() //NOLINT
 {
   // Add destructor logic to clean up
 }

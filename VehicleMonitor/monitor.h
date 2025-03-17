@@ -1,7 +1,7 @@
 /*
 BSD 3 - Clause License
 
-Copyright(c) 2022, Caliper Corporation
+Copyright(c) 2022-2025, Caliper Corporation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -103,10 +103,10 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-  [[nodiscard]] BSTR const GetName() const override
+  [[nodiscard]] BSTR const GetName() const override  // NOLINT(clang-diagnostic-ignored-qualifiers)
   {
     return name_;
-  };
+  }
 
   /**
    * Attach the user vehicle to an associated TransModeler's vehicle entity.
