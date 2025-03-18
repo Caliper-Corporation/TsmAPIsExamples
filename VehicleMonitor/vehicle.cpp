@@ -47,27 +47,31 @@ MyVehicle::~MyVehicle() //NOLINT
 
 void MyVehicle::Departure(double time)
 {
+  /*
   // Fill in user logic
   if (id_ == 366) {
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnDeparture: time={:.1f},tid={}", time, tid);
   }
+  */
 }
 
 void MyVehicle::Arrival(double time)
 {
+  /*
   // Fill in user logic
-
   if (id_ == 366) {
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnArrival: time={:.1f},tid={}", time, tid);
   }
+  */
 
   delete this; // Delete the vehicle at this point.
 }
 
 void MyVehicle::Update(double time, const SVehicleBasicState &state)
 {
+  /*
   // Fill in user logic.
   // We can save the data to private data members of the subject vehicle instance.
   // Note - MyVehicle::Update is fired with every simulation step.
@@ -78,6 +82,7 @@ void MyVehicle::Update(double time, const SVehicleBasicState &state)
     logger()->info("OnUpdate: time={:.1f},tid={},veh={},acc={:.2f},grade={},speed={:.3f},idSegment={}",
                    time, tid, id_, state.fAcc, state.fGrade, state.fSpeed, state.idSegment);
   }
+  */
 }
 
 float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingData &data, float acc)
@@ -87,6 +92,7 @@ float MyVehicle::CalculateCarFollowingAccRate(double time, const SCarFollowingDa
 
 float MyVehicle::Acceleration(double time, float acc)
 {
+  /*
   if (id_ == 366) {
     accel_ = accel_ + 0.1f; // Each time we increment the acceleration by 0.1 m/s^2
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
@@ -96,6 +102,8 @@ float MyVehicle::Acceleration(double time, float acc)
   } else {
     return flt_miss;
   }
+  */
+  return flt_miss;
 }
 
 short MyVehicle::LaneChange(double time, short dir, bool *mandatory)
@@ -111,21 +119,25 @@ float MyVehicle::TransitStop(double time, const STransitStopInfo &info, float dw
 void MyVehicle::Position(double time, const SVehiclePosition &pos)
 {
   // Fill in user logic
+  /*
   if (id_ == 366) {
     // log simulation step time, vehicle id, longitude, and latitude
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnPosition: time={:.1f},tid={},veh={},pos.x={},pos.y={}", time, tid, id_, pos.x, pos.y);
   }
+  */
 }
 
 void MyVehicle::Coordinate(double time, const SVehicleCoordinate &coord)
 {
   // Fill in user logic
+  /*
   if (id_ == 366) {
     // log simulation step time, vehicle id, longitude, and latitude
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     logger()->info("OnPosition: time={:.1f},tid={},veh={},lon={},lat={}", time, tid, id_, coord.lon, coord.lat);
   }
+  */
 }
 
 void MyVehicle::Parked(double time)

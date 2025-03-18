@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef VMPLUGIN_MONITOR
 #define VMPLUGIN_MONITOR
 
-#include "pch.h" // Pre-compiled header. Must stay here.
+#include "pch.h"// Pre-compiled header. Must stay here.
 
 namespace vmplugin {
 
@@ -50,7 +50,7 @@ struct VehicleMonitorName//
    *
    * @param     str Unicode name of the monitor.
    */
-  [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N]) //NOLINT
+  [[maybe_unused]] constexpr VehicleMonitorName(const wchar_t (&str)[N])//NOLINT
   {
     std::copy_n(str, N, value);
   }
@@ -86,10 +86,20 @@ concept UserVehicleType = std::derived_from<T, IUserVehicle> && std::is_construc
  * @tparam  Name    Name of the vehicle monitor.
  */
 template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name> /* */
-requires ValidVehicleMonitorOptions<Opts>
-class VehicleMonitor final : public CUserVehicleMonitor
+  requires ValidVehicleMonitorOptions<Opts>
+class VehicleMonitor final : public CUserVehicleMonitor, ISensorEvents
 {
 public:
+  HRESULT Arrive(LONG sid, LONG vid, DOUBLE dTime, FLOAT fSpeed) override
+  {
+    return S_OK;
+  }
+
+  HRESULT Leave(LONG sid, LONG vid, DOUBLE dTime, FLOAT fSpeed) override
+  {
+    return S_OK;
+  }
+
   using VehicleMonitorType = VehicleMonitor<T, Opts, Name>;
 
   ~VehicleMonitor() override
@@ -103,7 +113,7 @@ public:
   VehicleMonitor &operator=(VehicleMonitor &) = delete;
   VehicleMonitor &operator=(VehicleMonitor &&) = delete;
 
-  [[nodiscard]] BSTR const GetName() const override  // NOLINT(clang-diagnostic-ignored-qualifiers)
+  [[nodiscard]] BSTR const GetName() const override// NOLINT(clang-diagnostic-ignored-qualifiers)
   {
     return name_;
   }
@@ -172,12 +182,14 @@ public:
    *
    * @param     name    Project file name.
    */
-  void OpenProject(const BSTR name) override //NOLINT
+  void OpenProject(const BSTR name) override//NOLINT
   {
     [&]() {
       using namespace std;
 
-      if (tsmapp_) { const auto project_folder = tsmapp_->GetProjectFolder();
+      if (tsmapp_) {
+        CComBSTR project_folder;
+        const auto hr = tsmapp_->get_ProjectFolder(&project_folder); //NOLINT
         const wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
         auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
                                                                                1024 * 1024, 2);
@@ -187,7 +199,7 @@ public:
     }();
 
     // Refresh sim_step_ when opening the project.
-    sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
+    RefreshSimStep();
   }
 
   /**
@@ -199,14 +211,15 @@ public:
    */
   void StartSimulation(short run, TsmRunType run_type, VARIANT_BOOL preload) override
   {
+    if (const auto hr = Connect(tsmapp_.p); !SUCCEEDED(hr)) {
+      logger()->critical("Fail to connect detector events sink.");
+    }
   }
 
   /** Fires after simulation has been successfully started. */
   void SimulationStarted() override
   {
-    // Refresh sim_step_ when opening the project. This is the make sure to reflect the
-    // up-to-date sim_step_ in case it has been changed after project open.
-    sim_step_ = tsmapp_ ? tsmapp_->StepSize : 0;
+    RefreshSimStep();
   }
 
   /**
@@ -225,6 +238,7 @@ public:
    */
   void SimulationStopped(TsmState state) override
   {
+    DisConnect();// Disconnect sensor events.
   }
 
   /**
@@ -239,7 +253,7 @@ public:
   /** Fires when closing the project. */
   void CloseProject() override
   {
-    logger_ = nullptr; // Logger is project specific.
+    logger_ = nullptr;// Logger is project specific.
   }
 
   /** Fires on application exit. */
@@ -259,22 +273,32 @@ public:
 
   [[nodiscard]] std::shared_ptr<spdlog::logger> logger() const
   {
-    return logger_;
+    return logger_;// Before calling this make sure it is already constructed.
   }
 
-  [[maybe_unused]] [[nodiscard]] TsmApi::ITsmApplicationPtr tsmapp() const
+  [[maybe_unused]] [[nodiscard]] CComPtr<ITsmApplication> tsmapp() const
   {
     return tsmapp_;
   }
 
 protected:
   /** Default constructor with "protected" access level. */
-  VehicleMonitor() noexcept: tsmapp_{ThePlugin::CreateTsmAppInstance()}, name_{::SysAllocString(Name.value)}
+  VehicleMonitor() noexcept : tsmapp_{ThePlugin::CreateTsmAppInstance()}, name_{::SysAllocString(Name.value)}
   {}
 
 private:
+  void RefreshSimStep()
+  {
+    // Refresh sim_step_ when opening the project. This is the make sure to reflect the
+    // up-to-date sim_step_ in case it has been changed after project open.
+    sim_step_ = 0;
+    if (tsmapp_) {
+      const auto _ = tsmapp_->get_StepSize(&sim_step_);
+    }
+  }
+
   double sim_step_{0};
-  TsmApi::ITsmApplicationPtr tsmapp_{nullptr};
+  CComPtr<ITsmApplication> tsmapp_{nullptr};
   BSTR name_{nullptr};
   inline static std::unique_ptr<VehicleMonitorType> vm_{nullptr};
   std::shared_ptr<spdlog::logger> logger_{nullptr};

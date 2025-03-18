@@ -44,7 +44,7 @@ namespace vmplugin {
  * User defined vehicle type. Callbacks may be fired in different threads.
  * There is no fixed thread affinity.
  */
-class MyVehicle : public IUserVehicle
+class MyVehicle final : public IUserVehicle
 {
 public:
   MyVehicle(const long id, const SVehicleProperty &prop) noexcept : prop_{prop}, id_{id}
@@ -107,7 +107,7 @@ public:
    *            TransModeler's calculated value.
    *                
    *            CUserVehicleMonitor::AttachVehicle(...) must have set the
-   *            VM_CF_SUBJECT bit in order to receive this callback. Also to
+   *            VM_CF_SUBJECT bit in order to receive this callback. Also, to
    *            receive this call back, ITsmVehicle::AccOverride property of
    *            the vehicle cannot be set false by another plugin.
    */
