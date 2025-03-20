@@ -90,8 +90,17 @@ template<UserVehicleType T, VehicleMonitorOptions Opts, VehicleMonitorName Name>
 class VehicleMonitor final : public CUserVehicleMonitor, ISensorEvents
 {
 public:
-  HRESULT Arrive(LONG sid, LONG vid, DOUBLE dTime, FLOAT fSpeed) override
+  HRESULT Arrive(const LONG sid, const LONG vid, DOUBLE dTime, FLOAT fSpeed) override
   {
+    ITsmNetwork *network;
+    HRESULT hr = tsmapp_->get_Network(&network);
+    if (!SUCCEEDED(hr)) return hr;
+    ITsmVehicle *vehicle;
+    hr = network->get_Vehicle(vid, &vehicle);
+    if (!SUCCEEDED(hr)) return hr;
+    STsmLocation location = {.type = LOCATION_NODE, .id = sid == 1 ? 1 : 2};
+    hr = vehicle->SetDestination(&location, 0);
+    if (!SUCCEEDED(hr)) return hr;
     return S_OK;
   }
 
@@ -189,7 +198,7 @@ public:
 
       if (tsmapp_) {
         CComBSTR project_folder;
-        const auto hr = tsmapp_->get_ProjectFolder(&project_folder); //NOLINT
+        const auto hr = tsmapp_->get_ProjectFolder(&project_folder);//NOLINT
         const wstring log_folder = wstring(project_folder) + wstring(&Name.value[0]);
         auto rotating_sink = make_shared<spdlog::sinks::rotating_file_sink_mt>(log_folder + L"/vm-log.txt",
                                                                                1024 * 1024, 2);
